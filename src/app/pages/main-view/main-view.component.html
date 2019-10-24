@@ -1,0 +1,165 @@
+<body>
+  <div class="row" id="wrapper">
+    <mat-card class="column left">
+
+            <div class="line_chart" *ngIf="statistics; else general">
+              <canvas baseChart [datasets]="lineChartData" [labels]="lineChartLabels" [options]="lineChartOptions"
+                [legend]="lineChartLegend" [chartType]="lineChartType">
+              </canvas>
+            </div>
+
+            <ng-template #general>
+                <div class="line_chart">
+                    <canvas baseChart [datasets]="lineChartData2" [labels]="lineChartLabels2" [options]="lineChartOptions2"
+                      [legend]="lineChartLegend2" [chartType]="lineChartType2">
+                    </canvas>
+                  </div>
+              </ng-template>
+      <!--
+        <mat-grid-list *ngIf="statistics" cols="2" rowHeight="2:1">
+        <mat-grid-tile>
+          <div class="line_chart" style="display: block">
+            <canvas baseChart [datasets]="lineChartData" [labels]="lineChartLabels" [options]="lineChartOptions"
+              [legend]="lineChartLegend" [chartType]="lineChartType">
+            </canvas>
+          </div>
+        </mat-grid-tile>
+        <mat-grid-tile>
+          <div class="line_chart" style="display: block">
+            <canvas baseChart [datasets]="polarChartData" [labels]="polarChartLabels" [options]="polarChartOptions"
+              [legend]="polarChartLegend" [chartType]="polarChartType">
+            </canvas>
+          </div>
+        </mat-grid-tile>
+        <mat-grid-tile>
+          <div class="line_chart" style="display: block">
+            <canvas baseChart [datasets]="doughnutChartData" [labels]="doughnutChartLabels"
+              [options]="doughnutChartOptions" [legend]="doughnutChartLegend" [chartType]="doughnutChartType">
+            </canvas>
+          </div>
+        </mat-grid-tile>
+        <mat-grid-tile>
+          <div class="line_chart" style="display: block">
+            <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions"
+              [legend]="barChartLegend" [chartType]="barChartType">
+            </canvas>
+          </div>
+        </mat-grid-tile>
+      </mat-grid-list>
+    -->
+
+
+      <div *ngIf="chosenClusterbool; else noCluster">
+          <h2>Statistics on {{ chosenCluster.name }} hub</h2>
+        </div>
+        <div>
+          <ng-template #noCluster>
+            <div *ngIf="chosenVehiclebool; else noVehicle">
+              <h3>Information on {{ chosenVehicle.model }}</h3>
+              <mat-list>
+                <mat-list-item>
+                  Battery Model: {{ chosenVehicle._battery_id.name }} | Status:
+                  {{ chosenVehicle._battery_id.status }}</mat-list-item>
+                <mat-list-item>
+                  Current Charge: {{ chosenVehicle._battery_id.charge }}%
+                </mat-list-item>
+                <mat-list-item>
+                  Life-Span: {{ chosenVehicle._battery_id.life_span }}%
+                </mat-list-item>
+              </mat-list>
+            </div>
+          </ng-template>
+        </div>
+
+        <ng-template #noVehicle>
+          <h2>Statistics</h2>
+          <mat-divider></mat-divider>
+
+          <p> click a vehicle (on the map or left panel) to have more information
+            about it
+          </p>
+        </ng-template>
+
+    </mat-card>
+    <mat-card class="column right" fxLayout="column">
+      <div fxFlex="1 1 100%" #map>
+        <agm-map [style.height.px]="map.offsetHeight" [latitude]="latitude" (zoomChange)="onMapZoomChange($event)"
+          [longitude]="longitude" [zoom]="zoom" [disableDefaultUI]="false" [zoomControl]="true"
+          [streetViewControl]="false">
+          <agm-circle #circle *ngFor="let cl of clusters" [latitude]="cl.center_lat" [longitude]="cl.center_lng"
+            [radius]="cl.radius" [fillColor]="fillCircleColor(cl)" [visible]="circleVisible"
+            (circleClick)="onCircleClicked(cl)">
+          </agm-circle>
+          <div *ngIf="circleClicked">
+            <agm-marker *ngFor="let item of vehicles" [label]="item.model" [latitude]="item.position_lat"
+              [longitude]="item.position_lng" (markerClick)="onVehicleChosen(item)"
+              (markerRightClick)="onMarkerRightClick(item)">
+              <agm-info-window *ngIf="chosenVehicle">
+                <strong>Status: {{ chosenVehicle._battery_id.status }}</strong>
+              </agm-info-window>
+            </agm-marker>
+          </div>
+        </agm-map>
+      </div>
+      <div class = "filters">
+        <h4> Filters: </h4>
+        <mat-form-field>
+          <mat-label>Name</mat-label>
+          <mat-select>
+            <mat-option>
+              Name1
+            </mat-option>
+            <mat-option>
+              Name2
+            </mat-option>
+            <mat-option>
+              Name3
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Status</mat-label>
+          <mat-select>
+            <mat-option>
+              Status1
+            </mat-option>
+            <mat-option>
+              Status2
+            </mat-option>
+            <mat-option>
+              Status3
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Battery</mat-label>
+          <mat-select>
+            <mat-option>
+              Battery1
+            </mat-option>
+            <mat-option>
+              Battery2
+            </mat-option>
+            <mat-option>
+              Battery3
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <mat-accordion>
+        <mat-expansion-panel class="vehicle_list" *ngFor="let vh of vehicles" (click)="onVehicleChosen(vh)">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              {{ vh.model }}
+            </mat-panel-title>
+            <mat-panel-description>
+              Charge: {{ vh._battery_id.charge }}%
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <p>Additional information about vehicle goes here</p>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </mat-card>
+  </div>
+</body>

@@ -1,0 +1,84 @@
+* {
+  box-sizing: border-box;
+}
+
+html,body {
+  width: 100%;
+  height: 100%;
+}
+
+
+.column {
+  float: left;
+}
+
+.left {
+  width: 50%;
+  flex-grow: 1;
+  height: 100%;
+}
+
+.right {
+  width: auto;
+  flex-grow: 1;
+  height: 100%;
+}
+
+.map{
+  padding: 0%;
+  margin: 0%;
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+}
+
+
+.chart{
+  margin: 0%;
+  padding: 0%;
+  height: 100%;
+}
+.chart h3{
+  margin-top: 0%;
+}
+
+.line_chart{
+  width: 100%;
+  height: 100%;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.row{
+  height: 100%;
+  width: 100%;
+}
+#wrapper {
+  display:-webkit-flex;
+  -webkit-justify-content:center;
+  display:flex;
+  justify-content:center;
+}
+
+.h4{
+  margin: 0px;
+}
+
+div.vehicle_list:hover {
+  background-color: #F5F5F5;
+  cursor:pointer;
+}
+
+div.vehicle_list:active {
+  background-color: rgb(204, 204, 204);
+}
+
+agm-map{
+  margin: 0%;
+  width: 100%;
+}
