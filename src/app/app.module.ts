@@ -18,6 +18,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatCardModule } from '@angular/material/card';
 import { MatMenuModule } from '@angular/material/menu';
 import { AgmCoreModule } from '@agm/core';
+import {MatSliderModule} from '@angular/material/slider';
 import {MatSelectModule} from '@angular/material/select';
 import { ChartsModule } from 'ng2-charts';
 import {MatBadgeModule} from '@angular/material/badge';
@@ -47,6 +48,7 @@ import {MatExpansionModule} from '@angular/material/expansion';
     MatIconModule,
     BrowserAnimationsModule,
     MatListModule,
+    MatSliderModule,
     MatGridListModule,
     MatCardModule,
     MatExpansionModule,

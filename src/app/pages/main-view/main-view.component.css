@@ -18,9 +18,17 @@ html,body {
   margin: 15px;
   flex-grow: 1;
   height: 100%;
+  display: inline-block;
 }
 
 .right {
+  padding:0%;
+  width: 100%;
+  height: 100%;
+}
+
+.right_div{
+  position: relative;
   padding: 0;
   margin: 15px;
   margin-left: 0%;
@@ -88,6 +96,26 @@ mat-form-field{
   margin: 0px;
 }
 
+.time_slider{
+  display: flex;
+  vertical-align: middle;
+  height: 48px;
+  float: right;
+}
+
+
+.slider{
+  padding: 0;
+  padding-left: 8px;
+}
+
+.list_of_vehicles{
+  position: absolute;
+  width: 100%;
+  top: 350px;
+  bottom: 0;
+  overflow-y:auto;
+}
 .vehicle_list:hover {
   background-color: #F5F5F5;
   cursor:pointer;

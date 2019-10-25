@@ -40,6 +40,12 @@ export class MainViewComponent implements OnInit {
   chosenVehiclebool = false;
   chosenClusterbool = false;
 
+  // Slider elements
+  min_slider = 2016;
+  max_slider = 2024;
+  current_value = 2019;
+  thumbLabel = true;
+
   // Line chart elements
   lineChartLabels;
   lineChartType;
