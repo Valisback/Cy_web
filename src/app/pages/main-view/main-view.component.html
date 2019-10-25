@@ -83,7 +83,7 @@
     </mat-card>
     <mat-card class="column right" fxLayout="column">
       <div fxFlex="1 1 100%" #map>
-        <agm-map [style.height.px]="map.offsetHeight" [latitude]="latitude" (zoomChange)="onMapZoomChange($event)"
+        <agm-map [style.height.px]="map.offsetHeight" [latitude]="latitude" [styles] = "darkStyle" (zoomChange)="onMapZoomChange($event)"
           [longitude]="longitude" [zoom]="zoom" [disableDefaultUI]="false" [zoomControl]="true"
           [streetViewControl]="false">
           <agm-circle #circle *ngFor="let cl of clusters" [latitude]="cl.center_lat" [longitude]="cl.center_lng"

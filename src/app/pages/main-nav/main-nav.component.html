@@ -13,10 +13,14 @@
     <mat-toolbar  style="height: 50px; background-color: #EEEEEE;">
       <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()"
         *ngIf="isHandset$ | async">
-        <mat-icon aria-label="Side nav toggle icon">=</mat-icon>
+        <mat-icon class = " material-icons md-dark" aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
 
       <img src="assets/img/FedEx_logo_orange-purple.png" class="logo">
+      <span class="toolbar-spacer"></span>
+      <mat-icon class="right-toolbar-icon material-icons md-dark"  aria-hidden="false" aria-label="alert icon">notification_important</mat-icon>
+      <mat-icon class="right-toolbar-icon material-icons md-dark" aria-hidden="false" aria-label="account icon">person</mat-icon>
+
     </mat-toolbar>
     <div class="top_cards">
       <mat-card id="1">
