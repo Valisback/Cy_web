@@ -103,6 +103,10 @@ mat-form-field{
   float: right;
 }
 
+.text-small{
+  font-size: small;
+}
+
 
 .slider{
   padding: 0;

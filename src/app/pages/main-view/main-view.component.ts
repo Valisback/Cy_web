@@ -51,13 +51,14 @@ export class MainViewComponent implements OnInit {
   vehicleParameter = []; // Parameters of the vehicle between 2 dates
 
   interval;
+  sliderVisible = true;
   chosenVehicle;
   chosenCluster;
   chosenVehiclebool = false;
   chosenClusterbool = false;
 
   // Slider elements
-  min_slider_date = 0;
+  min_slider_date = 1;
   max_slider_date = 5;
   slider_date_value = 5;
   thumbLabel = true;
@@ -65,6 +66,9 @@ export class MainViewComponent implements OnInit {
   // Line chart elements
   @ViewChild('lineChart', { static: false })
   private chartComponent: BaseChartDirective;
+
+  @ViewChild('yearSlider', { static: true })
+  private yearSlider: any;
 
   lineChartLabels = [];
   lineChartType;
@@ -232,9 +236,9 @@ export class MainViewComponent implements OnInit {
     let perf = 100;
 
     // Creating the values for the baseline
-    for (let month = 0; month < 60; month++) {
+    for (let month = 0; month <= 60; month++) {
       this.BASELINE.push(perf);
-      perf = perf - (Math.random() * perf) / 100;
+      perf = perf * ( 1 - Math.random() / 70);
     }
   }
 
@@ -250,15 +254,20 @@ export class MainViewComponent implements OnInit {
 
   onVehicleChosen(vehicle) {
     this.chosenVehicle = vehicle;
-    console.log(this.getVehicleParameters(vehicle));
+    const arrayVehicle = [];
+    arrayVehicle[0] = vehicle;
+    console.log(vehicle);
     // this.getVehicleParameterBetweenDates(vehicle, this.slider_date_value, this.slider_date_value + 1);
     this.chosenVehiclebool = true;
+    const view = "vehicleView";
+    this.refreshGraphs(arrayVehicle, view);
     this.chosenClusterbool = false;
   }
 
   sliderEvent() {
     if (this.vehicles) {
-      this.refreshGraphs(this.vehicles);
+      const view = 'clusterView';
+      this.refreshGraphs(this.vehicles, view);
     }
     // console.log(this.getVehicleParameterBetweenDates(this.vehicles[0], this.slider_date_value, this.slider_date_value + 1));
   }
@@ -279,19 +288,16 @@ export class MainViewComponent implements OnInit {
     this.longitude = Number(lng);
   }
 
-  async refreshGraphs(vehicles) {
+  async refreshGraphs(vehicles, view) {
     this.lineChartType = 'line';
-    // this.loadVehicleParameterBetweenDates(vehicles, this.slider_date_value, this.slider_date_value + 1);
     const date = new Date();
-    const today = new Date(date.getFullYear(), date.getMonth(), 1);
-    this.loadVehicleParameterAtDate(vehicles, today);
+    if (view === 'clusterView' ) {
+      this.loadVehicleParameterAtDate(vehicles, date);
+    } else if (view === 'vehicleView') {
+      const creationDate = new Date(vehicles[0].date_of_creation);
+      this.loadVehicleParameterBetweenDates(vehicles, creationDate, date);
+    }
 
-    // Refresh for line chart
-    /*this.lineChartLabels = ['10h', '11h', '12h', '13h', '14h', '15h', '16h'];
-    this.lineChartLegend = 'test';
-    this.lineChartData = [
-      { data: [28, 48, 40, 19, 86, 27, 90], label: 'Battery Charge' }
-    ];*/
     this.lineChartOptions = {
       scaleShowVerticalLines: false,
       responsive: true,
@@ -300,12 +306,34 @@ export class MainViewComponent implements OnInit {
           {
             scaleLabel: {
               display: true,
-              labelString: 'Performance (in %)'
-            }
+              labelString: 'Performance (in %)',
+            },
+            ticks : {
+              max : 100,
+              min : 0
           }
-        ]
+          }
+        ],
+        xAxes: [{
+          ticks: {
+              maxTicksLimit: 10,
+              autoSkip: false
+          }
+      }]
+      },
+      legend: {
+        labels: {
+          filter: (legendItem, chartData) => {
+            if (legendItem.datasetIndex === 0) {
+              return true;
+            }
+            return false;
+            // return true or false based on legendItem's datasetIndex (legendItem.datasetIndex)
+          }
+        }
       }
     };
+
   }
 
   getMonthsBetweenRange(date1, date2) {
@@ -340,11 +368,12 @@ export class MainViewComponent implements OnInit {
   }
 
   async chargeVehicles(circle) {
+    const view = 'clusterView';
     this.getVehicleService
       .retrieveVehiclesInCluster(circle._id)
       .subscribe((response: any) => {
         this.vehicles = response.vehicle_list;
-        this.refreshGraphs(this.vehicles);
+        this.refreshGraphs(this.vehicles, view);
       });
   }
 
@@ -377,11 +406,22 @@ export class MainViewComponent implements OnInit {
       this.getVehicleService
         .retrieveParametersAtDate(vh._id, date)
         .subscribe((response: any) => {
-          for (let i = 0; i < battAge; i++) {
+          let month;
+          for (month = 0; month < battAge; month++) {
               dataset.push(empty);
           }
+          const lowerThreshold = this.BASELINE[month] * 0.8;
+          const upperThreshold = this.BASELINE[month] * 1.2;
+          let pointColor;
+          if ( response.parameters[0].performance < lowerThreshold ) {
+            pointColor = '#ff0000';
+          } else if ( response.parameters[0].performance > upperThreshold ) {
+            pointColor = '#00ff00';
+          } else {
+            pointColor = '#ffa500';
+          }
           dataset.push(response.parameters[0].performance);
-          this.lineChartData.push({data: dataset, label: vh.model});
+          this.lineChartData.push({data: dataset, label: vh.model, pointBackgroundColor: pointColor});
 
           this.statistics = true;
         });
@@ -389,6 +429,7 @@ export class MainViewComponent implements OnInit {
         console.log('This vehicle is too old, age:', battAge);
       }
     }
+
   }
 
   battery_age(a, b) {
@@ -399,32 +440,63 @@ export class MainViewComponent implements OnInit {
     return Math.abs(Math.round(diff / 365.25));
   }
 
-  loadVehicleParameterBetweenDates(vehicles, date1, date2) {
-    this.lineChartLabels = this.getMonthsBetweenRange(
-      this.slider_date_value,
-      this.slider_date_value + 1
-    );
+  loadVehicleParameterBetweenDates(vehicle, date1, date2) {
+    this.lineChartLabels = [];
+    let i;
+    for (i = date1.getFullYear(); i < date2.getFullYear() + 1; i++) {
+      let j = 0;
+      let label;
+      if (i == date1.getFullYear()) {
+        j = date1.getMonth() + 1;
+        label = i + '-' + j;
+      } else {
+        j = 0;
+        label = '' + i;
+      }
+      this.lineChartLabels.push(label);
+      for (j; j < 11; j++) {
+          this.lineChartLabels.push('');
+      }
+    }
+    this.lineChartLabels.push('' + i);
     this.lineChartData = [];
-    for (const vh of vehicles) {
-      const dataset = [];
-      this.getVehicleService
-        .retrieveParametersBetweenDates(vh._id, date1, date2)
+    const dataset = [];
+    this.getVehicleService
+        .retrieveParametersBetweenDates(vehicle[0]._id, date1, date2)
         .subscribe((response: any) => {
           this.vehicleParameter = response.parameters;
           for (const p of this.vehicleParameter) {
             dataset.push(p.performance);
           }
-          this.lineChartData.push({ data: dataset, label: vh.model });
+          this.lineChartData.push({ data: dataset, label: vehicle[0].model + ' details'});
           this.statistics = true;
         });
-    }
+    this.sliderVisible = false;
   }
 
   onChartClicked(event) {
     const chart = this.chartComponent.chart;
-    const b = chart.getElementAtEvent(event.event);
-    const label = this.lineChartData[0];
-    console.log('Event clicked', b[0]);
-    console.log('Label', label);
+    const chartElement = chart.getElementAtEvent(event.event);
+    const view = 'vehicleView';
+
+    if (chartElement[0]) {
+      const indexClicked = chartElement[0]['_datasetIndex'];
+      const elemClicked = this.lineChartData[indexClicked];
+      const modelElem = elemClicked['label'];
+      this.getVehicleService
+        .retrieveVehicleWithModel(modelElem)
+        .subscribe((response: any) => {
+          this.vehicleParameter = response.vehicle;
+          console.log('VEHICLE PICKED: ', response.vehicle);
+          this.refreshGraphs(response.vehicle, view);
+        });
+      }
+  }
+
+  onBackButton() {
+    this.sliderVisible = true;
+    const view = 'clusterView';
+    this.refreshGraphs(this.vehicles, view);
+
   }
 }

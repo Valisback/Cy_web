@@ -1,13 +1,16 @@
 <body>
   <div class="row" id="wrapper">
     <mat-card class="column left">
-      <div class="time_slider">
-        <p>Date:</p>
-        <mat-slider class="slider" [max]="max_slider_date" [min]="min_slider_date" [(ngModel)]="slider_date_value"
-          [thumbLabel]="thumbLabel" (change)="sliderEvent()"></mat-slider>
-      </div>
+
+      <ng-template #backButton>
+          <button mat-button (click) = "onBackButton()"><mat-icon>arrow_back</mat-icon></button>
+      </ng-template>
 
       <div class="line_chart" *ngIf="statistics; else general">
+          <div class="time_slider" *ngIf="sliderVisible; else backButton">
+              <span class="text-small">{{min_slider_date}} year</span><mat-slider  class="slider" [max]="max_slider_date" [min]="min_slider_date" [(ngModel)]="slider_date_value"
+                [thumbLabel]="thumbLabel" (change)="sliderEvent()"></mat-slider><span class="text-small">{{max_slider_date}} years</span>
+            </div>
         <canvas #lineChart="base-chart" baseChart [datasets]="lineChartData" [labels]="lineChartLabels" [options]="lineChartOptions"
           [legend]="lineChartLegend" (chartClick)="onChartClicked($event)"[chartType]="lineChartType">
 

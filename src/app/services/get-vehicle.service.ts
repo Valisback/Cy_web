@@ -16,6 +16,10 @@ export class GetVehicleService {
       return this.webReqService.get('vehicles/cluster/' + cluster_id);
     }
 
+    retrieveVehicleWithModel(model) {
+      return this.webReqService.get('vehicles/model/' + model);
+    }
+
     retrieveParametersOfVehicles(vehicle_id) {
       return this.webReqService.get('parameters/vehicle/' + vehicle_id);
     }
