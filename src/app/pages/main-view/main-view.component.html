@@ -3,19 +3,20 @@
     <mat-card class="column left">
       <div class="time_slider">
         <p>Date:</p>
-        <mat-slider class="slider" [max]="max_slider" [min]="min_slider" [value]="current_value"
-          [thumbLabel]="thumbLabel"></mat-slider>
+        <mat-slider class="slider" [max]="max_slider_date" [min]="min_slider_date" [(ngModel)]="slider_date_value"
+          [thumbLabel]="thumbLabel" (change)="sliderEvent()"></mat-slider>
       </div>
 
       <div class="line_chart" *ngIf="statistics; else general">
-        <canvas baseChart [datasets]="lineChartData" [labels]="lineChartLabels" [options]="lineChartOptions"
-          [legend]="lineChartLegend" [chartType]="lineChartType">
+        <canvas #lineChart="base-chart" baseChart [datasets]="lineChartData" [labels]="lineChartLabels" [options]="lineChartOptions"
+          [legend]="lineChartLegend" (chartClick)="onChartClicked($event)"[chartType]="lineChartType">
+
         </canvas>
       </div>
 
       <ng-template #general>
         <div class="line_chart">
-          <canvas baseChart [datasets]="lineChartData2" [labels]="lineChartLabels2" [options]="lineChartOptions2"
+          <canvas #baseChart baseChart [datasets]="lineChartData2" [labels]="lineChartLabels2" [options]="lineChartOptions2"
             [legend]="lineChartLegend2" [chartType]="lineChartType2">
           </canvas>
         </div>
@@ -98,8 +99,7 @@
           </agm-circle>
           <div *ngIf="circleClicked">
             <agm-marker *ngFor="let item of vehicles" [label]="item.model" [latitude]="item.position_lat"
-              [longitude]="item.position_lng" (markerClick)="onVehicleChosen(item)"
-              (markerRightClick)="onMarkerRightClick(item)">
+              [longitude]="item.position_lng" (markerClick)="onVehicleChosen(item)">
               <agm-info-window *ngIf="chosenVehicle">
                 <strong>Status: {{ chosenVehicle._battery_id.status }}</strong>
               </agm-info-window>
@@ -160,7 +160,7 @@
               <mat-panel-title>
                 {{ vh.model }}
               </mat-panel-title>
-              <mat-panel-description>
+              <mat-panel-description style="flex: 0 0 auto;">
                 Charge: {{ vh._battery_id.charge }}%
               </mat-panel-description>
             </mat-expansion-panel-header>

@@ -15,4 +15,16 @@ export class GetVehicleService {
     retrieveVehiclesInCluster(cluster_id) {
       return this.webReqService.get('vehicles/cluster/' + cluster_id);
     }
+
+    retrieveParametersOfVehicles(vehicle_id) {
+      return this.webReqService.get('parameters/vehicle/' + vehicle_id);
+    }
+
+    retrieveParametersAtDate(vehicle_id, date) {
+      return this.webReqService.get('parameters/vehicle/' + vehicle_id + '/' + date);
+    }
+
+    retrieveParametersBetweenDates(vehicle_id, date1, date2) {
+      return this.webReqService.get('parameters/vehicle/' + vehicle_id + '/' + date1 + '/' + date2);
+    }
 }
