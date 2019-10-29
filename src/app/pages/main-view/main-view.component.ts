@@ -23,6 +23,7 @@ export class MainViewComponent implements OnInit {
   statistics = false;
   circleVisible = true;
 
+
   // For tests, to be deleted
   lineChartLabels2 = [
     'May',
@@ -56,9 +57,9 @@ export class MainViewComponent implements OnInit {
   chosenClusterbool = false;
 
   // Slider elements
-  min_slider_date = 2016;
-  max_slider_date = 2024;
-  slider_date_value = 2019;
+  min_slider_date = 0;
+  max_slider_date = 5;
+  slider_date_value = 5;
   thumbLabel = true;
 
   // Line chart elements
@@ -70,6 +71,8 @@ export class MainViewComponent implements OnInit {
   lineChartLegend;
   lineChartData = [];
   lineChartOptions;
+  BASELINE = [];
+
 
   // Google map style
   public darkStyle: google.maps.MapTypeStyle[] = [
@@ -226,9 +229,13 @@ export class MainViewComponent implements OnInit {
 
   ngOnInit() {
     this.refreshData();
-    /*this.interval = setInterval(() => {
-      this.refreshData();
-  }, 5000);*/
+    let perf = 100;
+
+    // Creating the values for the baseline
+    for (let month = 0; month < 60; month++) {
+      this.BASELINE.push(perf);
+      perf = perf - (Math.random() * perf) / 100;
+    }
   }
 
   fillCircleColor(circle) {
@@ -347,38 +354,40 @@ export class MainViewComponent implements OnInit {
       .retrieveParametersOfVehicles(vehicle._id)
       .subscribe((response: any) => {
         vhParam = response.parameters;
-        console.log(vhParam);
         return vhParam;
       });
   }
 
   loadVehicleParameterAtDate(vehicles, date) {
     this.lineChartLabels = [];
-    for (let i = 0; i < 5; i++) {
-      this.lineChartLabels.push("" + i);
+    let i;
+    for (i = 0; i < this.slider_date_value; i++) {
+      this.lineChartLabels.push('' + i);
       for (let j = 0; j < 11; j++) {
-        this.lineChartLabels.push("");
+        this.lineChartLabels.push('');
       }
     }
-    console.log(this.lineChartLabels);
+    this.lineChartLabels.push('' + i);
     this.lineChartData = [];
+    this.lineChartData.push({data: this.BASELINE, label: 'Baseline', fill: false, pointRadius: 0});
     for (const vh of vehicles) {
+      const battAge = this.battery_age(date, vh.date_of_creation); // returns current age of battery
+      if ( battAge <= (this.slider_date_value * 12)) {
       const dataset = [];
       this.getVehicleService
         .retrieveParametersAtDate(vh._id, date)
         .subscribe((response: any) => {
-          console.log("date: ", date);
-          console.log('Response: ', response);
-          const battAge = this.battery_age(date, vh.date_of_creation); // returns current age of battery
           for (let i = 0; i < battAge; i++) {
               dataset.push(empty);
           }
           dataset.push(response.parameters[0].performance);
-          console.log(dataset);
           this.lineChartData.push({data: dataset, label: vh.model});
+
           this.statistics = true;
-          console.log(response.parameters[0].performance);
         });
+      } else {
+        console.log('This vehicle is too old, age:', battAge);
+      }
     }
   }
 
