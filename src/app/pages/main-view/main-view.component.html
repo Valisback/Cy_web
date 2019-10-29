@@ -6,7 +6,7 @@
           <button mat-button (click) = "onBackButton()"><mat-icon>arrow_back</mat-icon></button>
       </ng-template>
 
-      <div class="line_chart" *ngIf="statistics; else general">
+      <div class="line_chart" *ngIf="statistics">
           <div class="time_slider" *ngIf="sliderVisible; else backButton">
               <span class="text-small">{{min_slider_date}} year</span><mat-slider  class="slider" [max]="max_slider_date" [min]="min_slider_date" [(ngModel)]="slider_date_value"
                 [thumbLabel]="thumbLabel" (change)="sliderEvent()"></mat-slider><span class="text-small">{{max_slider_date}} years</span>
@@ -17,13 +17,13 @@
         </canvas>
       </div>
 
-      <ng-template #general>
+      <!-- <ng-template #general>
         <div class="line_chart">
           <canvas #baseChart baseChart [datasets]="lineChartData2" [labels]="lineChartLabels2" [options]="lineChartOptions2"
             [legend]="lineChartLegend2" [chartType]="lineChartType2">
           </canvas>
         </div>
-      </ng-template>
+      </ng-template> -->
 
       <!--
         <mat-grid-list *ngIf="statistics" cols="2" rowHeight="2:1">

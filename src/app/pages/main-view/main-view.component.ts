@@ -25,7 +25,7 @@ export class MainViewComponent implements OnInit {
 
 
   // For tests, to be deleted
-  lineChartLabels2 = [
+  /*lineChartLabels2 = [
     'May',
     'June',
     'July',
@@ -43,8 +43,9 @@ export class MainViewComponent implements OnInit {
   lineChartOptions2 = {
     scaleShowVerticalLines: false,
     responsive: true
-  };
+  }; */
   // Imported from server
+  allVehicles;
   vehicles;
   clusters;
   parameters;
@@ -234,12 +235,18 @@ export class MainViewComponent implements OnInit {
   ngOnInit() {
     this.refreshData();
     let perf = 100;
-
+    const view = 'clusterView';
     // Creating the values for the baseline
     for (let month = 0; month <= 60; month++) {
       this.BASELINE.push(perf);
-      perf = perf * ( 1 - Math.random() / 70);
+      perf = perf * ( 1 - Math.random() / 100);
     }
+
+    this.getVehicleService.retrieveVehicles().subscribe((response: any) => {
+      this.allVehicles = response.vehicle_list;
+      this.vehicles = this.allVehicles;
+      this.refreshGraphs(this.allVehicles, view);
+    });
   }
 
   fillCircleColor(circle) {
@@ -354,16 +361,27 @@ export class MainViewComponent implements OnInit {
   }
 
   onMapZoomChange(event) {
-    if (event <= this.GEN_ZOOM) {
+    if (event <= this.GEN_ZOOM && this.chosenClusterbool) {
       this.zoom = event;
       this.circleClicked = false;
       this.circleVisible = true;
-      this.chosenClusterbool = true;
+      this.chosenClusterbool = false;
       this.chosenVehiclebool = false;
       this.statistics = false;
-    } else if (event > this.GEN_ZOOM) {
+      const view = "clusterView";
+      this.refreshGraphs(this.allVehicles, view);
+      this.vehicles = this.allVehicles;
+    } else if (event > this.GEN_ZOOM ) {
+      this.zoom = event;
       this.circleClicked = true;
       this.circleVisible = false;
+    } else if (event <= this.GEN_ZOOM &&  this.circleVisible === false) {
+      this.zoom = event;
+      this.circleVisible = true;
+      this.circleClicked = false;
+
+    } else {
+      this.zoom = event;
     }
   }
 
@@ -411,7 +429,7 @@ export class MainViewComponent implements OnInit {
               dataset.push(empty);
           }
           const lowerThreshold = this.BASELINE[month] * 0.8;
-          const upperThreshold = this.BASELINE[month] * 1.2;
+          const upperThreshold = this.BASELINE[month];
           let pointColor;
           if ( response.parameters[0].performance < lowerThreshold ) {
             pointColor = '#ff0000';
@@ -426,7 +444,7 @@ export class MainViewComponent implements OnInit {
           this.statistics = true;
         });
       } else {
-        console.log('This vehicle is too old, age:', battAge);
+        // nothing happens
       }
     }
 
