@@ -1,6 +1,42 @@
 <body>
   <div class="row" id="wrapper">
-    <mat-card class="column left">
+    <div class = "left_div">
+        <div class="top_cards">
+            <mat-card id="1">
+                <p class = "big_box_text"> <strong> 2536 </strong> </p>
+
+              <p class = "label_text">
+                Vehicles
+              </p>
+
+            </mat-card>
+            <mat-card id="2">
+                <p class = "big_box_text"> <strong> 87% </strong> </p>
+
+              <p class = "label_text">
+                General grade
+              </p>
+
+            </mat-card>
+            <mat-card id="4">
+                <p class = "big_box_text"> <strong> 5483K </strong> </p>
+
+              <p class = "label_text">
+                BPV
+              </p>
+
+            </mat-card>
+            <mat-card id="5" matBadge="6"  matBadgeOverlap="true"  matBadgePosition="before" matBadgeColor="warn">
+                <p class = "big_box_text"> <strong> 6 </strong> </p>
+
+              <p class = "label_text">
+                Battery alerts
+              </p>
+
+            </mat-card>
+          </div>
+    <mat-card class="column left" fxLayout="column">
+        <h3>Projections</h3>
 
       <ng-template #backButton>
           <button mat-button (click) = "onBackButton()"><mat-icon>arrow_back</mat-icon></button>
@@ -59,7 +95,7 @@
     -->
 
       <div *ngIf="chosenClusterbool; else noCluster">
-        <h2>Statistics on {{ chosenCluster.name }} hub</h2>
+        <h3>Statistics on {{ chosenCluster.name }} hub</h3>
       </div>
       <div>
         <ng-template #noCluster>
@@ -81,7 +117,7 @@
       </div>
 
       <ng-template #noVehicle>
-        <h2>Statistics</h2>
+        <h3>Statistics</h3>
         <mat-divider></mat-divider>
 
         <p>
@@ -90,6 +126,8 @@
         </p>
       </ng-template>
     </mat-card>
+  </div>
+
     <div class="right_div">
     <mat-card class="column right" fxLayout="column">
       <div fxFlex="1 1 100%" #map>
@@ -101,7 +139,7 @@
             (circleClick)="onCircleClicked(cl)">
           </agm-circle>
           <div *ngIf="circleClicked">
-            <agm-marker *ngFor="let item of vehicles" [label]="item.model" [latitude]="item.position_lat"
+            <agm-marker *ngFor="let item of vehicles" [latitude]="item.position_lat"
               [longitude]="item.position_lng" (markerClick)="onVehicleChosen(item)">
               <agm-info-window *ngIf="chosenVehicle">
                 <strong>Status: {{ chosenVehicle._battery_id.status }}</strong>
@@ -110,7 +148,8 @@
           </div>
         </agm-map>
       </div>
-      <div class="filters">
+      <h3> Vehicle List</h3>
+      <div class="filters dark-theme-container">
         <h4>Filters:</h4>
         <mat-form-field>
           <mat-label>Name</mat-label>

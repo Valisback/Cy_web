@@ -1,4 +1,4 @@
-<mat-toolbar  style="height: 50px; background-color: #EEEEEE; z-index: 1000;">
+<!--<mat-toolbar  style="height: 50px; background-color: #EEEEEE; z-index: 1000;">
     <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()"
       *ngIf="isHandset$ | async">
       <mat-icon class = " material-icons md-dark" aria-label="Side nav toggle icon">menu</mat-icon>
@@ -8,58 +8,31 @@
     <span class="toolbar-spacer"></span>
     <mat-icon class="right-toolbar-icon material-icons md-dark"  aria-hidden="false" aria-label="alert icon">notification_important</mat-icon>
     <mat-icon class="right-toolbar-icon material-icons md-dark" aria-hidden="false" aria-label="account icon">person</mat-icon>
+  </mat-toolbar>  -->
 
-  </mat-toolbar>
+
 <mat-sidenav-container class="sidenav-container">
   <mat-sidenav #drawer class="sidenav" fixedInViewport [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
     [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="(isHandset$ | async) === false">
-    <mat-toolbar>Menu</mat-toolbar>
-    <mat-nav-list>
-      <a mat-list-item href="/home">Home</a>
-      <a mat-list-item href="/dashboard">Dashboard</a>
-      <a mat-list-item href="/dashboard2">Dashboard2</a>
+    <mat-toolbar>
+        <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()">
+        <mat-icon class = " material-icons md-dark" aria-label="Side nav toggle icon">menu</mat-icon>
+      </button>
+    </mat-toolbar>
+    <mat-nav-list class="mat-list-base">
+        <button type="button" mat-icon-button (click)="drawer.toggle()"><mat-icon class="material-icons md-dark">notification_important</mat-icon></button>
+        <button type="button" mat-icon-button (click)="drawer.toggle()"><mat-icon class="material-icons md-dark">person</mat-icon></button>
+    </mat-nav-list>
+
+    <mat-nav-list class="mat-list-base bottom">
+        <button type="button" mat-icon-button (click)="drawer.toggle()"><mat-icon class="material-icons md-dark">panorama_fish_eye</mat-icon></button>
+        <button type="button" mat-icon-button (click)="drawer.toggle()"><mat-icon class="material-icons md-dark">panorama_fish_eye</mat-icon></button>
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content class="sidenav-content">
 
 
-    <div class="top_cards">
-      <mat-card id="1">
-        <p>
-          Vehicles:
-        </p>
-        <p class = "big_box_text"> <strong> 2536 </strong> </p>
 
-      </mat-card>
-      <mat-card id="2">
-        <p>
-          General grade:
-        </p>
-        <p class = "big_box_text"> <strong> 87% </strong> </p>
-
-      </mat-card>
-      <mat-card id="3" matBadge="4" matBadgeOverlap="true" matBadgePosition="before" matBadgeColor="accent">
-        <p>
-          Actions:
-        </p>
-        <p class = "big_box_text"> <strong> 4 </strong> </p>
-
-      </mat-card>
-      <mat-card id="4">
-        <p>
-          Energy usage:
-        </p>
-        <p class = "big_box_text"> <strong> 5483 kWh </strong> </p>
-
-      </mat-card>
-      <mat-card id="5" matBadge="6"  matBadgeOverlap="true"  matBadgePosition="before" matBadgeColor="warn">
-        <p>
-          Battery alerts:
-        </p>
-        <p class = "big_box_text"> <strong> 6 </strong> </p>
-
-      </mat-card>
-    </div>
     <ng-content></ng-content>
     <!-- Add Content Here -->
   </mat-sidenav-content>

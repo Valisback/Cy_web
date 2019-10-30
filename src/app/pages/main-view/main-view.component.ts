@@ -60,7 +60,7 @@ export class MainViewComponent implements OnInit {
 
   // Slider elements
   min_slider_date = 1;
-  max_slider_date = 5;
+  max_slider_date = 8;
   slider_date_value = 5;
   thumbLabel = true;
 
@@ -236,8 +236,9 @@ export class MainViewComponent implements OnInit {
     this.refreshData();
     let perf = 100;
     const view = 'clusterView';
+    const maxBaseline = this.max_slider_date * 12;
     // Creating the values for the baseline
-    for (let month = 0; month <= 60; month++) {
+    for (let month = 0; month <= maxBaseline; month++) {
       this.BASELINE.push(perf);
       perf = perf * ( 1 - Math.random() / 100);
     }
@@ -317,7 +318,7 @@ export class MainViewComponent implements OnInit {
             },
             ticks : {
               max : 100,
-              min : 0
+              min : 50
           }
           }
         ],

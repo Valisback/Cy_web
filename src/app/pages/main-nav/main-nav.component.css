@@ -1,9 +1,13 @@
 .sidenav-container {
+  display: flex;
+  align-items: stretch;
   height: 100%;
 }
 
 .sidenav {
-  width: 200px;
+  background-color: #283040;
+  border-color: transparent;
+  width: fit-content;
 }
 
 .sidenav .mat-toolbar {
@@ -18,37 +22,38 @@
   padding: 0 14px;
 }
 
+.sidenav-content{
+  height: 100%;
+}
+
+.mat-list-base {
+  padding-top: 8px;
+  display: flex!important;
+  align-items: center!important;
+  flex-direction: column!important;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.bottom{
+  padding-bottom: 16px;
+  width: inherit;
+  position: absolute;
+  bottom: 0;
+}
+
+
 
 .material-icons.md-dark {
-  color: rgba(0, 0, 0, 0.54);
+  background-position: center;
+  padding: 0;
+  color: #ffffff;
 }
 .material-icons.md-dark.md-inactive {
-  color: rgba(0, 0, 0, 0.26);
+  color: #ffffff;
 }
 
 .toolbar-spacer {
   flex: 1 1 auto;
-}
-
-.top_cards {
-  margin: 0;
-  background-color: #eeeeee;
-  padding: 15px;
-  display: flex;
-  justify-content: space-between;
-  height: 100px;
-}
-
-.big_box_text {
-  margin: 5px;
-  font-size: 26px;
-  text-align: center;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-mat-card {
-  width: 15%;
 }
 
 .mat-toolbar.mat-primary {
