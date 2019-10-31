@@ -8,6 +8,7 @@ import * as moment from 'moment';
 import { ChartsModule } from 'ng2-charts';
 import * as Chart from 'chart.js';
 import { empty } from 'rxjs';
+import { all } from 'q';
 
 @Component({
   selector: 'app-main-view',
@@ -15,9 +16,11 @@ import { empty } from 'rxjs';
   styleUrls: ['./main-view.component.css']
 })
 export class MainViewComponent implements OnInit {
-  GEN_ZOOM = 5;
-  latitude = 39.8282;
-  longitude = -98.5795;
+  GEN_ZOOM = 4;
+  GEN_LAT = 39.8282;
+  GEN_LNG = -98.5795;
+  latitude = this.GEN_LAT;
+  longitude = this.GEN_LNG;
   zoom = 3;
   circleClicked = false;
   statistics = false;
@@ -52,6 +55,9 @@ export class MainViewComponent implements OnInit {
   vehicleParameter = []; // Parameters of the vehicle between 2 dates
 
   interval;
+  viewGeneral = true;
+  viewCluster = false;
+  viewVehicle = false;
   sliderVisible = true;
   chosenVehicle;
   chosenCluster;
@@ -253,6 +259,9 @@ export class MainViewComponent implements OnInit {
     }
 
     this.getVehicleService.retrieveVehicles().subscribe((response: any) => {
+      this.viewGeneral = true;
+      this.viewVehicle = false;
+      this.viewCluster = false;
       this.allVehicles = response.vehicle_list;
       this.vehicles = this.allVehicles;
       this.refreshGraphs(this.allVehicles, view);
@@ -270,8 +279,11 @@ export class MainViewComponent implements OnInit {
   }
 
   onVehicleChosen(vehicle) {
-    if ( this.chosenVehicle !== vehicle) {
+    this.viewVehicle = true;
+    this.viewGeneral = false;
+    this.viewCluster = false;
     this.chosenVehicle = vehicle;
+    this.chosenCluster = vehicle.cluster;
     const arrayVehicle = [];
     arrayVehicle[0] = vehicle;
     console.log(vehicle);
@@ -280,11 +292,9 @@ export class MainViewComponent implements OnInit {
     const view = 'vehicleView';
     this.refreshGraphs(arrayVehicle, view);
     this.chosenClusterbool = false;
-    } else {
-      this.onBackButton();
-      this.chosenVehicle = null;
-      this.chosenVehiclebool = false;
-    }
+    this.recenterMap(vehicle.position_lat, vehicle.position_lng);
+    this.zoom = this.GEN_ZOOM + 2;
+
   }
 
   sliderEvent() {
@@ -296,6 +306,9 @@ export class MainViewComponent implements OnInit {
   }
 
   async onCircleClicked(circle) {
+    this.viewCluster = true;
+    this.viewGeneral = false;
+    this.viewVehicle = false;
     this.recenterMap(circle.center_lat, circle.center_lng);
     this.chosenCluster = circle;
     this.chosenClusterbool = true;
@@ -303,7 +316,7 @@ export class MainViewComponent implements OnInit {
     await this.chargeVehicles(circle);
     this.circleClicked = true;
     this.circleVisible = false;
-    this.zoom = 6;
+    this.zoom = this.GEN_ZOOM + 1;
   }
 
   recenterMap(lat, lng) {
@@ -315,9 +328,20 @@ export class MainViewComponent implements OnInit {
     this.lineChartType = 'line';
     const date = new Date();
     if (view === 'clusterView' ) {
+      if ( vehicles === this.allVehicles) {
+        this.viewCluster = false;
+        this.viewGeneral = true;
+      } else {
+        this.viewCluster = true;
+        this.viewGeneral = false;
+      }
+      this.viewVehicle = false;
       this.numberOfVehicles = vehicles.length;
       this.loadVehicleParameterAtDate(vehicles, date);
     } else if (view === 'vehicleView') {
+      this.viewVehicle = true;
+      this.viewGeneral = false;
+      this.viewCluster = false;
       const creationDate = new Date(vehicles[0].date_of_creation);
       this.loadVehicleParameterBetweenDates(vehicles, creationDate, date);
     }
@@ -395,7 +419,12 @@ export class MainViewComponent implements OnInit {
   }
 
   onMapZoomChange(event) {
-    if (event <= this.GEN_ZOOM && this.chosenClusterbool) {
+    console.log('Cluster: ' + this.viewCluster + 'General: ' + this.viewGeneral + 'Vehicle: ' + this.viewVehicle + 'EVENT: ' + event);
+    if (event <= this.GEN_ZOOM && this.viewCluster) {
+      console.log("A");
+      this.viewGeneral = true;
+      this.viewCluster = false;
+      this.viewVehicle =  false;
       this.zoom = event;
       this.circleClicked = false;
       this.circleVisible = true;
@@ -405,16 +434,50 @@ export class MainViewComponent implements OnInit {
       const view = 'clusterView';
       this.refreshGraphs(this.allVehicles, view);
       this.vehicles = this.allVehicles;
-    } else if (event > this.GEN_ZOOM ) {
+    } else if (event <= this.GEN_ZOOM && this.viewVehicle) {
+      console.log("B");
+      this.viewGeneral = true;
+      this.viewCluster = false;
+      this.viewVehicle =  false;
       this.zoom = event;
+      this.circleClicked = false;
+      this.circleVisible = true;
+      this.chosenClusterbool = false;
+      this.chosenVehiclebool = false;
+      this.statistics = false;
+      const view = 'clusterView';
+      this.refreshGraphs(this.allVehicles, view);
+      this.vehicles = this.allVehicles;
+    }  else if (event > this.GEN_ZOOM + 1 && this.viewVehicle) {
+      console.log("C");
+      this.zoom = event;
+      this.viewCluster = false;
+      this.viewVehicle = true;
+      this.viewGeneral = false;
       this.circleClicked = true;
       this.circleVisible = false;
-    } else if (event <= this.GEN_ZOOM &&  this.circleVisible === false) {
+    } else if (event > this.GEN_ZOOM ) {
+      console.log("D");
+      this.zoom = event;
+      this.viewCluster = true;
+      this.viewVehicle = false;
+      this.viewGeneral = false;
+      this.circleClicked = true;
+      this.circleVisible = false;
+      const view = 'clusterView';
+      //this.refreshGraphs(this.vehicles, view);
+
+    } else if (event <= this.GEN_ZOOM &&  this.viewVehicle) {
+      console.log("E");
+      this.viewGeneral = true;
+      this.viewCluster = false;
+      this.viewVehicle = false;
       this.zoom = event;
       this.circleVisible = true;
       this.circleClicked = false;
 
     } else {
+      console.log("F");
       this.zoom = event;
     }
   }
@@ -533,12 +596,10 @@ export class MainViewComponent implements OnInit {
             const upperThreshold = this.BASELINE[i];
             if ( p.performance < lowerThreshold ) {
             pointColor.push('#ff0000');
-            this.criticalBatteries++;
           } else if ( p.performance > upperThreshold ) {
             pointColor.push('#ffffff');
           } else {
             pointColor.push('#ffa500');
-            this.numberOfAlerts++;
           }
             i++;
           }
@@ -552,29 +613,62 @@ export class MainViewComponent implements OnInit {
     const chart = this.chartComponent.chart;
     const chartElement = chart.getElementAtEvent(event.event);
     const view = 'vehicleView';
-
     if (chartElement[0]) {
       const indexClicked = chartElement[0]['_datasetIndex'];
-      const elemClicked = this.lineChartData[indexClicked];
-      const modelElem = elemClicked['label'];
-      this.getVehicleService
-        .retrieveVehicleWithModel(modelElem)
-        .subscribe((response: any) => {
-          this.vehicleParameter = response.vehicle;
-          console.log('VEHICLE PICKED: ', response.vehicle);
-          this.refreshGraphs(response.vehicle, view);
-        });
-      }
+      if (indexClicked != 0) {
+        const elemClicked = this.lineChartData[indexClicked];
+        const modelElem = elemClicked['label'];
+        this.getVehicleService
+          .retrieveVehicleWithModel(modelElem)
+          .subscribe((response: any) => {
+            this.onVehicleChosen(response.vehicle[0]);
+            console.log('VEHICLE PICKED: ', response.vehicle);
+          });
+        }
+    }
   }
 
   onBackButton() {
-    if (!this.sliderVisible) {
-      this.chosenVehicle = null;
-      this.chosenVehiclebool = false;
-      this.sliderVisible = true;
-      const view = 'clusterView';
-      this.refreshGraphs(this.vehicles, view);
+    const view = 'clusterView';
+    if (this.viewVehicle) {
+      if ( this.chosenCluster ) {
+        console.log("BACK FROM Vehicle view w Cluster");
+        this.viewVehicle = false;
+        this.viewCluster = true;
+        this.viewGeneral = false;
+        this.refreshGraphs(this.vehicles, view);
+        this.zoom = this.GEN_ZOOM + 1;
+        this.recenterMap(this.chosenCluster.center_lat, this.chosenCluster.center_lng);
+      } else {
+        console.log("BACK FROM Vehicle view");
+
+        this.viewVehicle = false;
+        this.viewCluster = false;
+        this.viewGeneral = true;
+        this.circleClicked = false;
+        this.circleVisible = true;
+        this.chosenClusterbool = false;
+        this.chosenVehiclebool = false;
+        this.refreshGraphs(this.allVehicles, view);
+        this.vehicles = this.allVehicles;
+        this.recenterMap(this.GEN_LAT, this.GEN_LNG);
+        this.zoom = this.GEN_ZOOM - 1;
+      }
+
       //this.panelOpenState = false;
+    } else if (this.viewCluster) {
+      console.log("BACK FROM Cluster view", this.clusters);
+      this.viewGeneral = true;
+      this.viewCluster = false;
+      this.viewVehicle =  false;
+      this.circleClicked = false;
+      this.circleVisible = true;
+      this.chosenClusterbool = false;
+      this.chosenVehiclebool = false;
+      this.refreshGraphs(this.allVehicles, view);
+      this.vehicles = this.allVehicles;
+      this.zoom = this.GEN_ZOOM - 1;
+      this.recenterMap(this.GEN_LAT, this.GEN_LNG);
     }
 
   }

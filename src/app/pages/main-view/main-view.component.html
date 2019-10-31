@@ -31,7 +31,7 @@
                 <p class = "big_box_text"> <strong> {{numberOfAlerts}} </strong> </p>
 
               <p class = "label_text">
-                Battery alerts
+                Actions
               </p>
 
             </mat-card>
@@ -45,8 +45,8 @@
             </div>
       </ng-template>
 
-      <ng-template #backButtonNslider>
-          <div class="time_slider">
+      <ng-template #backButtonNslider >
+          <div class="time_slider" *ngIf="viewCluster; else OpenbackButton">
               <button class = "backButton" mat-button (click) = "onBackButton()"><mat-icon>arrow_back</mat-icon></button>
               <mat-slider  class="slider" [max]="max_slider_date" [min]="min_slider_date" [(ngModel)]="slider_date_value"
                 [thumbLabel]="thumbLabel" (change)="sliderEvent()"></mat-slider>
@@ -54,8 +54,8 @@
       </ng-template>
 
       <div class="line_chart" *ngIf="statistics; else nostat">
-          <div class="time_slider" *ngIf="sliderVisible; else backButtonNslider">
-              <h4>Projections</h4>
+          <div class="time_slider" *ngIf="viewGeneral; else backButtonNslider">
+              <h4>Portfolio Status</h4>
               <mat-slider  class="slider" [max]="max_slider_date" [min]="min_slider_date" [(ngModel)]="slider_date_value"
                 [thumbLabel]="thumbLabel" (change)="sliderEvent()"></mat-slider>
             </div>
@@ -70,7 +70,7 @@
       </ng-template>
 
 
-      <div *ngIf="chosenClusterbool; else noCluster">
+      <div *ngIf="viewCluster && chosenCluster; else noCluster">
         <h4>Statistics on {{ chosenCluster.name }} hub</h4>
         <mat-tab-group>
             <mat-tab>
@@ -92,7 +92,7 @@
       </div>
       <div>
         <ng-template #noCluster>
-          <div *ngIf="chosenVehiclebool; else noVehicle">
+          <div *ngIf="viewVehicle; else noVehicle">
               <mat-tab-group>
                   <mat-tab>
                     <ng-template mat-tab-label>
@@ -209,7 +209,7 @@
       </div>
 
       <ng-template #noVehicle>
-        <h4>Portfolio Overview</h4>
+        <table style="height: 20px;"></table>
         <div class="data_table">
         <table #dtable class="mytable" >
             <thead>
@@ -259,11 +259,13 @@
         <agm-map [style.height.px]="map.offsetHeight" [latitude]="latitude" [styles]="darkStyle" [gestureHandling]="'greedy'"
           (zoomChange)="onMapZoomChange($event)" [longitude]="longitude" [zoom]="zoom" [disableDefaultUI]="false"
           [zoomControl]="true" [streetViewControl]="false">
-          <agm-circle #circle *ngFor="let cl of clusters" [latitude]="cl.center_lat" [longitude]="cl.center_lng"
-            [radius]="cl.radius" [fillColor]="fillCircleColor(cl)" [visible]="circleVisible"
-            (circleClick)="onCircleClicked(cl)">
-          </agm-circle>
-          <div *ngIf="circleClicked">
+          <div *ngIf="viewGeneral">
+            <agm-circle #circle *ngFor="let cl of clusters" [latitude]="cl.center_lat" [longitude]="cl.center_lng"
+              [radius]="cl.radius" [fillColor]="fillCircleColor(cl)" [visible]="circleVisible"
+              (circleClick)="onCircleClicked(cl)">
+            </agm-circle>
+        </div>
+          <div *ngIf="viewCluster; else displayVehiclePos">
             <agm-marker *ngFor="let item of vehicles" [latitude]="item.position_lat"
               [longitude]="item.position_lng" (markerClick)="onVehicleChosen(item)">
               <agm-info-window *ngIf="chosenVehicle">
@@ -271,6 +273,13 @@
               </agm-info-window>
             </agm-marker>
           </div>
+          <ng-template #displayVehiclePos>
+              <div *ngIf="viewVehicle">
+                  <agm-marker [latitude]="chosenVehicle.position_lat"
+                    [longitude]="chosenVehicle.position_lng" (markerClick)="onVehicleChosen(chosenVehicle)">
+                  </agm-marker>
+                </div>
+          </ng-template>
         </agm-map>
       </div>
       <h4> Vehicle List</h4>
@@ -322,7 +331,7 @@
 
       <div class="list_of_vehicles">
         <mat-accordion class="mat-elevation-z0">
-          <mat-expansion-panel class="vehicle_list" *ngFor="let vh of vehicles" (click)="onVehicleChosen(vh)">
+          <mat-expansion-panel class="vehicle_list" *ngFor="let vh of vehicles" (opened)="onVehicleChosen(vh)">
             <mat-expansion-panel-header>
               <mat-panel-title>
                 {{ vh.model }}
