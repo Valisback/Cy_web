@@ -84,14 +84,21 @@ $mat-dark-theme-background: (
 );
 @include angular-material-theme($theme);
 
-::ng-deep .mat-form-field-underline {
-  display: none;
-}
 
 html, body { height: 100%; }
 
+* {
+  font-family: Arial, Helvetica, sans-serif;
+ }
+
+ p, table {
+   font-size: 12px;
+ }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
+h4{
+  color: #d1dae5;
+}
 .mat-accordion{
   border-color: transparent!important;
 }

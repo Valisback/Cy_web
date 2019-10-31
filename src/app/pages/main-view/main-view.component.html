@@ -1,33 +1,34 @@
+<script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
 <body>
   <div class="row" id="wrapper">
     <div class = "left_div">
         <div class="top_cards">
-            <mat-card id="1">
-                <p class = "big_box_text"> <strong> 2536 </strong> </p>
+            <mat-card id="1" class="mat-elevation-z0">
+                <p class = "big_box_text"> <strong> {{numberOfVehicles}} </strong> </p>
 
               <p class = "label_text">
                 Vehicles
               </p>
 
             </mat-card>
-            <mat-card id="2">
-                <p class = "big_box_text"> <strong> 87% </strong> </p>
+            <mat-card id="2" class="mat-elevation-z0">
+                <p class = "big_box_text"> <strong> {{tcoSavings}} </strong> </p>
 
               <p class = "label_text">
-                General grade
+                TCO Savings
               </p>
 
             </mat-card>
-            <mat-card id="4">
-                <p class = "big_box_text"> <strong> 5483K </strong> </p>
+            <mat-card id="4" class="mat-elevation-z0">
+                <p class = "big_box_text"> <strong> {{criticalBatteries}} </strong> </p>
 
               <p class = "label_text">
-                BPV
+                Critical issues
               </p>
 
             </mat-card>
-            <mat-card id="5" matBadge="6"  matBadgeOverlap="true"  matBadgePosition="before" matBadgeColor="warn">
-                <p class = "big_box_text"> <strong> 6 </strong> </p>
+            <mat-card id="5" class="mat-elevation-z0" matBadge="6"  matBadgeOverlap="true"  matBadgePosition="before" matBadgeColor="warn">
+                <p class = "big_box_text"> <strong> {{numberOfAlerts}} </strong> </p>
 
               <p class = "label_text">
                 Battery alerts
@@ -35,17 +36,28 @@
 
             </mat-card>
           </div>
-    <mat-card class="column left" fxLayout="column">
-        <h3>Projections</h3>
+    <mat-card class="column left mat-elevation-z0" fxLayout="column">
 
-      <ng-template #backButton>
-          <button mat-button (click) = "onBackButton()"><mat-icon>arrow_back</mat-icon></button>
+
+      <ng-template #OpenbackButton >
+          <div class="time_slider">
+              <button class = "backButton" mat-button (click) = "onBackButton()"><mat-icon>arrow_back</mat-icon></button>
+            </div>
       </ng-template>
 
-      <div class="line_chart" *ngIf="statistics">
-          <div class="time_slider" *ngIf="sliderVisible; else backButton">
-              <span class="text-small">{{min_slider_date}} year</span><mat-slider  class="slider" [max]="max_slider_date" [min]="min_slider_date" [(ngModel)]="slider_date_value"
-                [thumbLabel]="thumbLabel" (change)="sliderEvent()"></mat-slider><span class="text-small">{{max_slider_date}} years</span>
+      <ng-template #backButtonNslider>
+          <div class="time_slider">
+              <button class = "backButton" mat-button (click) = "onBackButton()"><mat-icon>arrow_back</mat-icon></button>
+              <mat-slider  class="slider" [max]="max_slider_date" [min]="min_slider_date" [(ngModel)]="slider_date_value"
+                [thumbLabel]="thumbLabel" (change)="sliderEvent()"></mat-slider>
+            </div>
+      </ng-template>
+
+      <div class="line_chart" *ngIf="statistics; else nostat">
+          <div class="time_slider" *ngIf="sliderVisible; else backButtonNslider">
+              <h4>Projections</h4>
+              <mat-slider  class="slider" [max]="max_slider_date" [min]="min_slider_date" [(ngModel)]="slider_date_value"
+                [thumbLabel]="thumbLabel" (change)="sliderEvent()"></mat-slider>
             </div>
         <canvas #lineChart="base-chart" baseChart [datasets]="lineChartData" [labels]="lineChartLabels" [options]="lineChartOptions"
           [legend]="lineChartLegend" (chartClick)="onChartClicked($event)"[chartType]="lineChartType">
@@ -53,54 +65,134 @@
         </canvas>
       </div>
 
-      <!-- <ng-template #general>
-        <div class="line_chart">
-          <canvas #baseChart baseChart [datasets]="lineChartData2" [labels]="lineChartLabels2" [options]="lineChartOptions2"
-            [legend]="lineChartLegend2" [chartType]="lineChartType2">
-          </canvas>
-        </div>
-      </ng-template> -->
+      <ng-template #nostat >
+        <table style="height: 50%;"></table>
+      </ng-template>
 
-      <!--
-        <mat-grid-list *ngIf="statistics" cols="2" rowHeight="2:1">
-        <mat-grid-tile>
-          <div class="line_chart" style="display: block">
-            <canvas baseChart [datasets]="lineChartData" [labels]="lineChartLabels" [options]="lineChartOptions"
-              [legend]="lineChartLegend" [chartType]="lineChartType">
-            </canvas>
-          </div>
-        </mat-grid-tile>
-        <mat-grid-tile>
-          <div class="line_chart" style="display: block">
-            <canvas baseChart [datasets]="polarChartData" [labels]="polarChartLabels" [options]="polarChartOptions"
-              [legend]="polarChartLegend" [chartType]="polarChartType">
-            </canvas>
-          </div>
-        </mat-grid-tile>
-        <mat-grid-tile>
-          <div class="line_chart" style="display: block">
-            <canvas baseChart [datasets]="doughnutChartData" [labels]="doughnutChartLabels"
-              [options]="doughnutChartOptions" [legend]="doughnutChartLegend" [chartType]="doughnutChartType">
-            </canvas>
-          </div>
-        </mat-grid-tile>
-        <mat-grid-tile>
-          <div class="line_chart" style="display: block">
-            <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions"
-              [legend]="barChartLegend" [chartType]="barChartType">
-            </canvas>
-          </div>
-        </mat-grid-tile>
-      </mat-grid-list>
-    -->
 
       <div *ngIf="chosenClusterbool; else noCluster">
-        <h3>Statistics on {{ chosenCluster.name }} hub</h3>
+        <h4>Statistics on {{ chosenCluster.name }} hub</h4>
+        <mat-tab-group>
+            <mat-tab>
+              <ng-template mat-tab-label>
+                <mat-icon style="padding-right: 5px" class="example-tab-icon">battery_unknown</mat-icon>
+                Satus
+              </ng-template>
+              Content 1
+            </mat-tab>
+
+            <mat-tab>
+              <ng-template mat-tab-label>
+                <mat-icon style="padding-right: 5px" class="example-tab-icon">build</mat-icon>
+                Intervention
+              </ng-template>
+              Content 2
+            </mat-tab>
+          </mat-tab-group>
       </div>
       <div>
         <ng-template #noCluster>
           <div *ngIf="chosenVehiclebool; else noVehicle">
-            <h3>Information on {{ chosenVehicle.model }}</h3>
+              <mat-tab-group>
+                  <mat-tab>
+                    <ng-template mat-tab-label>
+                      <mat-icon style="padding-right: 5px" class="example-tab-icon">battery_unknown</mat-icon>
+                      Satus
+                    </ng-template>
+                    <div class="status_content">
+                      <table>
+                            <tbody>
+                              <tr>
+                                <td><strong>Model:</strong> {{chosenVehicle.model}}</td>
+                                <td><strong>Age:</strong>  //insert here</td>
+                              </tr>
+                              <tr>
+                                <td><strong>Current Charge:</strong> {{ chosenVehicle._battery_id.charge }}%</td>
+                                <td><strong>Place:</strong> //insert position here</td>
+                              </tr>
+                              <tr>
+                                <td><strong>Speed of charge:</strong> //insert here</td>
+                                <td><strong>Average T:</strong> //insert here</td>
+                              </tr>
+                              <tr>
+                                  <td><strong>Number of miles:</strong> //insert here</td>
+                                  <td><strong>Type of route:</strong> //insert here</td>
+                                </tr>
+                            </tbody>
+                      </table>
+                      <div class="status_cards">
+                          <mat-card id="1" class="mat-elevation-z0">
+                              <p class = "big_box_text"> <strong> {{numberOfVehicles}} </strong> </p>
+
+                            <p class = "label_text">
+                              Vehicles
+                            </p>
+
+                          </mat-card>
+                          <mat-card id="2" class="mat-elevation-z0">
+                              <p class = "big_box_text"> <strong> {{tcoSavings}} </strong> </p>
+
+                            <p class = "label_text">
+                              TCO Savings
+                            </p>
+
+                          </mat-card>
+                          <mat-card id="4" class="mat-elevation-z0">
+                              <p class = "big_box_text"> <strong> {{criticalBatteries}} </strong> </p>
+
+                            <p class = "label_text">
+                              Critical issues
+                            </p>
+
+                          </mat-card>
+                          <mat-card id="5" class="mat-elevation-z0" matBadge="6"  matBadgeOverlap="true"  matBadgePosition="before" matBadgeColor="warn">
+                              <p class = "big_box_text"> <strong> {{numberOfAlerts}} </strong> </p>
+
+                            <p class = "label_text">
+                              Battery alerts
+                            </p>
+
+                          </mat-card>
+                        </div>
+                    </div>
+                  </mat-tab>
+
+                  <mat-tab>
+                    <ng-template mat-tab-label>
+                      <mat-icon style="padding-right: 5px" class="example-tab-icon">build</mat-icon>
+                      Intervention
+                    </ng-template>
+                    <div class="status_content">
+                    <table #dtable class="mytable" >
+                        <thead>
+                          <tr>
+                            <th>Options</th>
+                            <th>TCO Impact</th>
+                            <th>Confirm</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <th class="mdl-data-table__cell--non-numeric">Option 1 here</th>
+                            <td>+20%</td>
+                            <td><button mat-button><mat-icon>done</mat-icon></button></td>
+                          </tr>
+                          <tr>
+                              <th class="mdl-data-table__cell--non-numeric">Option 2 here</th>
+                              <td>+12%</td>
+                              <td><button mat-button><mat-icon>done</mat-icon></button></td>
+                          </tr>
+                          <tr>
+                              <th class="mdl-data-table__cell--non-numeric">Option 3 here</th>
+                              <td>+23%</td>
+                              <td><button mat-button><mat-icon>done</mat-icon></button></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </mat-tab>
+                </mat-tab-group>
+            <!--<h4>Information on {{ chosenVehicle.model }}</h4>
             <mat-list>
               <mat-list-item>
                 Battery Model: {{ chosenVehicle._battery_id.name }} | Status:
@@ -111,25 +203,58 @@
               <mat-list-item>
                 Life-Span: {{ chosenVehicle._battery_id.life_span }}%
               </mat-list-item>
-            </mat-list>
+            </mat-list>-->
           </div>
         </ng-template>
       </div>
 
       <ng-template #noVehicle>
-        <h3>Statistics</h3>
-        <mat-divider></mat-divider>
-
-        <p>
-          click a vehicle (on the map or left panel) to have more information
-          about it
-        </p>
+        <h4>Portfolio Overview</h4>
+        <div class="data_table">
+        <table #dtable class="mytable" >
+            <thead>
+              <tr>
+                <th class="mdl-data-table__cell--non-numeric"></th>
+                <th>Portfolio Average</th>
+                <th>Top 20%</th>
+                <th>Bottom 20%</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th class="mdl-data-table__cell--non-numeric">Battery Health</th>
+                <td>+2%</td>
+                <td>+10%</td>
+                <td>-10%</td>
+              </tr>
+              <tr>
+                <th class="mdl-data-table__cell--non-numeric">Battery Value</th>
+                <td>10K (+3%)</td>
+                <td>14K (+10%)</td>
+                <td>8K (-7%)</td>
+              </tr>
+              <tr>
+                <th class="mdl-data-table__cell--non-numeric">Energy Cost per mile</th>
+                <td>11 cents/mi (0%)</td>
+                <td>8 cents/mi (-20%)</td>
+                <td>13 cents/mi (+25%)</td>
+              </tr>
+              <tr class="lastrow">
+                  <th class="mdl-data-table__cell--non-numeric">Grid Service revenue</th>
+                  <td>8K (+2%)</td>
+                  <td>10K (+15%)</td>
+                  <td>5K (-30%)</td>
+                </tr>
+            </tbody>
+          </table>
+        </div>
       </ng-template>
+
     </mat-card>
   </div>
 
     <div class="right_div">
-    <mat-card class="column right" fxLayout="column">
+    <mat-card class="column right mat-elevation-z0" fxLayout="column">
       <div fxFlex="1 1 100%" #map>
         <agm-map [style.height.px]="map.offsetHeight" [latitude]="latitude" [styles]="darkStyle" [gestureHandling]="'greedy'"
           (zoomChange)="onMapZoomChange($event)" [longitude]="longitude" [zoom]="zoom" [disableDefaultUI]="false"
@@ -148,9 +273,9 @@
           </div>
         </agm-map>
       </div>
-      <h3> Vehicle List</h3>
+      <h4> Vehicle List</h4>
       <div class="filters dark-theme-container">
-        <h4>Filters:</h4>
+        <h4>Filters</h4>
         <mat-form-field>
           <mat-label>Name</mat-label>
           <mat-select>
@@ -196,7 +321,7 @@
       </div>
 
       <div class="list_of_vehicles">
-        <mat-accordion>
+        <mat-accordion class="mat-elevation-z0">
           <mat-expansion-panel class="vehicle_list" *ngFor="let vh of vehicles" (click)="onVehicleChosen(vh)">
             <mat-expansion-panel-header>
               <mat-panel-title>

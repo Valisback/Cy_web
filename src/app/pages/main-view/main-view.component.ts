@@ -57,6 +57,13 @@ export class MainViewComponent implements OnInit {
   chosenCluster;
   chosenVehiclebool = false;
   chosenClusterbool = false;
+  panelOpenState;
+
+  // Elements displayed on top cards
+  numberOfVehicles;
+  tcoSavings;
+  criticalBatteries;
+  numberOfAlerts;
 
   // Slider elements
   min_slider_date = 1;
@@ -77,6 +84,8 @@ export class MainViewComponent implements OnInit {
   lineChartData = [];
   lineChartOptions;
   BASELINE = [];
+
+  displayedColumns: string[] = ['position', 'name', 'weight'];
 
 
   // Google map style
@@ -261,15 +270,21 @@ export class MainViewComponent implements OnInit {
   }
 
   onVehicleChosen(vehicle) {
+    if ( this.chosenVehicle !== vehicle) {
     this.chosenVehicle = vehicle;
     const arrayVehicle = [];
     arrayVehicle[0] = vehicle;
     console.log(vehicle);
     // this.getVehicleParameterBetweenDates(vehicle, this.slider_date_value, this.slider_date_value + 1);
     this.chosenVehiclebool = true;
-    const view = "vehicleView";
+    const view = 'vehicleView';
     this.refreshGraphs(arrayVehicle, view);
     this.chosenClusterbool = false;
+    } else {
+      this.onBackButton();
+      this.chosenVehicle = null;
+      this.chosenVehiclebool = false;
+    }
   }
 
   sliderEvent() {
@@ -300,6 +315,7 @@ export class MainViewComponent implements OnInit {
     this.lineChartType = 'line';
     const date = new Date();
     if (view === 'clusterView' ) {
+      this.numberOfVehicles = vehicles.length;
       this.loadVehicleParameterAtDate(vehicles, date);
     } else if (view === 'vehicleView') {
       const creationDate = new Date(vehicles[0].date_of_creation);
@@ -307,26 +323,42 @@ export class MainViewComponent implements OnInit {
     }
 
     this.lineChartOptions = {
+      scaleFontColor: '#8c99af',
       scaleShowVerticalLines: false,
       responsive: true,
+      maintainAspectRatio: false,
       scales: {
         yAxes: [
           {
             scaleLabel: {
               display: true,
               labelString: 'Performance (in %)',
+              fontColor: '#8c99af'
             },
             ticks : {
               max : 100,
-              min : 50
-          }
+              min : 50,
+              fontColor: '#8c99af'
+          },
+          gridLines: {
+            display: true,
+            color: '#8c99af'
+          },
           }
         ],
         xAxes: [{
+          scaleLabel: {
+            display: true,
+            fontColor: '#8c99af'
+          },
           ticks: {
               maxTicksLimit: 10,
-              autoSkip: false
-          }
+              autoSkip: false,
+              fontColor: '#8c99af'
+          },
+          gridLines: {
+            display: false
+          },
       }]
       },
       legend: {
@@ -337,7 +369,8 @@ export class MainViewComponent implements OnInit {
             }
             return false;
             // return true or false based on legendItem's datasetIndex (legendItem.datasetIndex)
-          }
+          },
+          fontColor: '#728098'
         }
       }
     };
@@ -369,7 +402,7 @@ export class MainViewComponent implements OnInit {
       this.chosenClusterbool = false;
       this.chosenVehiclebool = false;
       this.statistics = false;
-      const view = "clusterView";
+      const view = 'clusterView';
       this.refreshGraphs(this.allVehicles, view);
       this.vehicles = this.allVehicles;
     } else if (event > this.GEN_ZOOM ) {
@@ -407,6 +440,8 @@ export class MainViewComponent implements OnInit {
   }
 
   loadVehicleParameterAtDate(vehicles, date) {
+    this.criticalBatteries = 0;
+    this.numberOfAlerts = 0;
     this.lineChartLabels = [];
     let i;
     for (i = 0; i < this.slider_date_value; i++) {
@@ -417,7 +452,8 @@ export class MainViewComponent implements OnInit {
     }
     this.lineChartLabels.push('' + i);
     this.lineChartData = [];
-    this.lineChartData.push({data: this.BASELINE, label: 'Baseline', fill: false, pointRadius: 0});
+    // tslint:disable-next-line: max-line-length
+    this.lineChartData.push({data: this.BASELINE, label: 'Baseline', backgroundColor: "#283040", borderColor: '#0794ff', fill: false, pointRadius: 0});
     for (const vh of vehicles) {
       const battAge = this.battery_age(date, vh.date_of_creation); // returns current age of battery
       if ( battAge <= (this.slider_date_value * 12)) {
@@ -434,10 +470,12 @@ export class MainViewComponent implements OnInit {
           let pointColor;
           if ( response.parameters[0].performance < lowerThreshold ) {
             pointColor = '#ff0000';
+            this.criticalBatteries++;
           } else if ( response.parameters[0].performance > upperThreshold ) {
-            pointColor = '#00ff00';
+            pointColor = '#ffffff';
           } else {
             pointColor = '#ffa500';
+            this.numberOfAlerts++;
           }
           dataset.push(response.parameters[0].performance);
           this.lineChartData.push({data: dataset, label: vh.model, pointBackgroundColor: pointColor});
@@ -479,15 +517,32 @@ export class MainViewComponent implements OnInit {
     }
     this.lineChartLabels.push('' + i);
     this.lineChartData = [];
+    // tslint:disable-next-line: max-line-length
+    this.lineChartData.push({data: this.BASELINE, label: 'Baseline', backgroundColor: "#283040", borderColor: '#0794ff', fill: false, pointRadius: 0});
     const dataset = [];
     this.getVehicleService
         .retrieveParametersBetweenDates(vehicle[0]._id, date1, date2)
         .subscribe((response: any) => {
           this.vehicleParameter = response.parameters;
+          let i = 0;
+          const pointColor = [];
+
           for (const p of this.vehicleParameter) {
             dataset.push(p.performance);
+            const lowerThreshold = this.BASELINE[i] * 0.8;
+            const upperThreshold = this.BASELINE[i];
+            if ( p.performance < lowerThreshold ) {
+            pointColor.push('#ff0000');
+            this.criticalBatteries++;
+          } else if ( p.performance > upperThreshold ) {
+            pointColor.push('#ffffff');
+          } else {
+            pointColor.push('#ffa500');
+            this.numberOfAlerts++;
           }
-          this.lineChartData.push({ data: dataset, label: vehicle[0].model + ' details'});
+            i++;
+          }
+          this.lineChartData.push({ data: dataset, label: vehicle[0].model + ' details', fill: false, pointBackgroundColor: pointColor});
           this.statistics = true;
         });
     this.sliderVisible = false;
@@ -513,9 +568,14 @@ export class MainViewComponent implements OnInit {
   }
 
   onBackButton() {
-    this.sliderVisible = true;
-    const view = 'clusterView';
-    this.refreshGraphs(this.vehicles, view);
+    if (!this.sliderVisible) {
+      this.chosenVehicle = null;
+      this.chosenVehiclebool = false;
+      this.sliderVisible = true;
+      const view = 'clusterView';
+      this.refreshGraphs(this.vehicles, view);
+      //this.panelOpenState = false;
+    }
 
   }
 }

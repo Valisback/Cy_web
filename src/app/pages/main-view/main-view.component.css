@@ -52,6 +52,7 @@ html,body {
   color: #ffffff;
   flex-grow : 1;
   padding:10px;
+  padding-bottom: 0;
   width: 100%;
   height: 100%;
 }
@@ -64,7 +65,7 @@ html,body {
   height: 100%;
 }
 
-.right h3{
+.right h4{
   padding-left: 10px;
   margin-top: 10px;
   margin-bottom: 0;
@@ -110,7 +111,7 @@ html,body {
 
 .line_chart{
   width: 100%;
-  height: fit-content;
+  height: 50%;
 }
 
 /* Clear floats after the columns */
@@ -139,7 +140,9 @@ html,body {
   margin: 0;
   padding: 0;
   width: 100%;
+  font-size: 14px;
   display: flex;
+  align-content: center;
   justify-content: space-around;
   height: fit-content;
 }
@@ -148,24 +151,35 @@ html,body {
 mat-form-field{
   width: 20%;
 }
-.h4{
-  margin: 0px;
+.filters h4{
+  padding-top: 7px;
+  color: #ffffff;
 }
 
 .time_slider{
+  padding: 10px;
   display: flex;
   vertical-align: middle;
-  height: 48px;
-  float: right;
+  height: fit-content;
+  width: 100%;
 }
 
+.time_slider h4{
+  margin-top: 0;
+  padding-left: 10px;
+  position: absolute;
+  left:0;
+}
 .text-small{
   font-size: small;
 }
 
 
 .slider{
+  position: absolute;
+  right:0;
   padding: 0;
+  padding-bottom: 10px;
   padding-left: 8px;
 }
 
@@ -173,21 +187,35 @@ mat-form-field{
   border-color: transparent;
   position: absolute;
   width: 100%;
+  font-size: 9px;
   top: 450px;
   bottom: 0;
   overflow-y:auto;
 }
 
+.vehicle_list{
+  font-size: 12px;
+  border-bottom: tomato!important;
+}
 mat-accordion
 mat-expansion-panel
 mat-expansion-panel-header
 {
+  border-top: 1.5px solid #252a39!important;
+
+  font-size: 12px;
   background-color: #283040;
   background: #283040;
   color: #ffffff!important;
 }
 .mat-expansion-panel-header-title{
   color: #ffffff;
+}
+
+.backButton{
+  position: absolute;
+  top:0;
+  left:0
 }
 
 .mat-expansion-panel-header-description{
@@ -205,14 +233,122 @@ mat-expansion-panel-header
   background: #2b3548;
 }
 
+
+
+
+.mytable tr{
+  line-height: 45px;
+  border-top: 1.5px solid #283040;
+  border-bottom: 1.5px solid #4b5468;
+  background-color: #252a39;
+}
+
+.mytable th:first-child{
+  padding-left:15px;
+}
+
+.mytable > thead > tr > th{
+  color:white;
+}
+
+.mytable > tbody> tr:last-child {
+  border-bottom: none;
+}
+
+.mytable{
+  width: 100%;
+  text-align: left;
+  color: white;
+  border-collapse:collapse;
+
+}
+
+.mytable > tbody > tr > th{
+ padding-left: 15px;
+}
+
+.data_table{
+  width: 100%;
+}
+.mytable td {
+  color: #d1dae5;
+}
+
 .mat-option,
 .mat-option-ripple mat-ripple
  {
   background-color: #2b3548!important;
 }
 
+.status_content, .status_content mat-list-item {
+  font-size: 12px;
+}
+
+.status_content table {
+  width: 100%;
+  text-align: left;
+  color: white;
+  border-collapse:collapse;
+}
+
+
+.status_content table tr td:first-child {
+  padding-left:15px;
+}
+
+.status_content strong{
+  color: #ffffff;
+}
+
+.status_content tr{
+  color: #d1dae5;
+  line-height: 45px;
+  border-top: 1.5px solid #283040;
+  border-bottom: 1.5px solid #4b5468;
+  background-color: #252a39;
+}
+.status_cards {
+  margin: 0;
+  background-color: #4b5468;
+  padding:0;
+  display: flex;
+  justify-content: space-between;
+  height: 70px;
+}
+
+.status_cards p{
+  margin: 5px;
+}
+.big_box_text {
+  margin: 5px;
+  font-size: 22px;
+  text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.label_text {
+  margin: 5px;
+  position: absolute;
+  bottom: 0;
+  text-align: left;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.status_cards mat-card {
+  background-color: #252a39;
+  color: #ffffff;
+  height: 100%;
+  padding: 5px;
+  width: 24.8%;
+}
 agm-map{
   margin: 0%;
   height: 360px;
   width: 100%;
+}
+
+agm-map > div {
+  border-radius: 10px;
 }
