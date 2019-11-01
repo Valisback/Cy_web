@@ -7,8 +7,8 @@ import { MainPageComponent } from './pages/main-page/main-page.component';
 
 const routes: Routes = [
   { path: 'dashboard2', component: MainViewComponent},
-  { path: 'home', component: MainPageComponent},
-  { path: 'dashboard', component: DashboardComponent}
+  { path: 'home', component: MainViewComponent},
+  { path: 'dashboard', component: MainViewComponent}
 ];
 
 @NgModule({

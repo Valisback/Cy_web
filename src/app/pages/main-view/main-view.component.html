@@ -2,6 +2,9 @@
 <body>
   <div class="row" id="wrapper">
     <div class = "left_div">
+      <div class="logo_div">
+        <img src="assets/img/Panasonic_CY_logo.png" class="logo">
+      </div>
         <div class="top_cards">
             <mat-card id="1" class="mat-elevation-z0">
                 <p class = "big_box_text"> <strong> {{numberOfVehicles}} </strong> </p>
@@ -48,16 +51,17 @@
       <ng-template #backButtonNslider >
           <div class="time_slider" *ngIf="viewCluster; else OpenbackButton">
               <button class = "backButton" mat-button (click) = "onBackButton()"><mat-icon>arrow_back</mat-icon></button>
+              <label class="legend_left">{{min_slider_date}} </label>
               <mat-slider  class="slider" [max]="max_slider_date" [min]="min_slider_date" [(ngModel)]="slider_date_value"
-                [thumbLabel]="thumbLabel" (change)="sliderEvent()"></mat-slider>
+                [thumbLabel]="thumbLabel" (change)="sliderEvent()"></mat-slider><label class="legend_right">{{max_slider_date}} </label>
             </div>
       </ng-template>
 
       <div class="line_chart" *ngIf="statistics; else nostat">
           <div class="time_slider" *ngIf="viewGeneral; else backButtonNslider">
               <h4>Portfolio Status</h4>
-              <mat-slider  class="slider" [max]="max_slider_date" [min]="min_slider_date" [(ngModel)]="slider_date_value"
-                [thumbLabel]="thumbLabel" (change)="sliderEvent()"></mat-slider>
+              <label class="legend_left">{{min_slider_date}} </label><mat-slider  class="slider" [max]="max_slider_date" [min]="min_slider_date" [(ngModel)]="slider_date_value"
+                [thumbLabel]="thumbLabel" (change)="sliderEvent()"></mat-slider><label class="legend_right">{{max_slider_date}} </label>
             </div>
         <canvas #lineChart="base-chart" baseChart [datasets]="lineChartData" [labels]="lineChartLabels" [options]="lineChartOptions"
           [legend]="lineChartLegend" (chartClick)="onChartClicked($event)"[chartType]="lineChartType">
@@ -69,34 +73,11 @@
         <table style="height: 50%;"></table>
       </ng-template>
 
-
-      <div *ngIf="viewCluster && chosenCluster; else noCluster">
-        <h4>Statistics on {{ chosenCluster.name }} hub</h4>
-        <mat-tab-group>
-            <mat-tab>
-              <ng-template mat-tab-label>
-                <mat-icon style="padding-right: 5px" class="example-tab-icon">battery_unknown</mat-icon>
-                Satus
-              </ng-template>
-              Content 1
-            </mat-tab>
-
-            <mat-tab>
-              <ng-template mat-tab-label>
-                <mat-icon style="padding-right: 5px" class="example-tab-icon">build</mat-icon>
-                Intervention
-              </ng-template>
-              Content 2
-            </mat-tab>
-          </mat-tab-group>
-      </div>
-      <div>
-        <ng-template #noCluster>
           <div *ngIf="viewVehicle; else noVehicle">
               <mat-tab-group>
                   <mat-tab>
                     <ng-template mat-tab-label>
-                      <mat-icon style="padding-right: 5px" class="example-tab-icon">battery_unknown</mat-icon>
+                      <mat-icon style="margin-right: 8px" class="example-tab-icon">battery_unknown</mat-icon>
                       Satus
                     </ng-template>
                     <div class="status_content">
@@ -159,7 +140,7 @@
 
                   <mat-tab>
                     <ng-template mat-tab-label>
-                      <mat-icon style="padding-right: 5px" class="example-tab-icon">build</mat-icon>
+                      <mat-icon style="margin-right: 8px" class="example-tab-icon">build</mat-icon>
                       Intervention
                     </ng-template>
                     <div class="status_content">
@@ -205,8 +186,6 @@
               </mat-list-item>
             </mat-list>-->
           </div>
-        </ng-template>
-      </div>
 
       <ng-template #noVehicle>
         <table style="height: 20px;"></table>

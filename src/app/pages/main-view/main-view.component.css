@@ -8,6 +8,16 @@ html,body {
   display: inline-block;
 }
 
+.logo_div{
+  width: 150px;
+  padding-bottom: 10px;
+}
+
+.logo{
+  display: block;
+  width: 100%;
+  height: auto;
+}
 .top_cards {
   margin: 0;
   padding-bottom: 15px;
@@ -174,13 +184,24 @@ mat-form-field{
   font-size: small;
 }
 
+.legend_left, .legend_right{
+  position: absolute;
+  right: 0;
+  font-size: 11px;
+  padding-bottom: 8px;
+  color: #8c99af;
+}
 
-.slider{
+.slider, .legend_right{
   position: absolute;
   right:0;
   padding: 0;
   padding-bottom: 10px;
   padding-left: 8px;
+}
+
+.legend_left{
+  padding-right: 118px;
 }
 
 .list_of_vehicles{
@@ -313,7 +334,7 @@ mat-expansion-panel-header
   padding:0;
   display: flex;
   justify-content: space-between;
-  height: 70px;
+  height: 60px;
 }
 
 .status_cards p{

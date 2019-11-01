@@ -421,7 +421,6 @@ export class MainViewComponent implements OnInit {
   onMapZoomChange(event) {
     console.log('Cluster: ' + this.viewCluster + 'General: ' + this.viewGeneral + 'Vehicle: ' + this.viewVehicle + 'EVENT: ' + event);
     if (event <= this.GEN_ZOOM && this.viewCluster) {
-      console.log("A");
       this.viewGeneral = true;
       this.viewCluster = false;
       this.viewVehicle =  false;
@@ -430,12 +429,10 @@ export class MainViewComponent implements OnInit {
       this.circleVisible = true;
       this.chosenClusterbool = false;
       this.chosenVehiclebool = false;
-      this.statistics = false;
       const view = 'clusterView';
       this.refreshGraphs(this.allVehicles, view);
       this.vehicles = this.allVehicles;
     } else if (event <= this.GEN_ZOOM && this.viewVehicle) {
-      console.log("B");
       this.viewGeneral = true;
       this.viewCluster = false;
       this.viewVehicle =  false;
@@ -444,12 +441,10 @@ export class MainViewComponent implements OnInit {
       this.circleVisible = true;
       this.chosenClusterbool = false;
       this.chosenVehiclebool = false;
-      this.statistics = false;
       const view = 'clusterView';
       this.refreshGraphs(this.allVehicles, view);
       this.vehicles = this.allVehicles;
     }  else if (event > this.GEN_ZOOM + 1 && this.viewVehicle) {
-      console.log("C");
       this.zoom = event;
       this.viewCluster = false;
       this.viewVehicle = true;
@@ -457,7 +452,6 @@ export class MainViewComponent implements OnInit {
       this.circleClicked = true;
       this.circleVisible = false;
     } else if (event > this.GEN_ZOOM ) {
-      console.log("D");
       this.zoom = event;
       this.viewCluster = true;
       this.viewVehicle = false;
@@ -468,7 +462,6 @@ export class MainViewComponent implements OnInit {
       //this.refreshGraphs(this.vehicles, view);
 
     } else if (event <= this.GEN_ZOOM &&  this.viewVehicle) {
-      console.log("E");
       this.viewGeneral = true;
       this.viewCluster = false;
       this.viewVehicle = false;
@@ -477,7 +470,6 @@ export class MainViewComponent implements OnInit {
       this.circleClicked = false;
 
     } else {
-      console.log("F");
       this.zoom = event;
     }
   }
@@ -518,6 +510,7 @@ export class MainViewComponent implements OnInit {
     // tslint:disable-next-line: max-line-length
     this.lineChartData.push({data: this.BASELINE, label: 'Baseline', backgroundColor: "#283040", borderColor: '#0794ff', fill: false, pointRadius: 0});
     for (const vh of vehicles) {
+      console.log(vh);
       const battAge = this.battery_age(date, vh.date_of_creation); // returns current age of battery
       if ( battAge <= (this.slider_date_value * 12)) {
       const dataset = [];
@@ -531,6 +524,7 @@ export class MainViewComponent implements OnInit {
           const lowerThreshold = this.BASELINE[month] * 0.8;
           const upperThreshold = this.BASELINE[month];
           let pointColor;
+          console.log(response);
           if ( response.parameters[0].performance < lowerThreshold ) {
             pointColor = '#ff0000';
             this.criticalBatteries++;
