@@ -97,141 +97,277 @@ export class MainViewComponent implements OnInit {
   // Google map style
   public darkStyle: google.maps.MapTypeStyle[] = [
     {
-      featureType: 'all',
-      elementType: 'labels.text.fill',
-      stylers: [
-        {
-          color: '#ffffff'
-        }
-      ]
+        'featureType': 'all',
+        'elementType': 'geometry',
+        'stylers': [
+            {
+                'color': '#63b5e5'
+            }
+        ]
     },
     {
-      featureType: 'all',
-      elementType: 'labels.text.stroke',
-      stylers: [
-        {
-          color: '#000000'
-        },
-        {
-          lightness: 13
-        }
-      ]
+        'featureType': 'all',
+        'elementType': 'labels.text.fill',
+        'stylers': [
+            {
+                'gamma': 0.01
+            },
+            {
+                'lightness': 20
+            }
+        ]
     },
     {
-      featureType: 'administrative',
-      elementType: 'geometry.fill',
-      stylers: [
-        {
-          color: '#000000'
-        }
-      ]
+        'featureType': 'all',
+        'elementType': 'labels.text.stroke',
+        'stylers': [
+            {
+                'saturation': -31
+            },
+            {
+                'lightness': -33
+            },
+            {
+                'weight': 2
+            },
+            {
+                'gamma': 0.8
+            }
+        ]
     },
     {
-      featureType: 'administrative',
-      elementType: 'geometry.stroke',
-      stylers: [
-        {
-          color: '#144b53'
-        },
-        {
-          lightness: 14
-        },
-        {
-          weight: 1.4
-        }
-      ]
+        'featureType': 'all',
+        'elementType': 'labels.icon',
+        'stylers': [
+            {
+                'visibility': 'off'
+            }
+        ]
     },
     {
-      featureType: 'landscape',
-      elementType: 'all',
-      stylers: [
-        {
-          color: '#08304b'
-        }
-      ]
+        'featureType': 'administrative',
+        'elementType': 'all',
+        'stylers': [
+            {
+                'color': '#b1c3e2'
+            },
+            {
+                'visibility': 'simplified'
+            }
+        ]
     },
     {
-      featureType: 'poi',
-      elementType: 'geometry',
-      stylers: [
-        {
-          color: '#0c4152'
-        },
-        {
-          lightness: 5
-        }
-      ]
+        'featureType': 'administrative.country',
+        'elementType': 'all',
+        'stylers': [
+            {
+                'color': '#32364f'
+            },
+            {
+                'visibility': 'simplified'
+            }
+        ]
     },
     {
-      featureType: 'road.highway',
-      elementType: 'geometry.fill',
-      stylers: [
-        {
-          color: '#000000'
-        }
-      ]
+        'featureType': 'administrative.country',
+        'elementType': 'geometry.fill',
+        'stylers': [
+            {
+                'color': '#b1c3e2'
+            },
+            {
+                'visibility': 'simplified'
+            }
+        ]
     },
     {
-      featureType: 'road.highway',
-      elementType: 'geometry.stroke',
-      stylers: [
-        {
-          color: '#0b434f'
-        },
-        {
-          lightness: 25
-        }
-      ]
+        'featureType': 'administrative.country',
+        'elementType': 'geometry.stroke',
+        'stylers': [
+            {
+                'visibility': 'off'
+            }
+        ]
     },
     {
-      featureType: 'road.arterial',
-      elementType: 'geometry.fill',
-      stylers: [
-        {
-          color: '#000000'
-        }
-      ]
+        'featureType': 'landscape',
+        'elementType': 'all',
+        'stylers': [
+            {
+                'color': '#242634'
+            },
+            {
+                'visibility': 'simplified'
+            }
+        ]
     },
     {
-      featureType: 'road.arterial',
-      elementType: 'geometry.stroke',
-      stylers: [
-        {
-          color: '#0b3d51'
-        },
-        {
-          lightness: 16
-        }
-      ]
+        'featureType': 'landscape',
+        'elementType': 'geometry',
+        'stylers': [
+            {
+                'lightness': 30
+            },
+            {
+                'saturation': 30
+            },
+            {
+                'color': '#242634'
+            },
+            {
+                'visibility': 'simplified'
+            }
+        ]
     },
     {
-      featureType: 'road.local',
-      elementType: 'geometry',
-      stylers: [
-        {
-          color: '#000000'
-        }
-      ]
+        'featureType': 'poi',
+        'elementType': 'all',
+        'stylers': [
+            {
+                'color': '#b1c3e2'
+            },
+            {
+                'visibility': 'off'
+            }
+        ]
     },
     {
-      featureType: 'transit',
-      elementType: 'all',
-      stylers: [
-        {
-          color: '#146474'
-        }
-      ]
+        'featureType': 'poi',
+        'elementType': 'geometry',
+        'stylers': [
+            {
+                'saturation': 20
+            },
+            {
+                'visibility': 'off'
+            }
+        ]
     },
     {
-      featureType: 'water',
-      elementType: 'all',
-      stylers: [
-        {
-          color: '#021019'
-        }
-      ]
+        'featureType': 'poi.park',
+        'elementType': 'geometry',
+        'stylers': [
+            {
+                'lightness': 20
+            },
+            {
+                'saturation': -20
+            },
+            {
+                'color': '#32364f'
+            }
+        ]
+    },
+    {
+        'featureType': 'road',
+        'elementType': 'all',
+        'stylers': [
+            {
+                'color': '#90a4c2'
+            },
+            {
+                'saturation': 12
+            },
+            {
+                'lightness': -77
+            },
+            {
+                'visibility': 'simplified'
+            }
+        ]
+    },
+    {
+        'featureType': 'road',
+        'elementType': 'geometry',
+        'stylers': [
+            {
+                'lightness': 10
+            },
+            {
+                'saturation': -30
+            }
+        ]
+    },
+    {
+        'featureType': 'road',
+        'elementType': 'geometry.stroke',
+        'stylers': [
+            {
+                'saturation': 25
+            },
+            {
+                'lightness': -40
+            },
+            {
+                'color': '#32364f'
+            },
+            {
+                'weight': 0.22
+            },
+            {
+                'visibility': 'simplified'
+            }
+        ]
+    },
+    {
+        'featureType': 'road',
+        'elementType': 'labels',
+        'stylers': [
+            {
+                'visibility': 'simplified'
+            },
+            {
+                'color': '#b1c3e2'
+            }
+        ]
+    },
+    {
+        'featureType': 'road',
+        'elementType': 'labels.text',
+        'stylers': [
+            {
+               'visibility': 'simplified'
+            }
+        ]
+    },
+    {
+        'featureType': 'road',
+        'elementType': 'labels.icon',
+        'stylers': [
+            {
+                'visibility': 'off'
+            }
+        ]
+    },
+    {
+        'featureType': 'transit',
+        'elementType': 'all',
+        'stylers': [
+            {
+                'visibility': 'off'
+            },
+            {
+                'color': '#444f79'
+            }
+        ]
+    },
+    {
+        'featureType': 'water',
+        'elementType': 'all',
+        'stylers': [
+            {
+                'lightness': -20
+            },
+            {
+                'color': '#2b3548'
+            },
+            {
+                'saturation': 0
+            }
+        ]
     }
-  ];
+];
+
 
   constructor(
     private getVehicleService: GetVehicleService,
@@ -508,7 +644,7 @@ export class MainViewComponent implements OnInit {
     this.lineChartLabels.push('' + i);
     this.lineChartData = [];
     // tslint:disable-next-line: max-line-length
-    this.lineChartData.push({data: this.BASELINE, label: 'Baseline', backgroundColor: "#283040", borderColor: '#0794ff', fill: false, pointRadius: 0});
+    this.lineChartData.push({data: this.BASELINE, label: 'Baseline', backgroundColor: '#283040', borderColor: '#0794ff', fill: false, pointRadius: 0});
     for (const vh of vehicles) {
       console.log(vh);
       const battAge = this.battery_age(date, vh.date_of_creation); // returns current age of battery
@@ -575,7 +711,7 @@ export class MainViewComponent implements OnInit {
     this.lineChartLabels.push('' + i);
     this.lineChartData = [];
     // tslint:disable-next-line: max-line-length
-    this.lineChartData.push({data: this.BASELINE, label: 'Baseline', backgroundColor: "#283040", borderColor: '#0794ff', fill: false, pointRadius: 0});
+    this.lineChartData.push({data: this.BASELINE, label: 'Baseline', backgroundColor: '#283040', borderColor: '#0794ff', fill: false, pointRadius: 0});
     const dataset = [];
     this.getVehicleService
         .retrieveParametersBetweenDates(vehicle[0]._id, date1, date2)
@@ -626,7 +762,7 @@ export class MainViewComponent implements OnInit {
     const view = 'clusterView';
     if (this.viewVehicle) {
       if ( this.chosenCluster ) {
-        console.log("BACK FROM Vehicle view w Cluster");
+        console.log('BACK FROM Vehicle view w Cluster');
         this.viewVehicle = false;
         this.viewCluster = true;
         this.viewGeneral = false;
@@ -634,7 +770,7 @@ export class MainViewComponent implements OnInit {
         this.zoom = this.GEN_ZOOM + 1;
         this.recenterMap(this.chosenCluster.center_lat, this.chosenCluster.center_lng);
       } else {
-        console.log("BACK FROM Vehicle view");
+        console.log('BACK FROM Vehicle view');
 
         this.viewVehicle = false;
         this.viewCluster = false;
@@ -651,7 +787,7 @@ export class MainViewComponent implements OnInit {
 
       //this.panelOpenState = false;
     } else if (this.viewCluster) {
-      console.log("BACK FROM Cluster view", this.clusters);
+      console.log('BACK FROM Cluster view', this.clusters);
       this.viewGeneral = true;
       this.viewCluster = false;
       this.viewVehicle =  false;

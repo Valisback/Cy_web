@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
   api: {
-    url: 'http://18.222.175.87:8080'
+    url: 'http://18.219.188.25:8080',
   }
 };

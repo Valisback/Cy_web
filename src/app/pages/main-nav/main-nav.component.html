@@ -15,12 +15,16 @@
   <mat-sidenav #drawer class="sidenav" fixedInViewport [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
     [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="(isHandset$ | async) === false">
     <mat-toolbar>
-        <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()">
+        <button type="button" aria-label="Toggle sidenav" mat-icon-button [matMenuTriggerFor]="beforeMenu">
         <mat-icon class = " material-icons md-dark" aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
+      <mat-menu #beforeMenu="matMenu">
+        <button mat-menu-item>Item 1</button>
+        <button mat-menu-item>Item 2</button>
+      </mat-menu>
     </mat-toolbar>
     <mat-nav-list class="mat-list-base">
-        <button type="button" mat-icon-button ><mat-icon class="material-icons md-dark">notifications_none</mat-icon></button>
+        <a href="/" type="button" mat-icon-button ><mat-icon class="material-icons md-dark">notifications_none</mat-icon></a>
         <button type="button" mat-icon-button ><mat-icon class="material-icons md-dark">person</mat-icon></button>
     </mat-nav-list>
 
