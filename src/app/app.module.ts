@@ -17,6 +17,7 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatCardModule } from '@angular/material/card';
 import { MatMenuModule } from '@angular/material/menu';
+import {MatRippleModule} from '@angular/material/core';
 import { AgmCoreModule } from '@agm/core';
 import {MatSliderModule} from '@angular/material/slider';
 import {MatTabsModule} from '@angular/material/tabs';
@@ -48,6 +49,7 @@ import {MatExpansionModule} from '@angular/material/expansion';
     MatSidenavModule,
     MatTabsModule,
     MatIconModule,
+    MatRippleModule,
     BrowserAnimationsModule,
     MatListModule,
     MatSliderModule,

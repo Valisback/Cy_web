@@ -6,15 +6,20 @@
         <img src="assets/img/Panasonic_CY_logo.png" class="logo">
       </div>
         <div class="top_cards">
-            <mat-card id="1" class="mat-elevation-z0">
+            <mat-card matRipple id="1" class="mat-elevation-z0" (click)="topCardClicked('1')">
                 <p class = "big_box_text"> <strong> {{numberOfVehicles}} </strong> </p>
 
-              <p class = "label_text">
-                Vehicles
+              <p *ngIf="viewCluster && chosenCluster; else clusterTot" class = "label_text">
+                  Vehicles in Hub
               </p>
+              <ng-template #clusterTot>
+                  <p class = "label_text">
+                    Total Vehicles
+                    </p>
+              </ng-template>
 
             </mat-card>
-            <mat-card id="2" class="mat-elevation-z0">
+            <mat-card matRipple id="2" class="mat-elevation-z0">
                 <p class = "big_box_text"> <strong> {{tcoSavings}} </strong> </p>
 
               <p class = "label_text">
@@ -22,15 +27,17 @@
               </p>
 
             </mat-card>
-            <mat-card id="4" class="mat-elevation-z0">
+            <mat-card matRipple id="4" class="mat-elevation-z0" (click)="topCardClicked('4')">
+                <p *ngIf="criticalBatteries>0; else nocritical" class = "big_box_text" matBadge="criticalBatteries"  matBadgeOverlap="true"  matBadgePosition="before" matBadgeColor="warn"> <strong> {{criticalBatteries}} </strong> </p>
+              <ng-template #nocritical>
                 <p class = "big_box_text"> <strong> {{criticalBatteries}} </strong> </p>
-
+              </ng-template>
               <p class = "label_text">
                 Critical issues
               </p>
 
             </mat-card>
-            <mat-card id="5" class="mat-elevation-z0" matBadge="6"  matBadgeOverlap="true"  matBadgePosition="before" matBadgeColor="warn">
+            <mat-card matRipple id="5" class="mat-elevation-z0" (click)="topCardClicked('5')">
                 <p class = "big_box_text"> <strong> {{numberOfAlerts}} </strong> </p>
 
               <p class = "label_text">
@@ -51,17 +58,17 @@
       <ng-template #backButtonNslider >
           <div class="time_slider" *ngIf="viewCluster; else OpenbackButton">
               <button class = "backButton" mat-button (click) = "onBackButton()"><mat-icon>arrow_back</mat-icon></button>
-              <label class="legend_left">{{min_slider_date}} </label>
+              <label class="legend_left">{{min_slider_date}} year </label>
               <mat-slider  class="slider" [max]="max_slider_date" [min]="min_slider_date" [(ngModel)]="slider_date_value"
-                [thumbLabel]="thumbLabel" (change)="sliderEvent()"></mat-slider><label class="legend_right">{{max_slider_date}} </label>
+                [thumbLabel]="thumbLabel" (change)="sliderEvent()"></mat-slider><label class="legend_right">{{max_slider_date}} years</label>
             </div>
       </ng-template>
 
       <div class="line_chart" *ngIf="statistics; else nostat">
           <div class="time_slider" *ngIf="viewGeneral; else backButtonNslider">
               <h4>Portfolio Status</h4>
-              <label class="legend_left">{{min_slider_date}} </label><mat-slider  class="slider" [max]="max_slider_date" [min]="min_slider_date" [(ngModel)]="slider_date_value"
-                [thumbLabel]="thumbLabel" (change)="sliderEvent()"></mat-slider><label class="legend_right">{{max_slider_date}} </label>
+              <label class="legend_left">{{min_slider_date}} year</label><mat-slider  class="slider" [max]="max_slider_date" [min]="min_slider_date" [(ngModel)]="slider_date_value"
+                [thumbLabel]="thumbLabel" (change)="sliderEvent()"></mat-slider><label class="legend_right">{{max_slider_date}} years</label>
             </div>
         <canvas #lineChart="base-chart" baseChart [datasets]="lineChartData" [labels]="lineChartLabels" [options]="lineChartOptions"
           [legend]="lineChartLegend" (chartClick)="onChartClicked($event)"[chartType]="lineChartType">
@@ -85,52 +92,54 @@
                             <tbody>
                               <tr>
                                 <td><strong>Model:</strong> {{chosenVehicle.model}}</td>
-                                <td><strong>Age:</strong>  //insert here</td>
+                                <td><strong>Age:</strong>  {{chosenVehicle.age}} months</td>
                               </tr>
                               <tr>
                                 <td><strong>Current Charge:</strong> {{ chosenVehicle._battery_id.charge }}%</td>
-                                <td><strong>Place:</strong> //insert position here</td>
+                                <td><strong>Location:</strong>  {{ chosenVehicle.cluster.name }}</td>
                               </tr>
                               <tr>
-                                <td><strong>Speed of charge:</strong> //insert here</td>
-                                <td><strong>Average T:</strong> //insert here</td>
+                                <td><strong>Speed of charge:</strong> //insrt here</td>
+                                <td><strong>Average T:</strong> {{ chosenVehicle.temperature }}°F</td>
                               </tr>
                               <tr>
-                                  <td><strong>Number of miles:</strong> //insert here</td>
-                                  <td><strong>Type of route:</strong> //insert here</td>
+                                  <td><strong>Total distance:</strong> {{chosenVehicle.distance}} miles</td>
+                                  <td><strong>Type of route:</strong> Return to Depot</td>
                                 </tr>
                             </tbody>
                       </table>
                       <div class="status_cards">
                           <mat-card id="1" class="mat-elevation-z0">
-                              <p class = "big_box_text"> <strong> {{numberOfVehicles}} </strong> </p>
+                              <p class = "big_box_text"> <strong> ${{chosenVehicle.batteryValue}} </strong> </p>
 
                             <p class = "label_text">
-                              Vehicles
+                              Battery Value
                             </p>
 
                           </mat-card>
                           <mat-card id="2" class="mat-elevation-z0">
-                              <p class = "big_box_text"> <strong> {{tcoSavings}} </strong> </p>
-
+                              <p class = "big_box_text"> <mat-icon *ngIf="chosenVehicle._battery_id.charge > 25 && chosenVehicle._battery_id.charge < 70; else badDriver"[ngStyle]="{'color':'green'}">thumb_up</mat-icon> </p>
+                              <ng-template #badDriver>
+                                <p class = "big_box_text"> <mat-icon [ngStyle]="{'color':'red'}">thumb_down</mat-icon> </p>
+                              </ng-template>
                             <p class = "label_text">
-                              TCO Savings
+                              Driver's Behaviour
                             </p>
 
                           </mat-card>
                           <mat-card id="4" class="mat-elevation-z0">
-                              <p class = "big_box_text"> <strong> {{criticalBatteries}} </strong> </p>
+                              <p class = "big_box_text"> <strong> 0.34kWh </strong> </p>
 
                             <p class = "label_text">
-                              Critical issues
+                              Energy/mile
                             </p>
 
                           </mat-card>
-                          <mat-card id="5" class="mat-elevation-z0" matBadge="6"  matBadgeOverlap="true"  matBadgePosition="before" matBadgeColor="warn">
-                              <p class = "big_box_text"> <strong> {{numberOfAlerts}} </strong> </p>
+                          <mat-card id="5" class="mat-elevation-z0">
+                              <p class = "big_box_text"> <strong> 8.13¢/kWh </strong> </p>
 
                             <p class = "label_text">
-                              Battery alerts
+                              Grid Services
                             </p>
 
                           </mat-card>
@@ -263,18 +272,21 @@
       </div>
       <h4> Vehicle List</h4>
       <div class="filters dark-theme-container">
-        <h4>Filters</h4>
+        <h4>Order by:</h4>
         <mat-form-field>
-          <mat-label>Name</mat-label>
-          <mat-select>
-            <mat-option>
-              Name1
+          <mat-label>Age</mat-label>
+          <mat-select [(ngModel)]="ageOrder" (selectionChange)="onFilterChanged(ageOrder)">
+              <mat-option>
+                  None
+              </mat-option>
+            <mat-option value = "age1">
+                < 1 year
             </mat-option>
-            <mat-option>
-              Name2
+            <mat-option value = "age2">
+              1 - 3 years
             </mat-option>
-            <mat-option>
-              Name3
+            <mat-option value = "age3">
+              > 3 years
             </mat-option>
           </mat-select>
         </mat-form-field>
@@ -293,16 +305,22 @@
           </mat-select>
         </mat-form-field>
         <mat-form-field>
-          <mat-label>Battery</mat-label>
-          <mat-select>
-            <mat-option>
-              Battery1
+          <mat-label>Charge</mat-label>
+          <mat-select [(ngModel)]="chargeOrder" (selectionChange)="onFilterChanged(chargeOrder)">
+              <mat-option>
+                  None
+              </mat-option>
+            <mat-option value = "charge1">
+              < 20%
             </mat-option>
-            <mat-option>
-              Battery2
+            <mat-option value = "charge2">
+              20% - 50%
             </mat-option>
-            <mat-option>
-              Battery3
+            <mat-option value = "charge3">
+              50% - 80%
+            </mat-option>
+            <mat-option value = "charge4">
+               > 80%
             </mat-option>
           </mat-select>
         </mat-form-field>

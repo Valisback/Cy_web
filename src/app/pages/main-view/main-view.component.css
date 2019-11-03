@@ -201,7 +201,7 @@ mat-form-field{
 }
 
 .legend_left{
-  padding-right: 118px;
+  padding-right: 100px;
 }
 
 .list_of_vehicles{
@@ -340,9 +340,9 @@ mat-expansion-panel-header
 .status_cards p{
   margin: 5px;
 }
-.big_box_text {
+.status_cards .big_box_text {
   margin: 5px;
-  font-size: 22px;
+  font-size: 18px;
   text-align: center;
   overflow: hidden;
   white-space: nowrap;

@@ -26,27 +26,11 @@ export class MainViewComponent implements OnInit {
   statistics = false;
   circleVisible = true;
 
+  // Variables for filters
+  ageOrder;
+  statusOrder;
+  chargeOrder;
 
-  // For tests, to be deleted
-  /*lineChartLabels2 = [
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November'
-  ];
-  lineChartType2 = 'line';
-  lineChartLegend2 = 'test';
-  lineChartData2 = [
-    { data: [98, 92, 88, 72, 51, 27, 11], label: 'Benchmark life-span' },
-    { data: [, 21, , , 89], label: 'Portfolio life-span' }
-  ];
-  lineChartOptions2 = {
-    scaleShowVerticalLines: false,
-    responsive: true
-  }; */
   // Imported from server
   allVehicles;
   vehicles;
@@ -67,7 +51,7 @@ export class MainViewComponent implements OnInit {
 
   // Elements displayed on top cards
   numberOfVehicles;
-  tcoSavings;
+  tcoSavings = '$1.2M';
   criticalBatteries;
   numberOfAlerts;
 
@@ -87,6 +71,7 @@ export class MainViewComponent implements OnInit {
   lineChartLabels = [];
   lineChartType;
   lineChartLegend;
+  genLineChartData = [];
   lineChartData = [];
   lineChartOptions;
   BASELINE = [];
@@ -97,272 +82,272 @@ export class MainViewComponent implements OnInit {
   // Google map style
   public darkStyle: google.maps.MapTypeStyle[] = [
     {
-        'featureType': 'all',
-        'elementType': 'geometry',
-        'stylers': [
+        featureType: 'all',
+        elementType: 'geometry',
+        stylers: [
             {
-                'color': '#63b5e5'
+                color: '#63b5e5'
             }
         ]
     },
     {
-        'featureType': 'all',
-        'elementType': 'labels.text.fill',
-        'stylers': [
+        featureType: 'all',
+        elementType: 'labels.text.fill',
+        stylers: [
             {
-                'gamma': 0.01
+                gamma: 0.01
             },
             {
-                'lightness': 20
+                lightness: 20
             }
         ]
     },
     {
-        'featureType': 'all',
-        'elementType': 'labels.text.stroke',
-        'stylers': [
+        featureType: 'all',
+        elementType: 'labels.text.stroke',
+        stylers: [
             {
-                'saturation': -31
+                saturation: -31
             },
             {
-                'lightness': -33
+                lightness: -33
             },
             {
-                'weight': 2
+                weight: 2
             },
             {
-                'gamma': 0.8
+                gamma: 0.8
             }
         ]
     },
     {
-        'featureType': 'all',
-        'elementType': 'labels.icon',
-        'stylers': [
+        featureType: 'all',
+        elementType: 'labels.icon',
+        stylers: [
             {
-                'visibility': 'off'
+                visibility: 'off'
             }
         ]
     },
     {
-        'featureType': 'administrative',
-        'elementType': 'all',
-        'stylers': [
+        featureType: 'administrative',
+        elementType: 'all',
+        stylers: [
             {
-                'color': '#b1c3e2'
+                color: '#b1c3e2'
             },
             {
-                'visibility': 'simplified'
+                visibility: 'simplified'
             }
         ]
     },
     {
-        'featureType': 'administrative.country',
-        'elementType': 'all',
-        'stylers': [
+        featureType: 'administrative.country',
+        elementType: 'all',
+        stylers: [
             {
-                'color': '#32364f'
+                color: '#32364f'
             },
             {
-                'visibility': 'simplified'
+                visibility: 'simplified'
             }
         ]
     },
     {
-        'featureType': 'administrative.country',
-        'elementType': 'geometry.fill',
-        'stylers': [
+        featureType: 'administrative.country',
+        elementType: 'geometry.fill',
+        stylers: [
             {
-                'color': '#b1c3e2'
+                color: '#b1c3e2'
             },
             {
-                'visibility': 'simplified'
+                visibility: 'simplified'
             }
         ]
     },
     {
-        'featureType': 'administrative.country',
-        'elementType': 'geometry.stroke',
-        'stylers': [
+        featureType: 'administrative.country',
+        elementType: 'geometry.stroke',
+        stylers: [
             {
-                'visibility': 'off'
+                visibility: 'off'
             }
         ]
     },
     {
-        'featureType': 'landscape',
-        'elementType': 'all',
-        'stylers': [
+        featureType: 'landscape',
+        elementType: 'all',
+        stylers: [
             {
-                'color': '#242634'
+                color: '#242634'
             },
             {
-                'visibility': 'simplified'
+                visibility: 'simplified'
             }
         ]
     },
     {
-        'featureType': 'landscape',
-        'elementType': 'geometry',
-        'stylers': [
+        featureType: 'landscape',
+        elementType: 'geometry',
+        stylers: [
             {
-                'lightness': 30
+                lightness: 30
             },
             {
-                'saturation': 30
+                saturation: 30
             },
             {
-                'color': '#242634'
+                color: '#242634'
             },
             {
-                'visibility': 'simplified'
+                visibility: 'simplified'
             }
         ]
     },
     {
-        'featureType': 'poi',
-        'elementType': 'all',
-        'stylers': [
+        featureType: 'poi',
+        elementType: 'all',
+        stylers: [
             {
-                'color': '#b1c3e2'
+                color: '#b1c3e2'
             },
             {
-                'visibility': 'off'
+                visibility: 'off'
             }
         ]
     },
     {
-        'featureType': 'poi',
-        'elementType': 'geometry',
-        'stylers': [
+        featureType: 'poi',
+        elementType: 'geometry',
+        stylers: [
             {
-                'saturation': 20
+                saturation: 20
             },
             {
-                'visibility': 'off'
+                visibility: 'off'
             }
         ]
     },
     {
-        'featureType': 'poi.park',
-        'elementType': 'geometry',
-        'stylers': [
+        featureType: 'poi.park',
+        elementType: 'geometry',
+        stylers: [
             {
-                'lightness': 20
+                lightness: 20
             },
             {
-                'saturation': -20
+                saturation: -20
             },
             {
-                'color': '#32364f'
+                color: '#32364f'
             }
         ]
     },
     {
-        'featureType': 'road',
-        'elementType': 'all',
-        'stylers': [
+        featureType: 'road',
+        elementType: 'all',
+        stylers: [
             {
-                'color': '#90a4c2'
+                color: '#90a4c2'
             },
             {
-                'saturation': 12
+                saturation: 12
             },
             {
-                'lightness': -77
+                lightness: -77
             },
             {
-                'visibility': 'simplified'
+                visibility: 'simplified'
             }
         ]
     },
     {
-        'featureType': 'road',
-        'elementType': 'geometry',
-        'stylers': [
+        featureType: 'road',
+        elementType: 'geometry',
+        stylers: [
             {
-                'lightness': 10
+                lightness: 10
             },
             {
-                'saturation': -30
+                saturation: -30
             }
         ]
     },
     {
-        'featureType': 'road',
-        'elementType': 'geometry.stroke',
-        'stylers': [
+        featureType: 'road',
+        elementType: 'geometry.stroke',
+        stylers: [
             {
-                'saturation': 25
+                saturation: 25
             },
             {
-                'lightness': -40
+                lightness: -40
             },
             {
-                'color': '#32364f'
+                color: '#32364f'
             },
             {
-                'weight': 0.22
+                weight: 0.22
             },
             {
-                'visibility': 'simplified'
+                visibility: 'simplified'
             }
         ]
     },
     {
-        'featureType': 'road',
-        'elementType': 'labels',
-        'stylers': [
+        featureType: 'road',
+        elementType: 'labels',
+        stylers: [
             {
-                'visibility': 'simplified'
+                visibility: 'simplified'
             },
             {
-                'color': '#b1c3e2'
+                color: '#b1c3e2'
             }
         ]
     },
     {
-        'featureType': 'road',
-        'elementType': 'labels.text',
-        'stylers': [
+        featureType: 'road',
+        elementType: 'labels.text',
+        stylers: [
             {
-               'visibility': 'simplified'
+               visibility: 'simplified'
             }
         ]
     },
     {
-        'featureType': 'road',
-        'elementType': 'labels.icon',
-        'stylers': [
+        featureType: 'road',
+        elementType: 'labels.icon',
+        stylers: [
             {
-                'visibility': 'off'
+                visibility: 'off'
             }
         ]
     },
     {
-        'featureType': 'transit',
-        'elementType': 'all',
-        'stylers': [
+        featureType: 'transit',
+        elementType: 'all',
+        stylers: [
             {
-                'visibility': 'off'
+                visibility: 'off'
             },
             {
-                'color': '#444f79'
+                color: '#444f79'
             }
         ]
     },
     {
-        'featureType': 'water',
-        'elementType': 'all',
-        'stylers': [
+        featureType: 'water',
+        elementType: 'all',
+        stylers: [
             {
-                'lightness': -20
+                lightness: -20
             },
             {
-                'color': '#2b3548'
+                color: '#2b3548'
             },
             {
-                'saturation': 0
+                saturation: 0
             }
         ]
     }
@@ -419,6 +404,11 @@ export class MainViewComponent implements OnInit {
     this.viewGeneral = false;
     this.viewCluster = false;
     this.chosenVehicle = vehicle;
+    const today = Date.now();
+    const age = this.battery_age(today, vehicle.date_of_creation);
+    const distance = age * Math.random() * (1000) + 300;
+    vehicle.age = age;
+    vehicle.distance = distance.toPrecision(2);
     this.chosenCluster = vehicle.cluster;
     const arrayVehicle = [];
     arrayVehicle[0] = vehicle;
@@ -435,10 +425,56 @@ export class MainViewComponent implements OnInit {
 
   sliderEvent() {
     if (this.vehicles) {
-      const view = 'clusterView';
-      this.refreshGraphs(this.vehicles, view);
+      this.lineChartLabels = [];
+      let i;
+      for (i = 0; i < this.slider_date_value; i++) {
+        this.lineChartLabels.push('' + i);
+        for (let j = 0; j < 11; j++) {
+          this.lineChartLabels.push('');
+        }
+      }
+      this.lineChartLabels.push('' + i);
+      this.calculateTopParameters();
+      const newVehicles = [];
+      for (const vh of this.allVehicles) {
+        const today = new Date();
+        const age = this.battery_age(today, vh.date_of_creation);
+        console.log("age", age);
+        if ( age <= this.slider_date_value * 12 ) {
+          newVehicles.push(vh);
+        }
+      }
+      this.vehicles = newVehicles;
+      this.ageOrder = null;
     }
     // console.log(this.getVehicleParameterBetweenDates(this.vehicles[0], this.slider_date_value, this.slider_date_value + 1));
+  }
+
+  calculateTopParameters() {
+    this.numberOfVehicles = 0;
+    this.criticalBatteries = 0;
+    this.numberOfAlerts = 0;
+    for (const dataset of this.lineChartData ) {
+      if (dataset.label !== 'Baseline') {
+        let bool = true;
+        let i = 0;
+        for (i; i < this.lineChartLabels.length; i++ ) {
+          if ( dataset.data[i] && typeof(dataset.data[i]) !== 'function') {
+            if (bool) {
+            this.numberOfVehicles ++;
+            bool = false;
+            }
+            if ( dataset.data[i] < this.BASELINE[i] ) {
+              this.numberOfAlerts ++;
+            }
+            if ( dataset.data[i] < this.BASELINE[i] * 0.8 ) {
+              this.criticalBatteries ++;
+            }
+          }
+        }
+    }
+    }
+
   }
 
   async onCircleClicked(circle) {
@@ -523,6 +559,7 @@ export class MainViewComponent implements OnInit {
       },
       legend: {
         labels: {
+          useLineStyle: true,
           filter: (legendItem, chartData) => {
             if (legendItem.datasetIndex === 0) {
               return true;
@@ -648,7 +685,7 @@ export class MainViewComponent implements OnInit {
     for (const vh of vehicles) {
       console.log(vh);
       const battAge = this.battery_age(date, vh.date_of_creation); // returns current age of battery
-      if ( battAge <= (this.slider_date_value * 12)) {
+      if ( battAge <= (this.max_slider_date * 12)) {
       const dataset = [];
       this.getVehicleService
         .retrieveParametersAtDate(vh._id, date)
@@ -679,6 +716,7 @@ export class MainViewComponent implements OnInit {
         // nothing happens
       }
     }
+    this.genLineChartData = this.lineChartData;
 
   }
 
@@ -719,8 +757,8 @@ export class MainViewComponent implements OnInit {
           this.vehicleParameter = response.parameters;
           let i = 0;
           const pointColor = [];
-
-          for (const p of this.vehicleParameter) {
+          let p;
+          for (p of this.vehicleParameter) {
             dataset.push(p.performance);
             const lowerThreshold = this.BASELINE[i] * 0.8;
             const upperThreshold = this.BASELINE[i];
@@ -733,7 +771,10 @@ export class MainViewComponent implements OnInit {
           }
             i++;
           }
-          this.lineChartData.push({ data: dataset, label: vehicle[0].model + ' details', fill: false, pointBackgroundColor: pointColor});
+          this.chosenVehicle.performance = p.performance;
+          this.chosenVehicle.batteryValue = p.cost_value;
+          this.lineChartData.push({ data: dataset, label: vehicle[0].model, fill: false, pointBackgroundColor: pointColor});
+          this.genLineChartData = this.lineChartData;
           this.statistics = true;
         });
     this.sliderVisible = false;
@@ -802,4 +843,108 @@ export class MainViewComponent implements OnInit {
     }
 
   }
+
+  topCardClicked(id) {
+    if (id === '1' || this.lineChartData !== this.genLineChartData) {
+      this.lineChartData = this.genLineChartData;
+    } else {
+    console.log("ID: ",id);
+    const newLineChartData = [];
+    // tslint:disable-next-line: max-line-length
+    newLineChartData.push({data: this.BASELINE, label: 'Baseline', backgroundColor: '#283040', borderColor: '#0794ff', fill: false, pointRadius: 0});
+    for (const dataset of this.genLineChartData) {
+      if ( dataset.label !== 'Baseline') {
+      const newDataset = [];
+      let pointColor;
+      let i = 0;
+      for (const datapoint of dataset.data) {
+        if ( typeof(datapoint) !== 'function' ) {
+          let lowerThreshold;
+
+          if ( id === '5' ) { // For Actions
+            lowerThreshold = this.BASELINE[i];
+            pointColor = '#ffa500';
+            this.numberOfAlerts++;
+          } else if ( id === '4') { // For Critical Issues
+            lowerThreshold = this.BASELINE[i] * 0.8;
+            pointColor = '#ff0000';
+            this.criticalBatteries++;
+          }
+          if ( datapoint < lowerThreshold ) {
+          newDataset[i] = datapoint;
+        }
+      }
+        i++;
+      }
+      if (newDataset.length > 0) {
+        newLineChartData.push({ data: newDataset, label: dataset.label,  pointBackgroundColor: pointColor});
+      }
+    }
+  }
+    this.calculateTopParameters();
+    this.lineChartData = newLineChartData;
+    console.log('AFTER: ', this.lineChartData);
+}
+  }
+
+  onFilterChanged(value) {
+    if ( !value ) {
+      return;
+    }
+    console.log(this.vehicles);
+    const newVehicles = [];
+    for (const vh of this.allVehicles) {
+      if (value.includes('age')) {
+      const today = new Date();
+      const age = this.battery_age(today, vh.date_of_creation);
+      console.log("age", age);
+      let min_age = 0;
+      let max_age = 0;
+      if (value === 'age1') {
+        max_age = 1;
+      } else if ( value === 'age2') {
+        max_age = 3;
+        min_age = 1;
+      } else if ( value === 'age3') {
+        max_age = this.max_slider_date;
+        min_age = 3;
+      }
+      if (!this.viewVehicle) {
+        this.slider_date_value = max_age;
+        this.sliderEvent();
+      }
+      if ( age > min_age * 12 && age <= max_age * 12 ) {
+        newVehicles.push(vh);
+      }
+    } else if (value.includes('charge')) {
+      let min_charge = 0;
+      let max_charge = 0;
+      if (value === 'charge1') {
+        max_charge = 20;
+      } else if ( value === 'charge2') {
+        max_charge = 50;
+        min_charge = 20;
+      } else if ( value === 'charge3') {
+        max_charge = 80;
+        min_charge = 50;
+      } else {
+        max_charge = 100;
+        min_charge = 80;
+      }
+      const charge = vh._battery_id.charge;
+      if ( charge > min_charge && charge <= max_charge) {
+        newVehicles.push(vh);
+      }
+    }
+  }
+    this.vehicles = newVehicles;
+    this.vehicles.sort(this.propComparator('charge'));
+    console.log('ORDERED:', this.vehicles);
+
+  }
+
+  propComparator(prop) {
+    return (a, b) => (a['_battery_id'][prop] - b['_battery_id'][prop]);
+}
+
 }
