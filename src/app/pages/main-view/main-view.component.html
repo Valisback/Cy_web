@@ -3,7 +3,7 @@
   <div class="row" id="wrapper">
     <div class = "left_div">
       <div class="logo_div">
-        <img src="assets/img/Panasonic_CY_logo.png" class="logo">
+          <a href="/"><img src="assets/img/Panasonic_CY_logo.png" class="logo"></a>
       </div>
         <div class="top_cards">
             <mat-card class="mat-elevation-z0">
@@ -64,13 +64,13 @@
             </div>
       </ng-template>
 
-      <div class="line_chart" *ngIf="statistics; else nostat">
+      <div class="line_chart" style="max-height: 50%;" *ngIf="statistics; else nostat">
           <div class="time_slider" *ngIf="viewGeneral; else backButtonNslider">
               <h4>Portfolio Status</h4>
               <label class="legend_left">{{min_slider_date}} year</label><mat-slider  class="slider" [max]="max_slider_date" [min]="min_slider_date" [(ngModel)]="slider_date_value"
                 [thumbLabel]="thumbLabel" (change)="sliderEvent()"></mat-slider><label class="legend_right">{{max_slider_date}} years</label>
             </div>
-        <canvas #lineChart="base-chart" baseChart [datasets]="lineChartData" [labels]="lineChartLabels" [options]="lineChartOptions"
+        <canvas style = "height: 100%;" #lineChart="base-chart" baseChart [datasets]="lineChartData" [labels]="lineChartLabels" [options]="lineChartOptions"
           [legend]="lineChartLegend" (chartClick)="onChartClicked($event)"[chartType]="lineChartType">
 
         </canvas>
@@ -80,7 +80,7 @@
         <table style="height: 50%;"></table>
       </ng-template>
 
-          <div style="height: 50%;" *ngIf="viewVehicle; else noVehicle">
+          <div style="height: 50%; max-height: 50%;" *ngIf="viewVehicle; else noVehicle">
               <mat-tab-group class="vehicle_details_tabs">
                   <mat-tab>
                     <ng-template mat-tab-label>

@@ -83,7 +83,7 @@ $mat-dark-theme-background: (
   dialog: white,
 );
 @include angular-material-theme($theme);
-html, body { height: 100vh;
+html, body { height: 100%;
   background-color: #283040;
   color: white }
 
