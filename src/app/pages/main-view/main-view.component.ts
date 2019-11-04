@@ -378,7 +378,7 @@ export class MainViewComponent implements OnInit {
     // Creating the values for the baseline
     for (let month = 0; month <= maxBaseline; month++) {
       this.BASELINE.push(perf);
-      perf = perf * ( 1 - Math.random() / 100);
+      perf = -Math.pow(month / 12, 1.8 ) + 100;
     }
 
     this.getVehicleService.retrieveVehicles().subscribe((response: any) => {

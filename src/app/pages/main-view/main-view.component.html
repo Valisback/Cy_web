@@ -6,7 +6,7 @@
         <img src="assets/img/Panasonic_CY_logo.png" class="logo">
       </div>
         <div class="top_cards">
-            <mat-card matRipple class="mat-elevation-z0">
+            <mat-card class="mat-elevation-z0">
                 <p class = "big_box_text"> <strong> {{numberOfVehicles}} </strong> </p>
 
               <p *ngIf="viewCluster && chosenCluster; else clusterTot" class = "label_text">
@@ -19,7 +19,7 @@
               </ng-template>
 
             </mat-card>
-            <mat-card matRipple class="mat-elevation-z0">
+            <mat-card class="mat-elevation-z0">
                 <p class = "big_box_text"> <strong> {{tcoSavings}} </strong> </p>
 
               <p class = "label_text">
