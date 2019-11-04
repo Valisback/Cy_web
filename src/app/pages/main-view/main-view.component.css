@@ -23,6 +23,7 @@ html,body {
   padding-bottom: 15px;
   display: flex;
   justify-content: space-between;
+  min-height: 80px;
   height: 13%;
 }
 
