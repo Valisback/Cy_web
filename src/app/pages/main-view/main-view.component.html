@@ -264,7 +264,7 @@
           <ng-template #displayVehiclePos>
               <div *ngIf="viewVehicle">
                   <agm-marker [latitude]="chosenVehicle.position_lat"
-                    [longitude]="chosenVehicle.position_lng" (markerClick)="onVehicleChosen(chosenVehicle)">
+                    [longitude]="chosenVehicle.position_lng" (markerClick)="onVehicleChosen(chosenVehicle)" [iconUrl]="{url: '/assets/img/pin_icon.png', scaledSize: {width: 34, height: 43}}">
                   </agm-marker>
                 </div>
           </ng-template>
