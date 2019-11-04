@@ -313,6 +313,11 @@ mat-expansion-panel-header
   border-collapse:collapse;
 }
 
+.vehicle_details_tabs{
+  height:100%;
+  overflow: auto;
+  padding-bottom: 15px;
+}
 
 .status_content table tr td:first-child {
   padding-left:15px;

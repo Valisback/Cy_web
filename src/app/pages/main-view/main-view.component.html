@@ -80,12 +80,12 @@
         <table style="height: 50%;"></table>
       </ng-template>
 
-          <div *ngIf="viewVehicle; else noVehicle">
-              <mat-tab-group>
+          <div style="height: 50%;" *ngIf="viewVehicle; else noVehicle">
+              <mat-tab-group class="vehicle_details_tabs">
                   <mat-tab>
                     <ng-template mat-tab-label>
                       <mat-icon style="margin-right: 8px" class="example-tab-icon">battery_unknown</mat-icon>
-                      Satus
+                      Status
                     </ng-template>
                     <div class="status_content">
                       <table>
@@ -182,18 +182,6 @@
                     </div>
                   </mat-tab>
                 </mat-tab-group>
-            <!--<h4>Information on {{ chosenVehicle.model }}</h4>
-            <mat-list>
-              <mat-list-item>
-                Battery Model: {{ chosenVehicle._battery_id.name }} | Status:
-                {{ chosenVehicle._battery_id.status }}</mat-list-item>
-              <mat-list-item>
-                Current Charge: {{ chosenVehicle._battery_id.charge }}%
-              </mat-list-item>
-              <mat-list-item>
-                Life-Span: {{ chosenVehicle._battery_id.life_span }}%
-              </mat-list-item>
-            </mat-list>-->
           </div>
 
       <ng-template #noVehicle>
@@ -340,6 +328,7 @@
                 Charge: {{ vh._battery_id.charge }}%
               </mat-panel-description>
             </mat-expansion-panel-header>
+            <img src="truck_1.jpg" class="logo">
             <p>Additional information about vehicle goes here</p>
           </mat-expansion-panel>
         </mat-accordion>
