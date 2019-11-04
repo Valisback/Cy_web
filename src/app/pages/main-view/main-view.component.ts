@@ -28,8 +28,8 @@ export class MainViewComponent implements OnInit {
 
   // Variables for filters
   ageOrder;
-  statusOrder;
-  chargeOrder;
+  regionOrder;
+  healthOrder;
 
   // Imported from server
   allVehicles;
@@ -491,8 +491,8 @@ export class MainViewComponent implements OnInit {
     this.chosenClusterbool = true;
     this.chosenVehiclebool = false;
     this.ageOrder = null;
-    this.statusOrder = null;
-    this.chargeOrder = null;
+    this.regionOrder = null;
+    this.healthOrder = null;
     await this.chargeVehicles(circle);
     this.circleClicked = true;
     this.circleVisible = false;
@@ -710,9 +710,9 @@ export class MainViewComponent implements OnInit {
             pointColor = '#ff0000';
             this.criticalBatteries++;
           } else if ( response.parameters[0].performance > upperThreshold ) {
-            pointColor = '#ffffff';
+            pointColor = '#b1c3e2';
           } else {
-            pointColor = '#ffa500';
+            pointColor = '#fc376e';
             this.numberOfAlerts++;
           }
           dataset.push(response.parameters[0].performance);
@@ -773,9 +773,9 @@ export class MainViewComponent implements OnInit {
             if ( p.performance < lowerThreshold ) {
             pointColor.push('#ff0000');
           } else if ( p.performance > upperThreshold ) {
-            pointColor.push('#ffffff');
+            pointColor.push('#b1c3e2');
           } else {
-            pointColor.push('#ffa500');
+            pointColor.push('#fc376e');
           }
             i++;
           }
@@ -844,12 +844,12 @@ export class MainViewComponent implements OnInit {
     }
     this.slider_date_value = 5;
     this.ageOrder = null;
-    this.statusOrder = null;
-    this.chargeOrder = null;
+    this.regionOrder = null;
+    this.healthOrder = null;
   }
 
   topCardClicked(id) {
-    if (id === '1' || this.lineChartData !== this.genLineChartData) {
+    if (this.lineChartData !== this.genLineChartData) {
       this.lineChartData = this.genLineChartData;
     } else {
     const newLineChartData = [];
@@ -866,7 +866,7 @@ export class MainViewComponent implements OnInit {
 
           if ( id === '5' ) { // For Actions
             lowerThreshold = this.BASELINE[i];
-            pointColor = '#ffa500';
+            pointColor = '#fc376e';
             this.numberOfAlerts++;
           } else if ( id === '4') { // For Critical Issues
             lowerThreshold = this.BASELINE[i] * 0.8;
@@ -893,9 +893,7 @@ export class MainViewComponent implements OnInit {
     if ( !value ) {
       return;
     }
-    if ((this.ageOrder && !value.includes('age')) || (this.chargeOrder && !value.includes('charge'))) {
-      console.log("A FILTER IS ALREADY APPLIED");
-    } else if (this.viewGeneral) {
+    if (this.viewGeneral) {
       this.currentVehicles = this.allVehicles;
     } else if (this.viewCluster) {
       this.currentVehicles = this.clusterVehicles;
@@ -904,6 +902,9 @@ export class MainViewComponent implements OnInit {
       arrayVehicle.push(this.chosenVehicle);
       this.currentVehicles = arrayVehicle;
     }
+    this.ageOrder = '';
+    this.regionOrder = '';
+    this.healthOrder = '';
     const newVehicles = [];
     for (const vh of this.currentVehicles) {
       if (value.includes('age')) {
@@ -928,33 +929,37 @@ export class MainViewComponent implements OnInit {
       if ( age >= min_age * 12 && age < max_age * 12 ) {
         newVehicles.push(vh);
       }
-    } else if (value.includes('charge')) {
-      let min_charge = 0;
-      let max_charge = 0;
-      if (value === 'charge1') {
-        max_charge = 20;
-      } else if ( value === 'charge2') {
-        max_charge = 50;
-        min_charge = 20;
-      } else if ( value === 'charge3') {
-        max_charge = 80;
-        min_charge = 50;
-      } else if (value === 'charge4') {
-        max_charge = 100;
-        min_charge = 80;
+    } else if (value.includes('health')) {
+      let min_health = 0;
+      let max_health = 0;
+      if (value === 'health1') {
+        max_health = 20;
+      } else if ( value === 'health2') {
+        max_health = 50;
+        min_health = 20;
+      } else if ( value === 'health3') {
+        max_health = 80;
+        min_health = 50;
+      } else if (value === 'health4') {
+        max_health = 100;
+        min_health = 80;
       } else {
-        max_charge = 100;
-        min_charge = 0;
+        max_health = 100;
+        min_health = 0;
       }
-      const charge = vh._battery_id.charge;
-      if ( charge > min_charge && charge <= max_charge) {
+      const charge = vh._battery_id.life_span;
+      if ( charge > min_health && charge <= max_health) {
+        newVehicles.push(vh);
+      }
+    } else if (value.includes('region')) {
+      if (vh.cluster.name === value.slice(6, value.lenth)) {
         newVehicles.push(vh);
       }
     }
   }
     this.currentVehicles = newVehicles;
     this.filteredVehicles = this.currentVehicles;
-    this.currentVehicles.sort(this.propComparator('charge'));
+    this.currentVehicles.sort(this.propComparator('life_span'));
   }
 
   propComparator(prop) {

@@ -6,7 +6,7 @@
         <img src="assets/img/Panasonic_CY_logo.png" class="logo">
       </div>
         <div class="top_cards">
-            <mat-card matRipple id="1" class="mat-elevation-z0" (click)="topCardClicked('1')">
+            <mat-card matRipple class="mat-elevation-z0">
                 <p class = "big_box_text"> <strong> {{numberOfVehicles}} </strong> </p>
 
               <p *ngIf="viewCluster && chosenCluster; else clusterTot" class = "label_text">
@@ -19,7 +19,7 @@
               </ng-template>
 
             </mat-card>
-            <mat-card matRipple id="2" class="mat-elevation-z0">
+            <mat-card matRipple class="mat-elevation-z0">
                 <p class = "big_box_text"> <strong> {{tcoSavings}} </strong> </p>
 
               <p class = "label_text">
@@ -267,7 +267,7 @@
         <mat-form-field>
           <mat-label>Age</mat-label>
           <mat-select [(ngModel)]="ageOrder" (selectionChange)="onFilterChanged(ageOrder)">
-              <mat-option value = "noage">
+              <mat-option>
                   All
               </mat-option>
             <mat-option value = "age1">
@@ -282,35 +282,32 @@
           </mat-select>
         </mat-form-field>
         <mat-form-field>
-          <mat-label>Status</mat-label>
-          <mat-select>
-            <mat-option>
-              Status1
-            </mat-option>
-            <mat-option>
-              Status2
-            </mat-option>
-            <mat-option>
-              Status3
+          <mat-label>Region</mat-label>
+          <mat-select [(ngModel)]="regionOrder" (selectionChange)="onFilterChanged(regionOrder)">
+              <mat-option>
+                  All
+              </mat-option>
+            <mat-option *ngFor="let cl of clusters" value = "region{{cl.name}}">
+              {{cl.name}}
             </mat-option>
           </mat-select>
         </mat-form-field>
         <mat-form-field>
-          <mat-label>Charge</mat-label>
-          <mat-select [(ngModel)]="chargeOrder" (selectionChange)="onFilterChanged(chargeOrder)">
-              <mat-option value = "nocharge">
+          <mat-label>Health</mat-label>
+          <mat-select [(ngModel)]="healthOrder" (selectionChange)="onFilterChanged(healthOrder)">
+              <mat-option>
                   All
               </mat-option>
-            <mat-option value = "charge1">
+            <mat-option value = "health1">
               < 20%
             </mat-option>
-            <mat-option value = "charge2">
+            <mat-option value = "health2">
               20% - 50%
             </mat-option>
-            <mat-option value = "charge3">
+            <mat-option value = "health3">
               50% - 80%
             </mat-option>
-            <mat-option value = "charge4">
+            <mat-option value = "health4">
                > 80%
             </mat-option>
           </mat-select>
@@ -319,16 +316,16 @@
 
       <div class="list_of_vehicles">
         <mat-accordion class="mat-elevation-z0">
-          <mat-expansion-panel class="vehicle_list" *ngFor="let vh of currentVehicles" (opened)="onVehicleChosen(vh)">
+          <mat-expansion-panel class="vehicle_list" *ngFor="let vh of currentVehicles">
             <mat-expansion-panel-header>
               <mat-panel-title>
                 {{ vh.model }}
               </mat-panel-title>
               <mat-panel-description style="flex: 0 0 auto;">
-                Charge: {{ vh._battery_id.charge }}%
+                Battery Health: {{ vh._battery_id.life_span }}%
               </mat-panel-description>
             </mat-expansion-panel-header>
-            <img src="truck_1.jpg" class="logo">
+            <img src="assets/img/Truck_2.png" class="vehicle_image">
             <p>Additional information about vehicle goes here</p>
           </mat-expansion-panel>
         </mat-accordion>
