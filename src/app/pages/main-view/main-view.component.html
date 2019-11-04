@@ -254,7 +254,7 @@
             </agm-circle>
         </div>
           <div *ngIf="viewCluster; else displayVehiclePos">
-            <agm-marker *ngFor="let item of vehicles" [latitude]="item.position_lat"
+            <agm-marker *ngFor="let item of currentVehicles" [latitude]="item.position_lat"
               [longitude]="item.position_lng" (markerClick)="onVehicleChosen(item)">
               <agm-info-window *ngIf="chosenVehicle">
                 <strong>Status: {{ chosenVehicle._battery_id.status }}</strong>
@@ -270,7 +270,10 @@
           </ng-template>
         </agm-map>
       </div>
-      <h4> Vehicle List</h4>
+      <h4 *ngIf="viewVehicle; else vehicleList"> Selected Vehicle </h4>
+      <ng-template #vehicleList>
+          <h4> Vehicle List</h4>
+      </ng-template>
       <div class="filters dark-theme-container">
         <h4>Order by:</h4>
         <mat-form-field>
@@ -328,7 +331,7 @@
 
       <div class="list_of_vehicles">
         <mat-accordion class="mat-elevation-z0">
-          <mat-expansion-panel class="vehicle_list" *ngFor="let vh of vehicles" (opened)="onVehicleChosen(vh)">
+          <mat-expansion-panel class="vehicle_list" *ngFor="let vh of currentVehicles" (opened)="onVehicleChosen(vh)">
             <mat-expansion-panel-header>
               <mat-panel-title>
                 {{ vh.model }}

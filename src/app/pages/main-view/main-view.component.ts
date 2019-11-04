@@ -33,7 +33,9 @@ export class MainViewComponent implements OnInit {
 
   // Imported from server
   allVehicles;
-  vehicles;
+  clusterVehicles;
+  currentVehicles;
+  tempVehicles;
   clusters;
   parameters;
   vehicleParameter = []; // Parameters of the vehicle between 2 dates
@@ -384,7 +386,7 @@ export class MainViewComponent implements OnInit {
       this.viewVehicle = false;
       this.viewCluster = false;
       this.allVehicles = response.vehicle_list;
-      this.vehicles = this.allVehicles;
+      this.currentVehicles = this.allVehicles;
       this.refreshGraphs(this.allVehicles, view);
     });
   }
@@ -411,12 +413,13 @@ export class MainViewComponent implements OnInit {
     vehicle.distance = distance.toPrecision(2);
     this.chosenCluster = vehicle.cluster;
     const arrayVehicle = [];
-    arrayVehicle[0] = vehicle;
+    arrayVehicle.push(vehicle);
+    this.currentVehicles = arrayVehicle;
     console.log(vehicle);
     // this.getVehicleParameterBetweenDates(vehicle, this.slider_date_value, this.slider_date_value + 1);
     this.chosenVehiclebool = true;
     const view = 'vehicleView';
-    this.refreshGraphs(arrayVehicle, view);
+    this.refreshGraphs(this.currentVehicles, view);
     this.chosenClusterbool = false;
     this.recenterMap(vehicle.position_lat, vehicle.position_lng);
     this.zoom = this.GEN_ZOOM + 2;
@@ -424,19 +427,26 @@ export class MainViewComponent implements OnInit {
   }
 
   sliderEvent() {
-    if (this.vehicles) {
-      this.lineChartLabels = [];
-      let i;
-      for (i = 0; i < this.slider_date_value; i++) {
+    if (this.viewGeneral) {
+      this.currentVehicles = this.allVehicles;
+    } else if ( this.viewCluster) {
+      this.currentVehicles = this.clusterVehicles;
+    } else {
+      // Safety: this should never happen
+      return;
+    }
+    this.lineChartLabels = [];
+    let i;
+    for (i = 0; i < this.slider_date_value; i++) {
         this.lineChartLabels.push('' + i);
         for (let j = 0; j < 11; j++) {
           this.lineChartLabels.push('');
         }
       }
-      this.lineChartLabels.push('' + i);
-      this.calculateTopParameters();
-      const newVehicles = [];
-      for (const vh of this.allVehicles) {
+    this.lineChartLabels.push('' + i);
+    this.calculateTopParameters();
+    const newVehicles = [];
+    for (const vh of this.currentVehicles) {
         const today = new Date();
         const age = this.battery_age(today, vh.date_of_creation);
         console.log("age", age);
@@ -444,11 +454,10 @@ export class MainViewComponent implements OnInit {
           newVehicles.push(vh);
         }
       }
-      this.vehicles = newVehicles;
-      this.ageOrder = null;
-    }
+    this.currentVehicles = newVehicles;
+    this.ageOrder = null;
     // console.log(this.getVehicleParameterBetweenDates(this.vehicles[0], this.slider_date_value, this.slider_date_value + 1));
-  }
+}
 
   calculateTopParameters() {
     this.numberOfVehicles = 0;
@@ -485,6 +494,9 @@ export class MainViewComponent implements OnInit {
     this.chosenCluster = circle;
     this.chosenClusterbool = true;
     this.chosenVehiclebool = false;
+    this.ageOrder = null;
+    this.statusOrder = null;
+    this.chargeOrder = null;
     await this.chargeVehicles(circle);
     this.circleClicked = true;
     this.circleVisible = false;
@@ -603,8 +615,8 @@ export class MainViewComponent implements OnInit {
       this.chosenClusterbool = false;
       this.chosenVehiclebool = false;
       const view = 'clusterView';
-      this.refreshGraphs(this.allVehicles, view);
-      this.vehicles = this.allVehicles;
+      this.currentVehicles = this.allVehicles;
+      this.refreshGraphs(this.currentVehicles, view);
     } else if (event <= this.GEN_ZOOM && this.viewVehicle) {
       this.viewGeneral = true;
       this.viewCluster = false;
@@ -615,8 +627,8 @@ export class MainViewComponent implements OnInit {
       this.chosenClusterbool = false;
       this.chosenVehiclebool = false;
       const view = 'clusterView';
-      this.refreshGraphs(this.allVehicles, view);
-      this.vehicles = this.allVehicles;
+      this.currentVehicles = this.allVehicles;
+      this.refreshGraphs(this.currentVehicles, view);
     }  else if (event > this.GEN_ZOOM + 1 && this.viewVehicle) {
       this.zoom = event;
       this.viewCluster = false;
@@ -624,6 +636,9 @@ export class MainViewComponent implements OnInit {
       this.viewGeneral = false;
       this.circleClicked = true;
       this.circleVisible = false;
+      const arrayVehicle = [];
+      arrayVehicle.push(this.chosenVehicle);
+      this.currentVehicles = arrayVehicle;
     } else if (event > this.GEN_ZOOM ) {
       this.zoom = event;
       this.viewCluster = true;
@@ -632,6 +647,7 @@ export class MainViewComponent implements OnInit {
       this.circleClicked = true;
       this.circleVisible = false;
       const view = 'clusterView';
+      //this.currentVehicles = this.clusterVehicles;
       //this.refreshGraphs(this.vehicles, view);
 
     } else if (event <= this.GEN_ZOOM &&  this.viewVehicle) {
@@ -652,8 +668,9 @@ export class MainViewComponent implements OnInit {
     this.getVehicleService
       .retrieveVehiclesInCluster(circle._id)
       .subscribe((response: any) => {
-        this.vehicles = response.vehicle_list;
-        this.refreshGraphs(this.vehicles, view);
+        this.clusterVehicles = response.vehicle_list;
+        this.currentVehicles = this.clusterVehicles;
+        this.refreshGraphs(this.currentVehicles, view);
       });
   }
 
@@ -807,9 +824,7 @@ export class MainViewComponent implements OnInit {
         this.viewVehicle = false;
         this.viewCluster = true;
         this.viewGeneral = false;
-        this.refreshGraphs(this.vehicles, view);
-        this.zoom = this.GEN_ZOOM + 1;
-        this.recenterMap(this.chosenCluster.center_lat, this.chosenCluster.center_lng);
+        this.onCircleClicked(this.chosenCluster);
       } else {
         console.log('BACK FROM Vehicle view');
 
@@ -820,8 +835,8 @@ export class MainViewComponent implements OnInit {
         this.circleVisible = true;
         this.chosenClusterbool = false;
         this.chosenVehiclebool = false;
-        this.refreshGraphs(this.allVehicles, view);
-        this.vehicles = this.allVehicles;
+        this.currentVehicles = this.allVehicles;
+        this.refreshGraphs(this.currentVehicles, view);
         this.recenterMap(this.GEN_LAT, this.GEN_LNG);
         this.zoom = this.GEN_ZOOM - 1;
       }
@@ -836,12 +851,15 @@ export class MainViewComponent implements OnInit {
       this.circleVisible = true;
       this.chosenClusterbool = false;
       this.chosenVehiclebool = false;
-      this.refreshGraphs(this.allVehicles, view);
-      this.vehicles = this.allVehicles;
+      this.currentVehicles = this.allVehicles;
+      this.refreshGraphs(this.currentVehicles, view);
       this.zoom = this.GEN_ZOOM - 1;
       this.recenterMap(this.GEN_LAT, this.GEN_LNG);
     }
-
+    this.slider_date_value = 5;
+    this.ageOrder = null;
+    this.statusOrder = null;
+    this.chargeOrder = null;
   }
 
   topCardClicked(id) {
@@ -891,9 +909,18 @@ export class MainViewComponent implements OnInit {
     if ( !value ) {
       return;
     }
-    console.log(this.vehicles);
+    if (this.viewGeneral) {
+      this.currentVehicles = this.allVehicles;
+    } else if (this.viewCluster) {
+      this.currentVehicles = this.clusterVehicles;
+    } else {
+      const arrayVehicle = [];
+      arrayVehicle.push(this.chosenVehicle);
+      this.currentVehicles = arrayVehicle;
+    }
+    console.log(this.currentVehicles);
     const newVehicles = [];
-    for (const vh of this.allVehicles) {
+    for (const vh of this.currentVehicles) {
       if (value.includes('age')) {
       const today = new Date();
       const age = this.battery_age(today, vh.date_of_creation);
@@ -913,7 +940,7 @@ export class MainViewComponent implements OnInit {
         this.slider_date_value = max_age;
         this.sliderEvent();
       }
-      if ( age > min_age * 12 && age <= max_age * 12 ) {
+      if ( age >= min_age * 12 && age < max_age * 12 ) {
         newVehicles.push(vh);
       }
     } else if (value.includes('charge')) {
@@ -937,9 +964,9 @@ export class MainViewComponent implements OnInit {
       }
     }
   }
-    this.vehicles = newVehicles;
-    this.vehicles.sort(this.propComparator('charge'));
-    console.log('ORDERED:', this.vehicles);
+    this.currentVehicles = newVehicles;
+    this.currentVehicles.sort(this.propComparator('charge'));
+    console.log('ORDERED:', this.currentVehicles);
 
   }
 
