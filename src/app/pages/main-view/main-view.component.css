@@ -34,7 +34,7 @@ html,body {
 .big_box_text {
   margin: 5px;
   font-size: 22px;
-  text-align: center;
+  text-align: left;
   overflow: hidden;
   white-space: nowrap;
 }
@@ -177,11 +177,14 @@ mat-form-field{
 }
 
 .time_slider h4{
+  top: 0;
   margin-top: 0;
   padding-left: 10px;
+  margin-top: 12px;
   position: absolute;
   left:0;
 }
+
 .text-small{
   font-size: small;
 }
@@ -383,7 +386,6 @@ agm-map > div {
 }
 
 .vehicle_image{
-  display: block;
-  width: 50%;
-  height: auto;
+  width: 183px;
+  height: 100px;
 }

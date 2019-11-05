@@ -28,7 +28,7 @@
 
             </mat-card>
             <mat-card matRipple id="4" class="mat-elevation-z0" (click)="topCardClicked('4')">
-                <p *ngIf="criticalBatteries>0; else nocritical" class = "big_box_text" matBadge="criticalBatteries"  matBadgeOverlap="true"  matBadgePosition="before" matBadgeColor="warn"> <strong> {{criticalBatteries}} </strong> </p>
+                <p *ngIf="criticalBatteries>0; else nocritical" class = "big_box_text" matBadge="6"  matBadgeOverlap="false"  matBadgePosition="before" matBadgeColor="warn"> <strong> {{criticalBatteries}} </strong> </p>
               <ng-template #nocritical>
                 <p class = "big_box_text"> <strong> {{criticalBatteries}} </strong> </p>
               </ng-template>
@@ -51,13 +51,16 @@
 
       <ng-template #OpenbackButton >
           <div class="time_slider">
-              <button class = "backButton" mat-button (click) = "onBackButton()"><mat-icon>arrow_back</mat-icon></button>
+              <button class = "backButton" mat-icon-button (click) = "onBackButton()"><mat-icon>arrow_back</mat-icon></button>
+              <h4 style="margin-left: 40px;">{{chosenVehicle.model}}</h4>
+
             </div>
       </ng-template>
 
       <ng-template #backButtonNslider >
           <div class="time_slider" *ngIf="viewCluster; else OpenbackButton">
-              <button class = "backButton" mat-button (click) = "onBackButton()"><mat-icon>arrow_back</mat-icon></button>
+              <button class = "backButton" mat-icon-button (click) = "onBackButton()"><mat-icon>arrow_back</mat-icon></button>
+              <h4 style="margin-left: 40px"> {{chosenCluster.name}} Depot</h4>
               <label class="legend_left">{{min_slider_date}} year </label>
               <mat-slider  class="slider" [max]="max_slider_date" [min]="min_slider_date" [(ngModel)]="slider_date_value"
                 [thumbLabel]="thumbLabel" (change)="sliderEvent()"></mat-slider><label class="legend_right">{{max_slider_date}} years</label>
@@ -267,7 +270,7 @@
         <mat-form-field>
           <mat-label>Age</mat-label>
           <mat-select [(ngModel)]="ageOrder" (selectionChange)="onFilterChanged(ageOrder)">
-              <mat-option>
+              <mat-option value= "age0">
                   All
               </mat-option>
             <mat-option value = "age1">
@@ -284,7 +287,7 @@
         <mat-form-field>
           <mat-label>Region</mat-label>
           <mat-select [(ngModel)]="regionOrder" (selectionChange)="onFilterChanged(regionOrder)">
-              <mat-option>
+              <mat-option value= "region0">
                   All
               </mat-option>
             <mat-option *ngFor="let cl of clusters" value = "region{{cl.name}}">
@@ -295,7 +298,7 @@
         <mat-form-field>
           <mat-label>Health</mat-label>
           <mat-select [(ngModel)]="healthOrder" (selectionChange)="onFilterChanged(healthOrder)">
-              <mat-option>
+              <mat-option  value= "health0">
                   All
               </mat-option>
             <mat-option value = "health1">
@@ -325,8 +328,17 @@
                 Battery Health: {{ vh._battery_id.life_span }}%
               </mat-panel-description>
             </mat-expansion-panel-header>
-            <img src="assets/img/Truck_2.png" class="vehicle_image">
-            <p>Additional information about vehicle goes here</p>
+            <div class="mat-content" style = "height: 100px;">
+              <img src="assets/img/Truck_2.png" class="vehicle_image">
+            <div style=" width: 50%; font-size: 12px; padding: 0;">
+              <div style="position: absolute; right: 0; padding: 0; padding-right: 60px; margin: 0; list-style-type: none;">
+                  <p>Age: {{vh.cluster.age}}</p>
+                  <p>Region: {{vh.cluster.name}}</p>
+                  <p>Charge: {{vh._battery_id.charge}}%</p>
+              </div>
+
+            </div>
+          </div>
           </mat-expansion-panel>
         </mat-accordion>
       </div>
