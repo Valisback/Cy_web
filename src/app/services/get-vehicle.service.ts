@@ -28,6 +28,10 @@ export class GetVehicleService {
       return this.webReqService.get('parameters/vehicle/' + vehicle_id + '/' + date);
     }
 
+    retrieveAllVehicleParametersAtDate(date) {
+      return this.webReqService.get('parameters/all/' + date);
+    }
+
     retrieveParametersBetweenDates(vehicle_id, date1, date2) {
       return this.webReqService.get('parameters/vehicle/' + vehicle_id + '/' + date1 + '/' + date2);
     }

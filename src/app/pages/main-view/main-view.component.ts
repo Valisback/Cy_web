@@ -32,6 +32,7 @@ export class MainViewComponent implements OnInit {
   healthOrder;
 
   // Imported from server
+  allLastParams = [];
   allVehicles;
   clusterVehicles;
   currentVehicles;
@@ -47,8 +48,6 @@ export class MainViewComponent implements OnInit {
   sliderVisible = true;
   chosenVehicle;
   chosenCluster;
-  chosenVehiclebool = false;
-  chosenClusterbool = false;
   panelOpenState;
 
   // Elements displayed on top cards
@@ -73,6 +72,14 @@ export class MainViewComponent implements OnInit {
   lineChartLabels = [];
   lineChartType;
   lineChartLegend;
+
+  // Parameters per view
+  allVehiclesChartData = [];
+  allVehiclesChartLabels = [];
+  clusterVehiclesChartData = [];
+  clusterVehiclesChartLabels = [];
+  chosenVehicleChartData = [];
+  chosenVehicleChartLabels = [];
   genLineChartData = [];
   lineChartData = [];
   lineChartOptions;
@@ -405,9 +412,6 @@ export class MainViewComponent implements OnInit {
   ) {}
 
   private refreshData() {
-    /*this.getVehicleService.retrieveVehicles().subscribe((response: any) => {
-      this.vehicles = response.vehicle_list;
-    });*/
     this.getClusterService.retrieveClusters().subscribe((response: any) => {
       this.clusters = response.cluster_list;
     });
@@ -432,140 +436,6 @@ export class MainViewComponent implements OnInit {
       this.currentVehicles = this.allVehicles;
       this.refreshGraphs(this.allVehicles, view);
     });
-  }
-
-  fillCircleColor(circle) {
-    if (circle.gen_health > 75) {
-      return 'green';
-    } else if (circle.gen_health > 50) {
-      return 'orange';
-    } else {
-      return 'red';
-    }
-  }
-
-  onVehicleChosen(vehicle) {
-    // this.viewVehicle = true;
-    // this.viewGeneral = false;
-    // this.viewCluster = false;
-    this.chosenVehicle = vehicle;
-    const today = Date.now();
-    const age = this.battery_age(today, vehicle.date_of_creation);
-    const distance = age * Math.random() * 1000 + 300;
-    vehicle.age = age;
-    vehicle.distance = distance.toPrecision(2);
-    this.chosenCluster = vehicle.cluster;
-    const arrayVehicle = [];
-    arrayVehicle.push(vehicle);
-    //this.currentVehicles = arrayVehicle;
-    // this.getVehicleParameterBetweenDates(vehicle, this.slider_date_value, this.slider_date_value + 1);
-    this.chosenVehiclebool = true;
-    const view = 'vehicleView';
-    this.refreshGraphs(arrayVehicle, view);
-    this.chosenClusterbool = false;
-    this.recenterMap(vehicle.position_lat, vehicle.position_lng);
-    this.zoom = this.GEN_ZOOM + 2;
-  }
-
-  sliderEvent() {
-    if (this.viewGeneral) {
-      this.currentVehicles = this.allVehicles;
-    } else if (this.viewCluster) {
-      this.currentVehicles = this.clusterVehicles;
-    } else {
-      // Safety: this should never happen
-      return;
-    }
-    this.lineChartLabels = [];
-    let i;
-    for (i = 0; i < this.slider_date_value; i++) {
-      this.lineChartLabels.push('' + i);
-      for (let j = 0; j < 11; j++) {
-        this.lineChartLabels.push('');
-      }
-    }
-    this.lineChartLabels.push('' + i);
-    this.calculateTopParameters();
-    const newVehicles = [];
-    for (const vh of this.currentVehicles) {
-      const today = new Date();
-      const age = this.battery_age(today, vh.date_of_creation);
-      if (age <= this.slider_date_value * 12) {
-        newVehicles.push(vh);
-      }
-    }
-    this.currentVehicles = newVehicles;
-  }
-
-  calculateTopParameters() {
-    this.numberOfVehicles = 0;
-    this.criticalBatteries = 0;
-    this.numberOfAlerts = 0;
-    for (const dataset of this.lineChartData) {
-      if (dataset.label !== 'Baseline') {
-        let bool = true;
-        let i = 0;
-        for (i; i < this.lineChartLabels.length; i++) {
-          if (dataset.data[i] && typeof dataset.data[i] !== 'function') {
-            if (bool) {
-              this.numberOfVehicles++;
-              bool = false;
-            }
-            if (dataset.data[i] < this.BASELINE[i]) {
-              this.numberOfAlerts++;
-            }
-            if (dataset.data[i] < this.BASELINE[i] * 0.8) {
-              this.criticalBatteries++;
-            }
-          }
-        }
-      }
-    }
-  }
-
-  async onCircleClicked(circle) {
-    this.viewCluster = true;
-    this.viewGeneral = false;
-    this.viewVehicle = false;
-    this.recenterMap(circle.center_lat, circle.center_lng);
-    this.chosenCluster = circle;
-    this.chosenClusterbool = true;
-    this.chosenVehiclebool = false;
-    this.ageOrder = null;
-    this.regionOrder = 'region' + circle.name;
-    this.healthOrder = null;
-    await this.chargeVehicles(circle);
-    this.circleClicked = true;
-    this.circleVisible = false;
-    this.zoom = this.GEN_ZOOM + 1;
-  }
-
-  recenterMap(lat, lng) {
-    this.latitude = Number(lat);
-    this.longitude = Number(lng);
-  }
-
-  async refreshGraphs(vehicles, view) {
-    this.lineChartType = 'line';
-    const date = new Date();
-    if (view === 'clusterView') {
-      if (vehicles === this.allVehicles) {
-        this.viewCluster = false;
-        this.viewGeneral = true;
-      } else {
-        this.viewCluster = true;
-        this.viewGeneral = false;
-      }
-      this.viewVehicle = false;
-      this.numberOfVehicles = vehicles.length;
-      this.loadVehicleParameterAtDate(vehicles, date);
-    } else if (view === 'vehicleView') {
-      this.viewVehicle = true;
-      this.viewGeneral = false;
-      this.viewCluster = false;
-      const creationDate = new Date(vehicles[0].date_of_creation);
-      this.loadVehicleParameterBetweenDates(vehicles, creationDate, date);
-    }
 
     this.lineChartOptions = {
       scaleFontColor: '#8c99af',
@@ -625,6 +495,162 @@ export class MainViewComponent implements OnInit {
     };
   }
 
+  fillCircleColor(circle) {
+    if (circle.gen_health > 75) {
+      return 'green';
+    } else if (circle.gen_health > 50) {
+      return 'orange';
+    } else {
+      return 'red';
+    }
+  }
+
+  refreshCurrentView(refreshedView) {
+    if (refreshedView === 'general') {
+      this.currentVehicles = this.allVehicles;
+      this.lineChartData = this.allVehiclesChartData;
+      this.sliderEvent();
+    } else if (refreshedView === 'cluster') {
+      this.currentVehicles = this.clusterVehicles;
+      this.lineChartData = this.clusterVehiclesChartData;
+      this.sliderEvent();
+    } else if (refreshedView === 'vehicle') {
+      this.lineChartData = this.chosenVehicleChartData;
+      this.lineChartLabels = this.chosenVehicleChartLabels;
+    }
+
+
+  }
+
+  onVehicleChosen(vehicle) {
+    // this.viewVehicle = true;
+    // this.viewGeneral = false;
+    // this.viewCluster = false;
+    if (this.chosenVehicle === vehicle) {
+      const refreshedView = 'vehicle';
+      this.refreshCurrentView(refreshedView);
+    } else {
+      this.chosenVehicle = vehicle;
+      const today = Date.now();
+      const age = this.battery_age(today, vehicle.date_of_creation);
+      const distance = age * Math.random() * 1000 + 300;
+      vehicle.age = age;
+      vehicle.distance = distance.toPrecision(2);
+      this.chosenCluster = vehicle.cluster;
+      const arrayVehicle = [];
+      arrayVehicle.push(vehicle);
+      //this.currentVehicles = arrayVehicle;
+      // this.getVehicleParameterBetweenDates(vehicle, this.slider_date_value, this.slider_date_value + 1);
+      const view = 'vehicleView';
+      this.refreshGraphs(arrayVehicle, view);
+    }
+    this.recenterMap(vehicle.position_lat, vehicle.position_lng);
+    this.zoom = this.GEN_ZOOM + 2;
+  }
+
+  sliderEvent() {
+    if (this.viewGeneral || !this.chosenCluster) {
+      this.currentVehicles = this.allVehicles;
+    } else if (this.viewCluster) {
+      this.currentVehicles = this.clusterVehicles;
+    } else {
+      // Safety: this should never happen
+      return;
+    }
+    this.lineChartLabels = [];
+    let i;
+    for (i = 0; i < this.slider_date_value; i++) {
+      this.lineChartLabels.push('' + i);
+      for (let j = 0; j < 11; j++) {
+        this.lineChartLabels.push('');
+      }
+    }
+    this.lineChartLabels.push('' + i);
+    this.calculateTopParameters();
+    const newVehicles = [];
+    for (const vh of this.currentVehicles) {
+      const today = new Date();
+      const age = this.battery_age(today, vh.date_of_creation);
+      if (age <= this.slider_date_value * 12) {
+        newVehicles.push(vh);
+      }
+    }
+    this.currentVehicles = newVehicles;
+  }
+
+  calculateTopParameters() {
+    this.numberOfVehicles = 0;
+    this.criticalBatteries = 0;
+    this.numberOfAlerts = 0;
+    for (const dataset of this.lineChartData) {
+      if (dataset.label !== 'Baseline') {
+        let bool = true;
+        let i = 0;
+        for (i; i < this.lineChartLabels.length; i++) {
+          if (dataset.data[i] && typeof dataset.data[i] !== 'function') {
+            if (bool) {
+              this.numberOfVehicles++;
+              bool = false;
+            }
+            if (dataset.data[i] < this.BASELINE[i]) {
+              this.numberOfAlerts++;
+            }
+            if (dataset.data[i] < this.BASELINE[i] * 0.8) {
+              this.criticalBatteries++;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  async onCircleClicked(circle) {
+    this.viewCluster = true;
+    this.viewGeneral = false;
+    this.viewVehicle = false;
+    this.ageOrder = null;
+    this.regionOrder = 'region' + circle.name;
+    this.healthOrder = null;
+    if (circle === this.chosenCluster && this.clusterVehicles) {
+      const refreshedView = 'cluster';
+      this.refreshCurrentView(refreshedView);
+    } else {
+      this.chosenCluster = circle;
+      await this.chargeVehicles(circle);
+    }
+    this.recenterMap(circle.center_lat, circle.center_lng);
+    this.circleVisible = false;
+    this.zoom = this.GEN_ZOOM + 1;
+  }
+
+  recenterMap(lat, lng) {
+    this.latitude = Number(lat);
+    this.longitude = Number(lng);
+  }
+
+  async refreshGraphs(vehicles, view) {
+    this.lineChartType = 'line';
+    const date = new Date();
+    if (view === 'clusterView') {
+      if (vehicles === this.allVehicles) {
+        this.viewCluster = false;
+        this.viewGeneral = true;
+      } else {
+        this.viewCluster = true;
+        this.viewGeneral = false;
+      }
+      this.viewVehicle = false;
+      this.numberOfVehicles = vehicles.length;
+      this.loadVehicleParameterAtDate(vehicles, date);
+    } else if (view === 'vehicleView') {
+      this.viewVehicle = true;
+      this.viewGeneral = false;
+      this.viewCluster = false;
+      const creationDate = new Date(vehicles[0].date_of_creation);
+      this.loadVehicleParameterBetweenDates(vehicles, creationDate, date);
+    }
+  }
+
   getMonthsBetweenRange(date1, date2) {
     const dateFormat = 'YYYY-MM';
     const startDate = moment('' + date1, dateFormat);
@@ -646,31 +672,22 @@ export class MainViewComponent implements OnInit {
       this.viewCluster = false;
       this.viewVehicle = false;
       this.zoom = event;
-      this.circleClicked = false;
       this.circleVisible = true;
-      this.chosenClusterbool = false;
-      this.chosenVehiclebool = false;
-      const view = 'clusterView';
-      this.currentVehicles = this.allVehicles;
-      this.refreshGraphs(this.currentVehicles, view);
+      const refreshedview = 'general';
+      this.refreshCurrentView(refreshedview);
     } else if (event <= this.GEN_ZOOM && this.viewVehicle) {
       this.viewGeneral = true;
       this.viewCluster = false;
       this.viewVehicle = false;
       this.zoom = event;
-      this.circleClicked = false;
       this.circleVisible = true;
-      this.chosenClusterbool = false;
-      this.chosenVehiclebool = false;
-      const view = 'clusterView';
-      this.currentVehicles = this.allVehicles;
-      this.refreshGraphs(this.currentVehicles, view);
+      const refreshedview = 'general';
+      this.refreshCurrentView(refreshedview);
     } else if (event > this.GEN_ZOOM + 1 && this.viewVehicle) {
       this.zoom = event;
       this.viewCluster = false;
       this.viewVehicle = true;
       this.viewGeneral = false;
-      this.circleClicked = true;
       this.circleVisible = false;
       // const arrayVehicle = [];
       // arrayVehicle.push(this.chosenVehicle);
@@ -680,18 +697,18 @@ export class MainViewComponent implements OnInit {
       this.viewCluster = true;
       this.viewVehicle = false;
       this.viewGeneral = false;
-      this.circleClicked = true;
       this.circleVisible = false;
-      const view = 'clusterView';
-      //this.currentVehicles = this.clusterVehicles;
-      //this.refreshGraphs(this.vehicles, view);
+      if (this.clusterVehicles) {
+        const refreshedview = 'cluster';
+        this.refreshCurrentView(refreshedview);
+      }
+      console.log(this.currentVehicles);
     } else if (event <= this.GEN_ZOOM && this.viewVehicle) {
       this.viewGeneral = true;
       this.viewCluster = false;
       this.viewVehicle = false;
       this.zoom = event;
       this.circleVisible = true;
-      this.circleClicked = false;
     } else {
       this.zoom = event;
     }
@@ -705,6 +722,7 @@ export class MainViewComponent implements OnInit {
         this.clusterVehicles = response.vehicle_list;
         this.currentVehicles = this.clusterVehicles;
         this.refreshGraphs(this.currentVehicles, view);
+        this.sliderEvent();
       });
   }
 
@@ -719,6 +737,7 @@ export class MainViewComponent implements OnInit {
   }
 
   loadVehicleParameterAtDate(vehicles, date) {
+
     this.criticalBatteries = 0;
     this.numberOfAlerts = 0;
     this.lineChartLabels = [];
@@ -740,7 +759,79 @@ export class MainViewComponent implements OnInit {
       fill: false,
       pointRadius: 0
     });
-    for (const vh of vehicles) {
+    if (vehicles === this.allVehicles) {
+      this.getVehicleService
+          .retrieveAllVehicleParametersAtDate(date)
+          .subscribe((response: any) => {
+            this.allLastParams = response.parameters;
+            this.allLastParams.pop();
+            for (const pm of this.allLastParams) {
+              const dataset = [];
+              const battAge = this.battery_age(date, pm.vehicle.date_of_creation); // returns current age of battery
+              let month;
+              for (month = 0; month < battAge; month++) {
+                dataset.push(empty);
+              }
+              const lowerThreshold = this.BASELINE[month] * 0.8;
+              const upperThreshold = this.BASELINE[month];
+              let pointColor;
+              if (pm.performance < lowerThreshold) {
+                pointColor = '#ff0000';
+                this.criticalBatteries++;
+              } else if (pm.performance > upperThreshold) {
+                pointColor = '#b1c3e2';
+              } else {
+                pointColor = '#fc376e';
+                this.numberOfAlerts++;
+              }
+              dataset.push(pm.performance);
+              this.lineChartData.push({
+                data: dataset,
+                label: pm.vehicle.model,
+                pointBackgroundColor: pointColor,
+                pointBorderColor: false,
+              });
+              //console.log(this.lineChartData);
+            }
+            this.statistics = true;
+            this.allVehiclesChartData = this.lineChartData;
+            this.allVehiclesChartLabels = this.lineChartLabels;
+          });
+    } else {
+      for (const pm of this.allLastParams) {
+        const idCluster = this.clusterVehicles[0].cluster._id;
+        if (pm.vehicle.cluster === idCluster) {
+          const dataset = [];
+          const battAge = this.battery_age(date, pm.vehicle.date_of_creation); // returns current age of battery
+          let month;
+          for (month = 0; month < battAge; month++) {
+            dataset.push(empty);
+          }
+          const lowerThreshold = this.BASELINE[month] * 0.8;
+          const upperThreshold = this.BASELINE[month];
+          let pointColor;
+          if (pm.performance < lowerThreshold) {
+            pointColor = '#ff0000';
+            this.criticalBatteries++;
+          } else if (pm.performance > upperThreshold) {
+            pointColor = '#b1c3e2';
+          } else {
+            pointColor = '#fc376e';
+            this.numberOfAlerts++;
+          }
+          dataset.push(pm.performance);
+          this.lineChartData.push({
+            data: dataset,
+            label: pm.vehicle.model,
+            pointBackgroundColor: pointColor,
+            pointBorderColor: false,
+          });
+        }
+      }
+      this.statistics = true;
+      this.clusterVehiclesChartData = this.lineChartData;
+      this.clusterVehiclesChartLabels = this.lineChartLabels;
+      /*for (const vh of vehicles) {
       const battAge = this.battery_age(date, vh.date_of_creation); // returns current age of battery
       if (battAge <= this.max_slider_date * 12) {
         const dataset = [];
@@ -775,8 +866,8 @@ export class MainViewComponent implements OnInit {
       } else {
         // nothing happens
       }
-    }
-    this.genLineChartData = this.lineChartData;
+    }*/
+  }
   }
 
   battery_age(a, b) {
@@ -846,6 +937,8 @@ export class MainViewComponent implements OnInit {
           pointBackgroundColor: pointColor
         });
         this.genLineChartData = this.lineChartData;
+        this.chosenVehicleChartData = this.lineChartData;
+        this.chosenVehicleChartLabels = this.lineChartLabels;
         this.statistics = true;
       });
     this.sliderVisible = false;
@@ -870,44 +963,35 @@ export class MainViewComponent implements OnInit {
   }
 
   onBackButton() {
-    const view = 'clusterView';
     if (this.viewVehicle) {
       if (this.chosenCluster) {
+        console.log("back from CHOSEN CLUSTER", this.chosenCluster);
         this.viewVehicle = false;
         this.viewCluster = true;
         this.viewGeneral = false;
         this.onCircleClicked(this.chosenCluster);
+        this.regionOrder = 'region' + this.chosenCluster.name;
       } else {
         this.viewVehicle = false;
         this.viewCluster = false;
         this.viewGeneral = true;
-        this.circleClicked = false;
         this.circleVisible = true;
-        this.chosenClusterbool = false;
-        this.chosenVehiclebool = false;
-        this.currentVehicles = this.allVehicles;
-        this.refreshGraphs(this.currentVehicles, view);
+        const refreshedview = 'general';
+        this.refreshCurrentView(refreshedview);
         this.recenterMap(this.GEN_LAT, this.GEN_LNG);
         this.zoom = this.GEN_ZOOM - 1;
       }
-
-      //this.panelOpenState = false;
     } else if (this.viewCluster) {
       this.viewGeneral = true;
       this.viewCluster = false;
       this.viewVehicle = false;
-      this.circleClicked = false;
       this.circleVisible = true;
-      this.chosenClusterbool = false;
-      this.chosenVehiclebool = false;
-      this.currentVehicles = this.allVehicles;
-      this.refreshGraphs(this.currentVehicles, view);
+      const refreshedview = 'general';
+      this.refreshCurrentView(refreshedview);
       this.zoom = this.GEN_ZOOM - 1;
       this.recenterMap(this.GEN_LAT, this.GEN_LNG);
     }
-    this.slider_date_value = 5;
     this.ageOrder = null;
-    this.regionOrder = null;
     this.healthOrder = null;
   }
 

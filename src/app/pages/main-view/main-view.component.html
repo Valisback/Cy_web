@@ -60,7 +60,7 @@
       <ng-template #backButtonNslider >
           <div class="time_slider" *ngIf="viewCluster; else OpenbackButton">
               <button class = "backButton" mat-icon-button (click) = "onBackButton()"><mat-icon>arrow_back</mat-icon></button>
-              <h4 style="margin-left: 40px"> {{chosenCluster.name}} Depot</h4>
+              <h4 *ngIf="chosenCluster" style="margin-left: 40px"> {{chosenCluster.name}} Depot</h4>
               <label class="legend_left">{{min_slider_date}} year </label>
               <mat-slider  class="slider" [max]="max_slider_date" [min]="min_slider_date" [(ngModel)]="slider_date_value"
                 [thumbLabel]="thumbLabel" (change)="sliderEvent()"></mat-slider><label class="legend_right">{{max_slider_date}} years</label>
