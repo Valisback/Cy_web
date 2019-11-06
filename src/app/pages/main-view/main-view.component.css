@@ -189,13 +189,20 @@ mat-form-field{
   font-size: small;
 }
 
-.legend_left, .legend_right{
+.legend_left, .legend_right, .slider_title{
   position: absolute;
   right: 0;
   top: 0;
   margin-top: 27px;
   font-size: 11px;
   color: #8c99af;
+}
+
+.slider_title {
+  color: #ffffff;
+  margin-top: 38px;
+  padding-right: 140px;
+
 }
 
 .slider {
@@ -222,7 +229,6 @@ mat-form-field{
 
 .vehicle_list{
   font-size: 12px;
-  border-bottom: tomato!important;
 }
 mat-accordion
 mat-expansion-panel
@@ -233,10 +239,10 @@ mat-expansion-panel-header
   font-size: 12px;
   background-color: #283040;
   background: #283040;
-  color: #ffffff!important;
+  color: #dce3eb!important;
 }
 .mat-expansion-panel-header-title{
-  color: #ffffff;
+  color: #dce3eb;
 }
 
 .backButton{
@@ -246,7 +252,7 @@ mat-expansion-panel-header
 }
 
 .mat-expansion-panel-header-description{
-  color: #ffffff;
+  color: #dce3eb;
 }
 
 ::ng-deep .mat-form-field-underline {
@@ -282,6 +288,10 @@ mat-expansion-panel-header
   border-bottom: none;
 }
 
+.status_content > table > tbody> tr:last-child {
+  border-bottom: none;
+}
+
 .mytable{
   width: 100%;
   text-align: left;
@@ -295,12 +305,23 @@ mat-expansion-panel-header
 }
 
 .data_table{
+  padding-top: 10px;
+  height:50%;
+  display: flex;
+  justify-content: center;
   width: 100%;
 }
 .mytable td {
   color: #d1dae5;
 }
 
+.example-tab-icon{
+  transform: scale(0.8);
+}
+
+.example-tab-icon2{
+  transform: scale(0.7);
+}
 .mat-option,
 .mat-option-ripple mat-ripple
  {
@@ -353,7 +374,7 @@ mat-expansion-panel-header
 }
 .status_cards .big_box_text {
   margin: 5px;
-  font-size: 18px;
+  font-size: 16px;
   text-align: center;
   overflow: hidden;
   white-space: nowrap;
@@ -385,7 +406,12 @@ agm-map > div {
   border-radius: 10px;
 }
 
-.vehicle_image{
-  width: 183px;
-  height: 100px;
+around_image {
+  text-align: center;
+  width: 50%;
+}
+vehicle_image {
+  max-height:183px;
+  max-width: 100px;
+
 }

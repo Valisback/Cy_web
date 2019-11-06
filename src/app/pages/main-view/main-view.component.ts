@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, ɵConsole } from '@angular/core';
 import { GetVehicleService } from 'src/app/services/get-vehicle.service';
 import { GetClustersService } from 'src/app/services/get-clusters.service';
 import { BaseChartDirective } from 'ng2-charts/ng2-charts';
@@ -38,6 +38,7 @@ export class MainViewComponent implements OnInit {
   currentVehicles;
   filteredVehicles;
   clusters;
+  ageChosenVehicle;
   parameters;
   vehicleParameter = []; // Parameters of the vehicle between 2 dates
 
@@ -66,6 +67,7 @@ export class MainViewComponent implements OnInit {
   @ViewChild('lineChart', { static: false })
   private chartComponent: BaseChartDirective;
 
+
   @ViewChild('yearSlider', { static: true })
   private yearSlider: any;
 
@@ -84,6 +86,30 @@ export class MainViewComponent implements OnInit {
   lineChartData = [];
   lineChartOptions;
   BASELINE = [];
+
+  //Portfolio parameters for each cluster:
+  texasPortfolio;
+  californiaPortfolio;
+  georgiaPortfolio;
+  newyorkPorftolio;
+  washingtonPortfolio;
+  generalPortfolio;
+
+  // tslint:disable: variable-name
+  battery_health_top20;
+  battery_value_top20;
+  energy_cost_top20;
+  grid_service_revnue_top20;
+  battery_health_portfolio;
+  battery_value_portfolio;
+  energy_cost_portfolio;
+  grid_service_revnue_portfolio;
+  battery_health_bottom20;
+  battery_value_bottom20;
+  energy_cost_bottom20;
+  grid_service_revnue_bottom20;
+
+  interventionBtnValues = [];
 
   displayedColumns: string[] = ['position', 'name', 'weight'];
 
@@ -419,6 +445,19 @@ export class MainViewComponent implements OnInit {
 
   ngOnInit() {
     this.refreshData();
+
+    // Generating each cluster portfolio:
+    // tslint:disable: max-line-length
+    this.texasPortfolio = new PortfolioVals('+10%', '14K (+10%)', '8 cents/mi (-20%)', '10K (+15%)', '+2%', '10K (+3%)', '11 cents/mi (0%)', '8K (+2%)', '-10%' , '8K (-7%)', '13 cents/mi (+25%)', '8K (-30%)');
+    this.californiaPortfolio = new PortfolioVals('+10%', '14K (+10%)', '8 cents/mi (-20%)', '10K (+15%)', '+2%', '10K (+3%)', '11 cents/mi (0%)', '8K (+2%)', '-10%' , '8K (-7%)', '13 cents/mi (+25%)', '8K (-30%)');
+    this.georgiaPortfolio = new PortfolioVals('+10%', '14K (+10%)', '8 cents/mi (-20%)', '10K (+15%)', '+2%', '10K (+3%)', '11 cents/mi (0%)', '8K (+2%)', '-10%' , '8K (-7%)', '13 cents/mi (+25%)', '8K (-30%)');
+    this.newyorkPorftolio = new PortfolioVals('+10%', '14K (+10%)', '8 cents/mi (-20%)', '10K (+15%)', '+2%', '10K (+3%)', '11 cents/mi (0%)', '8K (+2%)', '-10%' , '8K (-7%)', '13 cents/mi (+25%)', '8K (-30%)');
+    this.washingtonPortfolio = new PortfolioVals('+10%', '14K (+10%)', '8 cents/mi (-20%)', '10K (+15%)', '+2%', '10K (+3%)', '11 cents/mi (0%)', '8K (+2%)', '-10%' , '8K (-7%)', '13 cents/mi (+25%)', '8K (-30%)');
+    this.generalPortfolio = new PortfolioVals('+10%', '14K (+10%)', '8 cents/mi (-20%)', '10K (+15%)', '+2%', '10K (+3%)', '11 cents/mi (0%)', '8K (+2%)', '-10%' , '8K (-7%)', '13 cents/mi (+25%)', '8K (-30%)');
+
+
+    this.updatePortfolioParameters(null);
+
     let perf = 100;
     const view = 'clusterView';
     const maxBaseline = this.max_slider_date * 12;
@@ -439,6 +478,7 @@ export class MainViewComponent implements OnInit {
 
     this.lineChartOptions = {
       scaleFontColor: '#8c99af',
+      scaleFontStyle: 'normal',
       scaleShowVerticalLines: false,
       responsive: true,
       maintainAspectRatio: false,
@@ -449,12 +489,12 @@ export class MainViewComponent implements OnInit {
               display: true,
               position: 'right',
               labelString: 'Battery State of Health (%)',
-              fontColor: '#8c99af'
+              fontColor: '#8c99af',
             },
             ticks: {
               max: 105,
               min: 60,
-              fontColor: '#8c99af'
+              fontColor: '#8c99af',
             },
             gridLines: {
               display: true,
@@ -466,12 +506,24 @@ export class MainViewComponent implements OnInit {
           {
             scaleLabel: {
               display: true,
-              fontColor: '#8c99af'
+              fontColor: '#8c99af',
+              fontStyle: 'normal'
+
             },
             ticks: {
               maxTicksLimit: 10,
               autoSkip: false,
-              fontColor: '#8c99af'
+              fontColor: '#8c99af',
+              fixedStepSize: 1,
+            //   userCallback: function(label, index, labels) {
+            //     // when the floored value is the same as the value we have a whole number
+            //     if (label !== '') {
+            //         return label;
+            //     }
+
+            // },
+              fontStyle: 'normal',
+
             },
             gridLines: {
               display: false
@@ -480,7 +532,9 @@ export class MainViewComponent implements OnInit {
         ]
       },
       legend: {
+        position: 'bottom',
         labels: {
+          padding: -25,
           useLineStyle: true,
           filter: (legendItem, chartData) => {
             if (legendItem.datasetIndex === 0) {
@@ -489,19 +543,54 @@ export class MainViewComponent implements OnInit {
             return false;
             // return true or false based on legendItem's datasetIndex (legendItem.datasetIndex)
           },
-          fontColor: '#728098'
+          fontColor: '#728098',
+          fontSize: 11
         }
       }
     };
   }
 
   fillCircleColor(circle) {
-    if (circle.gen_health > 75) {
-      return 'green';
-    } else if (circle.gen_health > 50) {
-      return 'orange';
+    return '#0795ff';
+    // if (circle.gen_health > 75) {
+    //   return 'green';
+    // } else if (circle.gen_health > 50) {
+    //   return 'orange';
+    // } else {
+    //   return 'red';
+    // }
+  }
+
+  getColor(vehicle) {
+    //console.log('I am called');
+    if (vehicle._battery_id.life_span >= 75) {
+      return '#c1ff04';
+    } else if (vehicle._battery_id.life_span >= 50) {
+      return '#ff8d04';
     } else {
-      return 'red';
+      return '#fc376e';
+    }
+  }
+
+  calculateAge(vehicle) {
+    console.log('called', vehicle);
+    console.log(this.currentVehicles);
+    const today = Date.now();
+    const age = this.battery_age(today, vehicle.date_of_creation);
+    this.ageChosenVehicle = Math.floor(age / 12);
+    if (this.ageChosenVehicle < 1 ) {
+      this.ageChosenVehicle = age;
+    }
+  }
+
+  changeButtonColor(event) {
+    const target = event.target || event.srcElement || event.currentTarget;
+    const idAttr = target.attributes.id;
+    const value = idAttr.nodeValue;
+    if (this.interventionBtnValues[value]) {
+      this.interventionBtnValues[value] = false;
+    } else {
+      this.interventionBtnValues[value] = true;
     }
   }
 
@@ -527,6 +616,7 @@ export class MainViewComponent implements OnInit {
     // this.viewGeneral = false;
     // this.viewCluster = false;
     if (this.chosenVehicle === vehicle) {
+      this.chosenCluster = vehicle.cluster;
       const refreshedView = 'vehicle';
       this.refreshCurrentView(refreshedView);
     } else {
@@ -546,9 +636,11 @@ export class MainViewComponent implements OnInit {
     }
     this.recenterMap(vehicle.position_lat, vehicle.position_lng);
     this.zoom = this.GEN_ZOOM + 2;
+    console.log('CLUSTER: ', this.chosenCluster);
   }
 
   sliderEvent() {
+    console.log("ENTERING SLIDER EVENT", this.regionOrder);
     if (this.viewGeneral || !this.chosenCluster) {
       this.currentVehicles = this.allVehicles;
     } else if (this.viewCluster) {
@@ -609,20 +701,68 @@ export class MainViewComponent implements OnInit {
     this.viewGeneral = false;
     this.viewVehicle = false;
     this.ageOrder = null;
-    this.regionOrder = 'region' + circle.name;
+    if (!this.regionOrder) {
+      this.regionOrder = 'region' + circle.name;
+    }
     this.healthOrder = null;
-    if (circle === this.chosenCluster && this.clusterVehicles) {
+    if (this.clusterVehicles && circle === this.clusterVehicles._id) {
       const refreshedView = 'cluster';
       this.refreshCurrentView(refreshedView);
     } else {
+      console.log("CLIIIIIIIIIICKED2", circle);
+
       this.chosenCluster = circle;
       await this.chargeVehicles(circle);
+      console.log("After Await", circle);
+
     }
     this.recenterMap(circle.center_lat, circle.center_lng);
     this.circleVisible = false;
     this.zoom = this.GEN_ZOOM + 1;
+
+    this.updatePortfolioParameters(circle.name);
   }
 
+  updatePortfolioParameters(cluster_id) {
+    let selectedPortfolio;
+
+    if (cluster_id === null) {
+      selectedPortfolio = this.generalPortfolio;
+    } else {
+      let clust_name;
+      for (const cl of this.clusters) {
+        if (cl._id === cluster_id) {
+          clust_name = cl.name;
+        }
+      }
+      switch (clust_name) {
+        case 'Texas' : selectedPortfolio = this.texasPortfolio;
+                      break;
+        case 'New York' : selectedPortfolio = this.newyorkPorftolio;
+                          break;
+        case 'California' : selectedPortfolio = this.californiaPortfolio;
+                            break;
+        case 'Georgia' : selectedPortfolio = this.georgiaPortfolio;
+                        break;
+        case 'Washington' : selectedPortfolio = this.washingtonPortfolio;
+                            break;
+        default: selectedPortfolio = this.generalPortfolio;
+        break;
+      }
+    }
+    this.battery_health_top20 = selectedPortfolio.battery_health_top20;
+    this.battery_value_top20 = selectedPortfolio.battery_value_top20;
+    this.energy_cost_top20 = selectedPortfolio.energy_cost_top20;
+    this.grid_service_revnue_top20 = selectedPortfolio.grid_service_revnue_top20;
+    this.battery_health_portfolio = selectedPortfolio.battery_health_portfolio;
+    this.battery_value_portfolio = selectedPortfolio.battery_value_portfolio;
+    this.energy_cost_portfolio = selectedPortfolio.energy_cost_portfolio;
+    this.grid_service_revnue_portfolio = selectedPortfolio.grid_service_revnue_portfolio;
+    this.battery_health_bottom20 = selectedPortfolio.battery_health_bottom20;
+    this.battery_value_bottom20 = selectedPortfolio.battery_value_bottom20;
+    this.energy_cost_bottom20 = selectedPortfolio.energy_cost_bottom20;
+    this.grid_service_revnue_bottom20 = selectedPortfolio.grid_service_revnue_bottom20;
+  }
   recenterMap(lat, lng) {
     this.latitude = Number(lat);
     this.longitude = Number(lng);
@@ -719,11 +859,15 @@ export class MainViewComponent implements OnInit {
     this.getVehicleService
       .retrieveVehiclesInCluster(circle._id)
       .subscribe((response: any) => {
+        console.log('I am here');
+
         this.clusterVehicles = response.vehicle_list;
         this.currentVehicles = this.clusterVehicles;
         this.refreshGraphs(this.currentVehicles, view);
         this.sliderEvent();
       });
+    console.log('I am here2');
+
   }
 
   getVehicleParameters(vehicle) {
@@ -737,7 +881,6 @@ export class MainViewComponent implements OnInit {
   }
 
   loadVehicleParameterAtDate(vehicles, date) {
-
     this.criticalBatteries = 0;
     this.numberOfAlerts = 0;
     this.lineChartLabels = [];
@@ -908,6 +1051,7 @@ export class MainViewComponent implements OnInit {
       pointRadius: 0
     });
     const dataset = [];
+
     this.getVehicleService
       .retrieveParametersBetweenDates(vehicle[0]._id, date1, date2)
       .subscribe((response: any) => {
@@ -934,7 +1078,8 @@ export class MainViewComponent implements OnInit {
           data: dataset,
           label: vehicle[0].model,
           fill: false,
-          pointBackgroundColor: pointColor
+          pointBackgroundColor: pointColor,
+          pointBorderColor: false
         });
         this.genLineChartData = this.lineChartData;
         this.chosenVehicleChartData = this.lineChartData;
@@ -996,6 +1141,13 @@ export class MainViewComponent implements OnInit {
   }
 
   topCardClicked(id) {
+    if (this.viewGeneral) {
+      this.genLineChartData = this.allVehiclesChartData;
+    } else if (this.viewCluster) {
+      this.genLineChartData = this.clusterVehiclesChartData;
+    } else {
+      this.genLineChartData = this.chosenVehicleChartData;
+    }
     if (this.lineChartData !== this.genLineChartData) {
       this.lineChartData = this.genLineChartData;
     } else {
@@ -1039,7 +1191,8 @@ export class MainViewComponent implements OnInit {
             newLineChartData.push({
               data: newDataset,
               label: dataset.label,
-              pointBackgroundColor: pointColor
+              pointBackgroundColor: pointColor,
+              pointBorderColor: false
             });
           }
         }
@@ -1126,8 +1279,15 @@ export class MainViewComponent implements OnInit {
         if (value === 'region0') {
           newVehicles = this.currentVehicles;
         } else {
-          if (vh.cluster.name === value.slice(6, value.lenth)) {
+          const clname = value.slice(6, value.lenth);
+          if (vh.cluster.name === clname) {
             newVehicles.push(vh);
+            for ( const cl of this.clusters) {
+              if (cl.name === clname) {
+                console.log(cl, ' \n -------------------- \n ', this.clusters);
+                this.onCircleClicked(cl._id);
+              }
+            }
           }
         }
       }
@@ -1145,5 +1305,44 @@ export class MainViewComponent implements OnInit {
 
   propComparator(prop) {
     return (a, b) => a['_battery_id'][prop] - b['_battery_id'][prop];
+  }
+}
+
+
+
+class PortfolioVals {
+  battery_health_top20: string;
+  battery_value_top20: string;
+  energy_cost_top20: string;
+  grid_service_revnue_top20: string;
+  battery_health_portfolio: string;
+  battery_value_portfolio: string;
+  energy_cost_portfolio: string;
+  grid_service_revnue_portfolio: string;
+  battery_health_bottom20: string;
+  battery_value_bottom20: string;
+  energy_cost_bottom20: string;
+  grid_service_revnue_bottom20: string;
+
+  constructor(battery_health_top20, battery_value_top20, energy_cost_top20, grid_service_revnue_top20, battery_health_portfolio, battery_value_portfolio,
+              energy_cost_portfolio,
+              grid_service_revnue_portfolio,
+              battery_health_bottom20,
+              battery_value_bottom20,
+              energy_cost_bottom20,
+              grid_service_revnue_bottom20) {
+     this.battery_health_top20 = battery_health_top20;
+     this.battery_value_top20 = battery_value_top20;
+     this.energy_cost_top20 = energy_cost_top20;
+     this.grid_service_revnue_top20 = grid_service_revnue_top20;
+     this.battery_health_portfolio = battery_health_portfolio;
+     this.battery_value_portfolio = battery_value_portfolio;
+     this.energy_cost_portfolio = energy_cost_portfolio;
+     this.grid_service_revnue_portfolio = grid_service_revnue_portfolio;
+     this.battery_health_bottom20 = battery_health_bottom20;
+     this.battery_value_bottom20 = battery_value_bottom20;
+     this.energy_cost_bottom20 = energy_cost_bottom20;
+     this.grid_service_revnue_bottom20 = grid_service_revnue_bottom20;
+
   }
 }

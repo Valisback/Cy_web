@@ -14,7 +14,7 @@
               </p>
               <ng-template #clusterTot>
                   <p class = "label_text">
-                    Total Vehicles
+                    Vehicles in View
                     </p>
               </ng-template>
 
@@ -61,6 +61,7 @@
           <div class="time_slider" *ngIf="viewCluster; else OpenbackButton">
               <button class = "backButton" mat-icon-button (click) = "onBackButton()"><mat-icon>arrow_back</mat-icon></button>
               <h4 *ngIf="chosenCluster" style="margin-left: 40px"> {{chosenCluster.name}} Depot</h4>
+              <label class="slider_title"> Battery Age: </label>
               <label class="legend_left">{{min_slider_date}} year </label>
               <mat-slider  class="slider" [max]="max_slider_date" [min]="min_slider_date" [(ngModel)]="slider_date_value"
                 [thumbLabel]="thumbLabel" (change)="sliderEvent()"></mat-slider><label class="legend_right">{{max_slider_date}} years</label>
@@ -70,10 +71,11 @@
       <div class="line_chart" style="max-height: 50%;" *ngIf="statistics; else nostat">
           <div class="time_slider" *ngIf="viewGeneral; else backButtonNslider">
               <h4>Portfolio Status</h4>
+              <label class="slider_title"> Battery Age: </label>
               <label class="legend_left">{{min_slider_date}} year</label><mat-slider  class="slider" [max]="max_slider_date" [min]="min_slider_date" [(ngModel)]="slider_date_value"
                 [thumbLabel]="thumbLabel" (change)="sliderEvent()"></mat-slider><label class="legend_right">{{max_slider_date}} years</label>
             </div>
-        <canvas style = "height: 100%;" #lineChart="base-chart" baseChart [datasets]="lineChartData" [labels]="lineChartLabels" [options]="lineChartOptions"
+        <canvas style = "height: 100%; padding-top: 20px; padding-bottom: 20px;" #lineChart="base-chart" baseChart [datasets]="lineChartData" [labels]="lineChartLabels" [options]="lineChartOptions"
           [legend]="lineChartLegend" (chartClick)="onChartClicked($event)"[chartType]="lineChartType">
 
         </canvas>
@@ -87,7 +89,7 @@
               <mat-tab-group class="vehicle_details_tabs">
                   <mat-tab>
                     <ng-template mat-tab-label>
-                      <mat-icon style="margin-right: 8px" class="example-tab-icon">battery_unknown</mat-icon>
+                      <mat-icon style="margin-right: 8px" class="example-tab-icon">show_chart</mat-icon>
                       Status
                     </ng-template>
                     <div class="status_content">
@@ -95,23 +97,29 @@
                             <tbody>
                               <tr>
                                 <td><strong>Model:</strong> {{chosenVehicle.model}}</td>
+                                <td><strong>Battery Type:</strong>  {{chosenVehicle._battery_id.name}}</td>
+                              </tr>
+                              <tr>
                                 <td><strong>Age:</strong>  {{chosenVehicle.age}} months</td>
+                                <td><strong>Region:</strong>  {{ chosenVehicle.cluster.name }}</td>
                               </tr>
                               <tr>
-                                <td><strong>Current Charge:</strong> {{ chosenVehicle._battery_id.charge }}%</td>
-                                <td><strong>Location:</strong>  {{ chosenVehicle.cluster.name }}</td>
+                                  <tr>
+                                      <td><strong>Battery Health:</strong>  {{chosenVehicle._battery_id.life_span}}%</td>
+                                      <td><strong>Mileage:</strong> {{chosenVehicle.distance}} miles (+10%)</td>
+                                    </tr>
+                                    <tr>
+                                <td><strong>~ Charging Speed:</strong> 66 kW (+{{ chosenVehicle._battery_id.charge }})%</td>
+                                <td><strong>~ Depth of Discharge:</strong> 65 kW (+13%)</td>
                               </tr>
                               <tr>
-                                <td><strong>Speed of charge:</strong> //insrt here</td>
-                                <td><strong>Average T:</strong> {{ chosenVehicle.temperature }}°F</td>
+                                <td><strong>TCO Savings:</strong> USD -3,500 (-5%)</td>
+                                <td></td>
+
                               </tr>
-                              <tr>
-                                  <td><strong>Total distance:</strong> {{chosenVehicle.distance}} miles</td>
-                                  <td><strong>Type of route:</strong> Return to Depot</td>
-                                </tr>
                             </tbody>
                       </table>
-                      <div class="status_cards">
+                      <!--<div class="status_cards">
                           <mat-card id="1" class="mat-elevation-z0">
                               <p class = "big_box_text"> <strong> ${{chosenVehicle.batteryValue}} </strong> </p>
 
@@ -131,10 +139,10 @@
 
                           </mat-card>
                           <mat-card id="4" class="mat-elevation-z0">
-                              <p class = "big_box_text"> <strong> 0.34kWh </strong> </p>
+                              <p class = "big_box_text"> <strong>-3,500 (-5%) </strong> </p>
 
                             <p class = "label_text">
-                              Energy/mile
+                                TCO Savings
                             </p>
 
                           </mat-card>
@@ -146,13 +154,13 @@
                             </p>
 
                           </mat-card>
-                        </div>
+                        </div>-->
                     </div>
                   </mat-tab>
 
                   <mat-tab>
                     <ng-template mat-tab-label>
-                      <mat-icon style="margin-right: 8px" class="example-tab-icon">build</mat-icon>
+                      <mat-icon style="margin-right: 8px" class="example-tab-icon2">build</mat-icon>
                       Intervention
                     </ng-template>
                     <div class="status_content">
@@ -160,25 +168,35 @@
                         <thead>
                           <tr>
                             <th>Options</th>
-                            <th>TCO Impact</th>
+                            <th>TCO Savings</th>
                             <th>Confirm</th>
                           </tr>
                         </thead>
                         <tbody>
                           <tr>
-                            <th class="mdl-data-table__cell--non-numeric">Option 1 here</th>
-                            <td>+20%</td>
-                            <td><button mat-button><mat-icon>done</mat-icon></button></td>
+                            <th class="mdl-data-table__cell--non-numeric">Limit daily mileage: 47 miles </th>
+                            <td>USD 1000 (+1%)</td>
+                            <td><button id="1" mat-icon-button [ngStyle]="{'color': interventionBtnValues[1] === true ? '#c1ff04' : '#d1dae5'}" (click)="changeButtonColor($event)"><mat-icon id="1">done</mat-icon></button></td>
                           </tr>
                           <tr>
-                              <th class="mdl-data-table__cell--non-numeric">Option 2 here</th>
-                              <td>+12%</td>
-                              <td><button mat-button><mat-icon>done</mat-icon></button></td>
+                              <th class="mdl-data-table__cell--non-numeric">Trim vehicles performance</th>
+                              <td>USD 2000 (+2%)</td>
+                              <td><button id="2" mat-icon-button [ngStyle]="{'color': interventionBtnValues[2] === true ? '#c1ff04' : '#d1dae5'}" (click)="changeButtonColor($event)"><mat-icon id="2">done</mat-icon></button></td>
                           </tr>
                           <tr>
-                              <th class="mdl-data-table__cell--non-numeric">Option 3 here</th>
-                              <td>+23%</td>
-                              <td><button mat-button><mat-icon>done</mat-icon></button></td>
+                              <th class="mdl-data-table__cell--non-numeric">Prioritize low duty routes</th>
+                              <td>USD 300 (+0.3%)</td>
+                              <td><button id="3" mat-icon-button [ngStyle]="{'color': interventionBtnValues[3] === true ? '#c1ff04' : '#d1dae5'}" (click)="changeButtonColor($event)"><mat-icon id="3">done</mat-icon></button></td>
+                          </tr>
+                          <tr>
+                              <th class="mdl-data-table__cell--non-numeric">Limit charging speed: 35kW</th>
+                              <td>USD 1000 (+1%)</td>
+                              <td><button id="4" mat-icon-button [ngStyle]="{'color': interventionBtnValues[4] === true ? '#c1ff04' : '#d1dae5'}" (click)="changeButtonColor($event)"><mat-icon id="4">done</mat-icon></button></td>
+                          </tr>
+                          <tr>
+                              <th class="mdl-data-table__cell--non-numeric">Change Location: Orlando, FL</th>
+                              <td>USD 100 (+0.1%)</td>
+                              <td><button id="5" mat-icon-button [ngStyle]="{'color': interventionBtnValues[5] === true ? '#c1ff04' : '#d1dae5'}" (click)="changeButtonColor($event)"><mat-icon id="5">done</mat-icon></button></td>
                           </tr>
                         </tbody>
                       </table>
@@ -188,7 +206,7 @@
           </div>
 
       <ng-template #noVehicle>
-        <table style="height: 20px;"></table>
+        <!-- <table style="height: 20px;"></table> -->
         <div class="data_table">
         <table #dtable class="mytable" >
             <thead>
@@ -202,27 +220,27 @@
             <tbody>
               <tr>
                 <th class="mdl-data-table__cell--non-numeric">Battery Health</th>
-                <td>+2%</td>
-                <td>+10%</td>
-                <td>-10%</td>
+                <td>{{battery_health_portfolio}}</td>
+                <td>{{battery_health_top20}}</td>
+                <td>{{battery_health_bottom20}}</td>
               </tr>
               <tr>
                 <th class="mdl-data-table__cell--non-numeric">Battery Value</th>
-                <td>10K (+3%)</td>
-                <td>14K (+10%)</td>
-                <td>8K (-7%)</td>
+                <td>{{battery_value_portfolio}}</td>
+                <td>{{battery_value_top20}}</td>
+                <td>{{battery_value_bottom20}}</td>
               </tr>
               <tr>
                 <th class="mdl-data-table__cell--non-numeric">Energy Cost per mile</th>
-                <td>11 cents/mi (0%)</td>
-                <td>8 cents/mi (-20%)</td>
-                <td>13 cents/mi (+25%)</td>
+                <td>{{energy_cost_portfolio}}</td>
+                <td>{{energy_cost_top20}}</td>
+                <td>{{energy_cost_bottom20}}</td>
               </tr>
               <tr class="lastrow">
                   <th class="mdl-data-table__cell--non-numeric">Grid Service revenue</th>
-                  <td>8K (+2%)</td>
-                  <td>10K (+15%)</td>
-                  <td>5K (-30%)</td>
+                  <td>{{grid_service_revnue_portfolio}}</td>
+                  <td>{{grid_service_revnue_top20}}</td>
+                  <td>{{grid_service_revnue_bottom20}}</td>
                 </tr>
             </tbody>
           </table>
@@ -319,25 +337,33 @@
 
       <div class="list_of_vehicles">
         <mat-accordion class="mat-elevation-z0">
-          <mat-expansion-panel class="vehicle_list" *ngFor="let vh of currentVehicles">
-            <mat-expansion-panel-header>
-              <mat-panel-title>
+          <mat-expansion-panel class="vehicle_list" *ngFor="let vh of currentVehicles" (opened)="calculateAge(vh)">
+            <mat-expansion-panel-header >
+              <mat-panel-title style="min-width:50%; display:table-cell; text-align: center; vertical-align: middle;">
                 {{ vh.model }}
               </mat-panel-title>
-              <mat-panel-description style="flex: 0 0 auto;">
+              <mat-panel-description #vhdescription [style.color]="getColor(vh)" style="width: 50%; display:table-cell; flex: 0 0 auto; text-align: center; vertical-align: middle;" >
                 Battery Health: {{ vh._battery_id.life_span }}%
               </mat-panel-description>
             </mat-expansion-panel-header>
-            <div class="mat-content" style = "height: 100px;">
-              <img src="assets/img/Truck_2.png" class="vehicle_image">
-            <div style=" width: 50%; font-size: 12px; padding: 0;">
-              <div style="position: absolute; right: 0; padding: 0; padding-right: 60px; margin: 0; list-style-type: none;">
-                  <p>Age: {{vh.cluster.age}}</p>
-                  <p>Region: {{vh.cluster.name}}</p>
-                  <p>Charge: {{vh._battery_id.charge}}%</p>
+            <div style = "display: flex; flex-direction: row; height: 100px;">
+              <div class = "around_image" style="width: 50%; display:table-cell; vertical-align:middle; text-align: center;">
+               <img width="183px" height="100px"  src="assets/img/Truck_2.png" class="vehicle_image">
+              </div>
+              <div style="width: 50%; display:flex; flex-direction: column; align-items: center;">
+                <div style="text-align: left;">
+                  <p *ngIf="ageChosenVehicle>1; else yearvehicle"><span  style="color:#dce3eb">Age:</span> {{ageChosenVehicle}} years</p>
+                  <ng-template #yearvehicle>
+                    <p *ngIf="ageChosenVehicle===1; else youngvehicle" ><span style="color:#dce3eb">Age:</span> {{ageChosenVehicle}} year</p>
+                  </ng-template>
+                  <ng-template #youngvehicle>
+                    <p><span style="color:#dce3eb">Age:</span> {{ageChosenVehicle}} months</p>
+                  </ng-template>
+                  <p><span style="color:#dce3eb">Region:</span> {{vh.cluster.name}}</p>
+                  <p><span style="color:#dce3eb">Charge:</span> {{vh._battery_id.charge}}%</p>
+                </div>
               </div>
 
-            </div>
           </div>
           </mat-expansion-panel>
         </mat-accordion>
