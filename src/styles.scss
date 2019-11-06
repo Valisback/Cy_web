@@ -65,6 +65,39 @@ $md-mcaccent: (
         700 : #ffffff,
         800 : #ffffff,
         900 : #ffffff,
+        A100 : #fc376e,
+        A200 : #000000,
+        A400 : #000000,
+        A700 : #000000,
+    )
+);
+
+$md-warn: (
+    50 : #ffe7ee,
+    100 : #fec3d4,
+    200 : #fe9bb7,
+    300 : #fd739a,
+    400 : #fc5584,
+    500 : #fc376e,
+    600 : #fc3166,
+    700 : #fb2a5b,
+    800 : #fb2351,
+    900 : #fa163f,
+    A100 : #ffffff,
+    A200 : #fff6f8,
+    A400 : #ffc3cc,
+    A700 : #ffaab7,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #000000,
+        400 : #000000,
+        500 : #ffffff,
+        600 : #ffffff,
+        700 : #ffffff,
+        800 : #ffffff,
+        900 : #ffffff,
         A100 : #000000,
         A200 : #000000,
         A400 : #000000,
@@ -74,7 +107,7 @@ $md-mcaccent: (
 
 $primary: mat-palette($md-mcgpalette0,500);
 $accent: mat-palette($md-mcaccent, 500, 200, 900);
-$warn: mat-palette($mat-red);
+$warn: mat-palette($md-warn);
 $theme: mat-dark-theme($primary, $accent, $warn); // Or mat-dark-theme
 
 $mat-dark-theme-background: (
@@ -87,12 +120,20 @@ html, body { height: 100%;
   background-color: #283040;
   color: white }
 
-@media only screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:landscape) {
-  /* For landscape layouts only */
 
+a[href^="http://maps.google.com/maps"]{display:none !important}
+a[href^="https://maps.google.com/maps"]{display:none !important}
+
+.gmnoprint a, .gmnoprint span, .gm-style-cc {
+    display:none;
 }
-
-
+.gmnoprint div {
+    background:none !important;
+}
+/* ink bar style */
+.mat-tab-group.mat-primary .mat-ink-bar, .mat-tab-nav-bar.mat-primary .mat-ink-bar{
+  background: #0795ff;
+}
 
 * {
   font-family: Arial, Helvetica, sans-serif;
@@ -111,6 +152,10 @@ h4{
 }
 mat-card{
   border-radius: 1px!important;
+}
+
+.mat-menu-content:not(:empty){
+ background-color: #283040;
 }
 
 .mat-expansion-indicator::after {

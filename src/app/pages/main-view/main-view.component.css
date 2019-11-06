@@ -189,30 +189,30 @@ mat-form-field{
   font-size: small;
 }
 
-.legend_left, .legend_right, .slider_title{
+
+
+
+
+.slider, .legend_left, .legend_right, .slider_title{
   position: absolute;
-  right: 0;
+  right:0;
+  padding: 0;
   top: 0;
-  margin-top: 27px;
+  margin-right: 10px;
+  margin-top: 16px;
+}
+.legend_left, .legend_right, .slider_title{
+  margin-top: 22px;
   font-size: 11px;
   color: #8c99af;
 }
 
 .slider_title {
   color: #ffffff;
-  margin-top: 38px;
+  margin-top: 32px;
   padding-right: 140px;
 
 }
-
-.slider {
-  position: absolute;
-  right:0;
-  padding: 0;
-  top: 0;
-  margin-top: 22px;
-}
-
 .legend_left{
   padding-right: 100px;
 }
@@ -292,13 +292,7 @@ mat-expansion-panel-header
   border-bottom: none;
 }
 
-.mytable{
-  width: 100%;
-  text-align: left;
-  color: white;
-  border-collapse:collapse;
 
-}
 
 .mytable > tbody > tr > th{
  padding-left: 15px;
@@ -310,6 +304,15 @@ mat-expansion-panel-header
   display: flex;
   justify-content: center;
   width: 100%;
+}
+
+.mytable{
+  align-self: center;
+  width: 100%;
+  text-align: left;
+  color: white;
+  border-collapse:collapse;
+
 }
 .mytable td {
   color: #d1dae5;
@@ -340,9 +343,16 @@ mat-expansion-panel-header
 }
 
 .vehicle_details_tabs{
+  align-self: center;
   height:100%;
   overflow: auto;
   padding-bottom: 15px;
+}
+
+/* ink bar style */
+.mat-tab-group.mat-primary .mat-ink-bar, .mat-tab-nav-bar.mat-primary .mat-ink-bar{
+  background: yellow;
+  height: 10px;
 }
 
 .status_content table tr td:first-child {

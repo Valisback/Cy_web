@@ -173,30 +173,10 @@
                           </tr>
                         </thead>
                         <tbody>
-                          <tr>
-                            <th class="mdl-data-table__cell--non-numeric">Limit daily mileage: 47 miles </th>
-                            <td>USD 1000 (+1%)</td>
-                            <td><button id="1" mat-icon-button [ngStyle]="{'color': interventionBtnValues[1] === true ? '#c1ff04' : '#d1dae5'}" (click)="changeButtonColor($event)"><mat-icon id="1">done</mat-icon></button></td>
-                          </tr>
-                          <tr>
-                              <th class="mdl-data-table__cell--non-numeric">Trim vehicles performance</th>
-                              <td>USD 2000 (+2%)</td>
-                              <td><button id="2" mat-icon-button [ngStyle]="{'color': interventionBtnValues[2] === true ? '#c1ff04' : '#d1dae5'}" (click)="changeButtonColor($event)"><mat-icon id="2">done</mat-icon></button></td>
-                          </tr>
-                          <tr>
-                              <th class="mdl-data-table__cell--non-numeric">Prioritize low duty routes</th>
-                              <td>USD 300 (+0.3%)</td>
-                              <td><button id="3" mat-icon-button [ngStyle]="{'color': interventionBtnValues[3] === true ? '#c1ff04' : '#d1dae5'}" (click)="changeButtonColor($event)"><mat-icon id="3">done</mat-icon></button></td>
-                          </tr>
-                          <tr>
-                              <th class="mdl-data-table__cell--non-numeric">Limit charging speed: 35kW</th>
-                              <td>USD 1000 (+1%)</td>
-                              <td><button id="4" mat-icon-button [ngStyle]="{'color': interventionBtnValues[4] === true ? '#c1ff04' : '#d1dae5'}" (click)="changeButtonColor($event)"><mat-icon id="4">done</mat-icon></button></td>
-                          </tr>
-                          <tr>
-                              <th class="mdl-data-table__cell--non-numeric">Change Location: Orlando, FL</th>
-                              <td>USD 100 (+0.1%)</td>
-                              <td><button id="5" mat-icon-button [ngStyle]="{'color': interventionBtnValues[5] === true ? '#c1ff04' : '#d1dae5'}" (click)="changeButtonColor($event)"><mat-icon id="5">done</mat-icon></button></td>
+                          <tr *ngFor="let intervention of chosenVehicleInterventions">
+                            <th class="mdl-data-table__cell--non-numeric">{{intervention.options}}</th>
+                            <td>{{intervention.tco_savings}}</td>
+                            <td><button id="{{intervention.id}}" mat-icon-button [ngStyle]="{'color': interventionBtnValues[intervention.id] === true ? '#c1ff04' : '#d1dae5'}" (click)="changeButtonColor($event)"><mat-icon id="{{intervention.id}}">done</mat-icon></button></td>
                           </tr>
                         </tbody>
                       </table>
@@ -337,7 +317,8 @@
 
       <div class="list_of_vehicles">
         <mat-accordion class="mat-elevation-z0">
-          <mat-expansion-panel class="vehicle_list" *ngFor="let vh of currentVehicles" (opened)="calculateAge(vh)">
+            <virtual-scroller style="width: 100%; height: 100%" #scroll [items]="currentVehicles">
+          <mat-expansion-panel class="vehicle_list" *ngFor="let vh of scroll.viewPortItems" (opened)="calculateAge(vh)">
             <mat-expansion-panel-header >
               <mat-panel-title style="min-width:50%; display:table-cell; text-align: center; vertical-align: middle;">
                 {{ vh.model }}
@@ -366,6 +347,7 @@
 
           </div>
           </mat-expansion-panel>
+        </virtual-scroller>
         </mat-accordion>
       </div>
     </mat-card>

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, ɵConsole } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, ɵConsole, Output } from '@angular/core';
 import { GetVehicleService } from 'src/app/services/get-vehicle.service';
 import { GetClustersService } from 'src/app/services/get-clusters.service';
 import { BaseChartDirective } from 'ng2-charts/ng2-charts';
@@ -60,7 +60,7 @@ export class MainViewComponent implements OnInit {
   // Slider elements
   min_slider_date = 1;
   max_slider_date = 8;
-  slider_date_value = 5;
+  slider_date_value = 8;
   thumbLabel = true;
 
   // Line chart elements
@@ -109,6 +109,8 @@ export class MainViewComponent implements OnInit {
   energy_cost_bottom20;
   grid_service_revnue_bottom20;
 
+  allinterventions = [];
+  chosenVehicleInterventions = [];
   interventionBtnValues = [];
 
   displayedColumns: string[] = ['position', 'name', 'weight'];
@@ -455,6 +457,11 @@ export class MainViewComponent implements OnInit {
     this.washingtonPortfolio = new PortfolioVals('+10%', '14K (+10%)', '8 cents/mi (-20%)', '10K (+15%)', '+2%', '10K (+3%)', '11 cents/mi (0%)', '8K (+2%)', '-10%' , '8K (-7%)', '13 cents/mi (+25%)', '8K (-30%)');
     this.generalPortfolio = new PortfolioVals('+10%', '14K (+10%)', '8 cents/mi (-20%)', '10K (+15%)', '+2%', '10K (+3%)', '11 cents/mi (0%)', '8K (+2%)', '-10%' , '8K (-7%)', '13 cents/mi (+25%)', '8K (-30%)');
 
+    this.allinterventions.push(new Intervention('Limit daily mileage: 47 miles', 'USD 1000 (+1%)', 1));
+    this.allinterventions.push(new Intervention('Trim vehicles performance', 'USD 2000 (+2%)', 2));
+    this.allinterventions.push(new Intervention('Prioritize low duty routes', 'USD 300 (+0.3%)', 3));
+    this.allinterventions.push(new Intervention('Limit charging speed: 35kW', 'USD 1000 (+1%)', 4));
+    this.allinterventions.push(new Intervention('Change Location: Orlando, FL', 'USD 100 (+0.1%)', 5));
 
     this.updatePortfolioParameters(null);
 
@@ -492,8 +499,8 @@ export class MainViewComponent implements OnInit {
               fontColor: '#8c99af',
             },
             ticks: {
-              max: 105,
-              min: 60,
+              suggestedMax: 105,
+              suggesteMin: 70,
               fontColor: '#8c99af',
             },
             gridLines: {
@@ -515,6 +522,8 @@ export class MainViewComponent implements OnInit {
               autoSkip: false,
               fontColor: '#8c99af',
               fixedStepSize: 1,
+              maxRotation: 0,
+              minRotation: 0,
             //   userCallback: function(label, index, labels) {
             //     // when the floored value is the same as the value we have a whole number
             //     if (label !== '') {
@@ -620,12 +629,18 @@ export class MainViewComponent implements OnInit {
       const refreshedView = 'vehicle';
       this.refreshCurrentView(refreshedView);
     } else {
+      // Shuffle array
+      const shuffled = this.allinterventions.sort(() => 0.5 - Math.random());
+
+      // Get sub-array of first n elements after shuffled
+      this.chosenVehicleInterventions = shuffled.slice(0, 3);
       this.chosenVehicle = vehicle;
       const today = Date.now();
       const age = this.battery_age(today, vehicle.date_of_creation);
       const distance = age * Math.random() * 1000 + 300;
       vehicle.age = age;
-      vehicle.distance = distance.toPrecision(2);
+      vehicle.distance = (distance.toFixed(1));
+      console.log(vehicle.distance);
       this.chosenCluster = vehicle.cluster;
       const arrayVehicle = [];
       arrayVehicle.push(vehicle);
@@ -640,7 +655,6 @@ export class MainViewComponent implements OnInit {
   }
 
   sliderEvent() {
-    console.log("ENTERING SLIDER EVENT", this.regionOrder);
     if (this.viewGeneral || !this.chosenCluster) {
       this.currentVehicles = this.allVehicles;
     } else if (this.viewCluster) {
@@ -687,7 +701,7 @@ export class MainViewComponent implements OnInit {
             if (dataset.data[i] < this.BASELINE[i]) {
               this.numberOfAlerts++;
             }
-            if (dataset.data[i] < this.BASELINE[i] * 0.8) {
+            if (dataset.data[i] < this.BASELINE[i] * 0.85) {
               this.criticalBatteries++;
             }
           }
@@ -709,12 +723,8 @@ export class MainViewComponent implements OnInit {
       const refreshedView = 'cluster';
       this.refreshCurrentView(refreshedView);
     } else {
-      console.log("CLIIIIIIIIIICKED2", circle);
-
       this.chosenCluster = circle;
       await this.chargeVehicles(circle);
-      console.log("After Await", circle);
-
     }
     this.recenterMap(circle.center_lat, circle.center_lng);
     this.circleVisible = false;
@@ -859,15 +869,11 @@ export class MainViewComponent implements OnInit {
     this.getVehicleService
       .retrieveVehiclesInCluster(circle._id)
       .subscribe((response: any) => {
-        console.log('I am here');
-
         this.clusterVehicles = response.vehicle_list;
         this.currentVehicles = this.clusterVehicles;
         this.refreshGraphs(this.currentVehicles, view);
         this.sliderEvent();
       });
-    console.log('I am here2');
-
   }
 
   getVehicleParameters(vehicle) {
@@ -915,16 +921,16 @@ export class MainViewComponent implements OnInit {
               for (month = 0; month < battAge; month++) {
                 dataset.push(empty);
               }
-              const lowerThreshold = this.BASELINE[month] * 0.8;
+              const lowerThreshold = this.BASELINE[month] * 0.85;
               const upperThreshold = this.BASELINE[month];
               let pointColor;
               if (pm.performance < lowerThreshold) {
-                pointColor = '#ff0000';
+                pointColor = '#fc376e';
                 this.criticalBatteries++;
               } else if (pm.performance > upperThreshold) {
                 pointColor = '#b1c3e2';
               } else {
-                pointColor = '#fc376e';
+                pointColor = '#ff8d04';
                 this.numberOfAlerts++;
               }
               dataset.push(pm.performance);
@@ -950,16 +956,16 @@ export class MainViewComponent implements OnInit {
           for (month = 0; month < battAge; month++) {
             dataset.push(empty);
           }
-          const lowerThreshold = this.BASELINE[month] * 0.8;
+          const lowerThreshold = this.BASELINE[month] * 0.85;
           const upperThreshold = this.BASELINE[month];
           let pointColor;
           if (pm.performance < lowerThreshold) {
-            pointColor = '#ff0000';
+            pointColor = '#fc376e';
             this.criticalBatteries++;
           } else if (pm.performance > upperThreshold) {
             pointColor = '#b1c3e2';
           } else {
-            pointColor = '#fc376e';
+            pointColor = '#ff8d04';
             this.numberOfAlerts++;
           }
           dataset.push(pm.performance);
@@ -1173,12 +1179,12 @@ export class MainViewComponent implements OnInit {
               if (id === '5') {
                 // For Actions
                 lowerThreshold = this.BASELINE[i];
-                pointColor = '#fc376e';
+                pointColor = '#ff8d04';
                 this.numberOfAlerts++;
               } else if (id === '4') {
                 // For Critical Issues
-                lowerThreshold = this.BASELINE[i] * 0.8;
-                pointColor = '#ff0000';
+                lowerThreshold = this.BASELINE[i] * 0.85;
+                pointColor = '#fc376e';
                 this.criticalBatteries++;
               }
               if (datapoint < lowerThreshold) {
@@ -1206,7 +1212,7 @@ export class MainViewComponent implements OnInit {
     if (!value) {
       return;
     }
-    if (this.viewGeneral) {
+    if (this.viewGeneral || value.includes('region')) {
       this.currentVehicles = this.allVehicles;
     } else if (this.viewCluster) {
       this.currentVehicles = this.clusterVehicles;
@@ -1217,6 +1223,7 @@ export class MainViewComponent implements OnInit {
     }
 
     let newVehicles = [];
+    let bool = true;
     for (const vh of this.currentVehicles) {
       if (value.includes('age')) {
         const today = new Date();
@@ -1278,16 +1285,20 @@ export class MainViewComponent implements OnInit {
       } else if (value.includes('region')) {
         if (value === 'region0') {
           newVehicles = this.currentVehicles;
+          this.zoom = this.GEN_ZOOM - 1;
+          this.recenterMap(this.GEN_LAT, this.GEN_LNG);
         } else {
-          const clname = value.slice(6, value.lenth);
+          const clname = value.slice(6, value.length);
           if (vh.cluster.name === clname) {
             newVehicles.push(vh);
+            if (bool) {
             for ( const cl of this.clusters) {
               if (cl.name === clname) {
-                console.log(cl, ' \n -------------------- \n ', this.clusters);
-                this.onCircleClicked(cl._id);
+                this.onCircleClicked(cl);
               }
             }
+            bool = false;
+          }
           }
         }
       }
@@ -1344,5 +1355,17 @@ class PortfolioVals {
      this.energy_cost_bottom20 = energy_cost_bottom20;
      this.grid_service_revnue_bottom20 = grid_service_revnue_bottom20;
 
+  }
+}
+
+class Intervention {
+  options: string;
+  tco_savings: string;
+  id: number;
+
+  constructor(options, tco_savings, id) {
+    this.options = options;
+    this.tco_savings = tco_savings;
+    this.id = id;
   }
 }

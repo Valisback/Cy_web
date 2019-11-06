@@ -23,6 +23,7 @@ import {MatSliderModule} from '@angular/material/slider';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatSelectModule} from '@angular/material/select';
 import { ChartsModule } from 'ng2-charts';
+import { VirtualScrollerModule } from 'ngx-virtual-scroller';
 import {MatBadgeModule} from '@angular/material/badge';
 import { MainNavComponent } from './pages/main-nav/main-nav.component';
 import { MainPageComponent } from './pages/main-page/main-page.component';
@@ -54,6 +55,7 @@ import {MatExpansionModule} from '@angular/material/expansion';
     MatListModule,
     MatSliderModule,
     MatGridListModule,
+    VirtualScrollerModule,
     MatCardModule,
     MatExpansionModule,
     MatMenuModule,
