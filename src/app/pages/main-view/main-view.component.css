@@ -267,7 +267,9 @@ mat-expansion-panel-header
 }
 
 
-
+.mytable{
+  overflow: auto;
+}
 
 .mytable tr{
   line-height: 45px;
@@ -345,15 +347,12 @@ mat-expansion-panel-header
 .vehicle_details_tabs{
   align-self: center;
   height:100%;
+  width: 100%;
   overflow: auto;
   padding-bottom: 15px;
 }
 
-/* ink bar style */
-.mat-tab-group.mat-primary .mat-ink-bar, .mat-tab-nav-bar.mat-primary .mat-ink-bar{
-  background: yellow;
-  height: 10px;
-}
+
 
 .status_content table tr td:first-child {
   padding-left:15px;

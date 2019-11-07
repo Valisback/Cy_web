@@ -20,7 +20,7 @@
 
             </mat-card>
             <mat-card class="mat-elevation-z0">
-                <p class = "big_box_text"> <strong> {{tcoSavings}} </strong> </p>
+                <p class = "big_box_text"> <strong> ${{tcoSavings}}M </strong> </p>
 
               <p class = "label_text">
                 TCO Savings
@@ -52,7 +52,7 @@
       <ng-template #OpenbackButton >
           <div class="time_slider">
               <button class = "backButton" mat-icon-button (click) = "onBackButton()"><mat-icon>arrow_back</mat-icon></button>
-              <h4 style="margin-left: 40px;">{{chosenVehicle.model}}</h4>
+              <h4 style="margin-left: 40px;">{{chosenVehicle.model}} in {{chosenCluster.name}} Depot</h4>
 
             </div>
       </ng-template>
@@ -85,8 +85,8 @@
         <table style="height: 50%;"></table>
       </ng-template>
 
-          <div style="height: 50%; max-height: 50%;" *ngIf="viewVehicle; else noVehicle">
-              <mat-tab-group class="vehicle_details_tabs">
+          <div class="data_table" >
+              <mat-tab-group class="vehicle_details_tabs" *ngIf="viewVehicle; else noVehicle">
                   <mat-tab>
                     <ng-template mat-tab-label>
                       <mat-icon style="margin-right: 8px" class="example-tab-icon">show_chart</mat-icon>
@@ -119,42 +119,6 @@
                               </tr>
                             </tbody>
                       </table>
-                      <!--<div class="status_cards">
-                          <mat-card id="1" class="mat-elevation-z0">
-                              <p class = "big_box_text"> <strong> ${{chosenVehicle.batteryValue}} </strong> </p>
-
-                            <p class = "label_text">
-                              Battery Value
-                            </p>
-
-                          </mat-card>
-                          <mat-card id="2" class="mat-elevation-z0">
-                              <p class = "big_box_text"> <mat-icon *ngIf="chosenVehicle._battery_id.charge > 25 && chosenVehicle._battery_id.charge < 70; else badDriver"[ngStyle]="{'color':'green'}">thumb_up</mat-icon> </p>
-                              <ng-template #badDriver>
-                                <p class = "big_box_text"> <mat-icon [ngStyle]="{'color':'red'}">thumb_down</mat-icon> </p>
-                              </ng-template>
-                            <p class = "label_text">
-                              Driver's Behaviour
-                            </p>
-
-                          </mat-card>
-                          <mat-card id="4" class="mat-elevation-z0">
-                              <p class = "big_box_text"> <strong>-3,500 (-5%) </strong> </p>
-
-                            <p class = "label_text">
-                                TCO Savings
-                            </p>
-
-                          </mat-card>
-                          <mat-card id="5" class="mat-elevation-z0">
-                              <p class = "big_box_text"> <strong> 8.13¢/kWh </strong> </p>
-
-                            <p class = "label_text">
-                              Grid Services
-                            </p>
-
-                          </mat-card>
-                        </div>-->
                     </div>
                   </mat-tab>
 
@@ -183,50 +147,48 @@
                     </div>
                   </mat-tab>
                 </mat-tab-group>
+                <ng-template #noVehicle>
+                    <!-- <table style="height: 20px;"></table> -->
+                    <div class="vehicle_details_tabs">
+                    <table #dtable class="mytable" >
+                        <thead>
+                          <tr>
+                            <th class="mdl-data-table__cell--non-numeric"></th>
+                            <th>Portfolio Average</th>
+                            <th>Top 20%</th>
+                            <th>Bottom 20%</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <th class="mdl-data-table__cell--non-numeric">Battery Health</th>
+                            <td>{{battery_health_portfolio}}</td>
+                            <td>{{battery_health_top20}}</td>
+                            <td>{{battery_health_bottom20}}</td>
+                          </tr>
+                          <tr>
+                            <th class="mdl-data-table__cell--non-numeric">Battery Value</th>
+                            <td>{{battery_value_portfolio}}</td>
+                            <td>{{battery_value_top20}}</td>
+                            <td>{{battery_value_bottom20}}</td>
+                          </tr>
+                          <tr>
+                            <th class="mdl-data-table__cell--non-numeric">Energy Cost per mile</th>
+                            <td>{{energy_cost_portfolio}}</td>
+                            <td>{{energy_cost_top20}}</td>
+                            <td>{{energy_cost_bottom20}}</td>
+                          </tr>
+                          <tr class="lastrow">
+                              <th class="mdl-data-table__cell--non-numeric">Grid Service revenue</th>
+                              <td>{{grid_service_revnue_portfolio}}</td>
+                              <td>{{grid_service_revnue_top20}}</td>
+                              <td>{{grid_service_revnue_bottom20}}</td>
+                            </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </ng-template>
           </div>
-
-      <ng-template #noVehicle>
-        <!-- <table style="height: 20px;"></table> -->
-        <div class="data_table">
-        <table #dtable class="mytable" >
-            <thead>
-              <tr>
-                <th class="mdl-data-table__cell--non-numeric"></th>
-                <th>Portfolio Average</th>
-                <th>Top 20%</th>
-                <th>Bottom 20%</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th class="mdl-data-table__cell--non-numeric">Battery Health</th>
-                <td>{{battery_health_portfolio}}</td>
-                <td>{{battery_health_top20}}</td>
-                <td>{{battery_health_bottom20}}</td>
-              </tr>
-              <tr>
-                <th class="mdl-data-table__cell--non-numeric">Battery Value</th>
-                <td>{{battery_value_portfolio}}</td>
-                <td>{{battery_value_top20}}</td>
-                <td>{{battery_value_bottom20}}</td>
-              </tr>
-              <tr>
-                <th class="mdl-data-table__cell--non-numeric">Energy Cost per mile</th>
-                <td>{{energy_cost_portfolio}}</td>
-                <td>{{energy_cost_top20}}</td>
-                <td>{{energy_cost_bottom20}}</td>
-              </tr>
-              <tr class="lastrow">
-                  <th class="mdl-data-table__cell--non-numeric">Grid Service revenue</th>
-                  <td>{{grid_service_revnue_portfolio}}</td>
-                  <td>{{grid_service_revnue_top20}}</td>
-                  <td>{{grid_service_revnue_bottom20}}</td>
-                </tr>
-            </tbody>
-          </table>
-        </div>
-      </ng-template>
-
     </mat-card>
   </div>
 

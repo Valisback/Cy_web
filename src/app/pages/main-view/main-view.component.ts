@@ -53,7 +53,7 @@ export class MainViewComponent implements OnInit {
 
   // Elements displayed on top cards
   numberOfVehicles;
-  tcoSavings = '$1.2M';
+  tcoSavings = '0';
   criticalBatteries;
   numberOfAlerts;
 
@@ -92,7 +92,7 @@ export class MainViewComponent implements OnInit {
   californiaPortfolio;
   georgiaPortfolio;
   newyorkPorftolio;
-  washingtonPortfolio;
+  wyomingPortfolio;
   generalPortfolio;
 
   // tslint:disable: variable-name
@@ -442,6 +442,11 @@ export class MainViewComponent implements OnInit {
   private refreshData() {
     this.getClusterService.retrieveClusters().subscribe((response: any) => {
       this.clusters = response.cluster_list;
+      let totalTCO = 0;
+      for ( const cl of this.clusters) {
+        totalTCO += cl.tco_savings;
+      }
+      this.tcoSavings = (totalTCO / 1000000).toPrecision(2);
     });
   }
 
@@ -454,7 +459,7 @@ export class MainViewComponent implements OnInit {
     this.californiaPortfolio = new PortfolioVals('+10%', '14K (+10%)', '8 cents/mi (-20%)', '10K (+15%)', '+2%', '10K (+3%)', '11 cents/mi (0%)', '8K (+2%)', '-10%' , '8K (-7%)', '13 cents/mi (+25%)', '8K (-30%)');
     this.georgiaPortfolio = new PortfolioVals('+10%', '14K (+10%)', '8 cents/mi (-20%)', '10K (+15%)', '+2%', '10K (+3%)', '11 cents/mi (0%)', '8K (+2%)', '-10%' , '8K (-7%)', '13 cents/mi (+25%)', '8K (-30%)');
     this.newyorkPorftolio = new PortfolioVals('+10%', '14K (+10%)', '8 cents/mi (-20%)', '10K (+15%)', '+2%', '10K (+3%)', '11 cents/mi (0%)', '8K (+2%)', '-10%' , '8K (-7%)', '13 cents/mi (+25%)', '8K (-30%)');
-    this.washingtonPortfolio = new PortfolioVals('+10%', '14K (+10%)', '8 cents/mi (-20%)', '10K (+15%)', '+2%', '10K (+3%)', '11 cents/mi (0%)', '8K (+2%)', '-10%' , '8K (-7%)', '13 cents/mi (+25%)', '8K (-30%)');
+    this.wyomingPortfolio = new PortfolioVals('+10%', '14K (+10%)', '8 cents/mi (-20%)', '10K (+15%)', '+2%', '10K (+3%)', '11 cents/mi (0%)', '8K (+2%)', '-10%' , '8K (-7%)', '13 cents/mi (+25%)', '8K (-30%)');
     this.generalPortfolio = new PortfolioVals('+10%', '14K (+10%)', '8 cents/mi (-20%)', '10K (+15%)', '+2%', '10K (+3%)', '11 cents/mi (0%)', '8K (+2%)', '-10%' , '8K (-7%)', '13 cents/mi (+25%)', '8K (-30%)');
 
     this.allinterventions.push(new Intervention('Limit daily mileage: 47 miles', 'USD 1000 (+1%)', 1));
@@ -467,7 +472,7 @@ export class MainViewComponent implements OnInit {
 
     let perf = 100;
     const view = 'clusterView';
-    const maxBaseline = this.max_slider_date * 12;
+    const maxBaseline = (this.max_slider_date + 2) * 12;
     // Creating the values for the baseline
     for (let month = 0; month <= maxBaseline; month++) {
       this.BASELINE.push(perf);
@@ -524,13 +529,6 @@ export class MainViewComponent implements OnInit {
               fixedStepSize: 1,
               maxRotation: 0,
               minRotation: 0,
-            //   userCallback: function(label, index, labels) {
-            //     // when the floored value is the same as the value we have a whole number
-            //     if (label !== '') {
-            //         return label;
-            //     }
-
-            // },
               fontStyle: 'normal',
 
             },
@@ -607,6 +605,7 @@ export class MainViewComponent implements OnInit {
     if (refreshedView === 'general') {
       this.currentVehicles = this.allVehicles;
       this.lineChartData = this.allVehiclesChartData;
+      this.updateTCOSsavings(null);
       this.sliderEvent();
     } else if (refreshedView === 'cluster') {
       this.currentVehicles = this.clusterVehicles;
@@ -729,35 +728,45 @@ export class MainViewComponent implements OnInit {
     this.recenterMap(circle.center_lat, circle.center_lng);
     this.circleVisible = false;
     this.zoom = this.GEN_ZOOM + 1;
-
     this.updatePortfolioParameters(circle.name);
+    this.updateTCOSsavings(circle);
   }
 
-  updatePortfolioParameters(cluster_id) {
+  updateTCOSsavings(cluster) {
+    if ( cluster === null ) {
+      let totalTCO = 0;
+      for ( const cl of this.clusters) {
+        totalTCO += cl.tco_savings;
+      }
+      this.tcoSavings = (totalTCO / 1000000).toPrecision(2);
+    } else {
+      this.tcoSavings = (cluster.tco_savings / 1000000).toPrecision(2);
+      console.log('HEEEEEEEEEEEEEEEE, ', this.tcoSavings);
+    }
+
+  }
+
+  updatePortfolioParameters(cluster_name) {
     let selectedPortfolio;
 
-    if (cluster_id === null) {
+    if (cluster_name === null) {
       selectedPortfolio = this.generalPortfolio;
     } else {
       let clust_name;
-      for (const cl of this.clusters) {
-        if (cl._id === cluster_id) {
-          clust_name = cl.name;
-        }
-      }
+
       switch (clust_name) {
         case 'Texas' : selectedPortfolio = this.texasPortfolio;
-                      break;
+                       break;
         case 'New York' : selectedPortfolio = this.newyorkPorftolio;
                           break;
         case 'California' : selectedPortfolio = this.californiaPortfolio;
                             break;
         case 'Georgia' : selectedPortfolio = this.georgiaPortfolio;
-                        break;
-        case 'Washington' : selectedPortfolio = this.washingtonPortfolio;
-                            break;
+                         break;
+        case 'Wyoming' : selectedPortfolio = this.wyomingPortfolio;
+                         break;
         default: selectedPortfolio = this.generalPortfolio;
-        break;
+                 break;
       }
     }
     this.battery_health_top20 = selectedPortfolio.battery_health_top20;
@@ -793,11 +802,12 @@ export class MainViewComponent implements OnInit {
       this.numberOfVehicles = vehicles.length;
       this.loadVehicleParameterAtDate(vehicles, date);
     } else if (view === 'vehicleView') {
+      const projectionTime = new Date(date.setFullYear(date.getFullYear() + 2)); //Creating projection 2 years ahead of now
       this.viewVehicle = true;
       this.viewGeneral = false;
       this.viewCluster = false;
       const creationDate = new Date(vehicles[0].date_of_creation);
-      this.loadVehicleParameterBetweenDates(vehicles, creationDate, date);
+      this.loadVehicleParameterBetweenDates(vehicles, creationDate, projectionTime);
     }
   }
 
@@ -980,42 +990,6 @@ export class MainViewComponent implements OnInit {
       this.statistics = true;
       this.clusterVehiclesChartData = this.lineChartData;
       this.clusterVehiclesChartLabels = this.lineChartLabels;
-      /*for (const vh of vehicles) {
-      const battAge = this.battery_age(date, vh.date_of_creation); // returns current age of battery
-      if (battAge <= this.max_slider_date * 12) {
-        const dataset = [];
-        this.getVehicleService
-          .retrieveParametersAtDate(vh._id, date)
-          .subscribe((response: any) => {
-            let month;
-            for (month = 0; month < battAge; month++) {
-              dataset.push(empty);
-            }
-            const lowerThreshold = this.BASELINE[month] * 0.8;
-            const upperThreshold = this.BASELINE[month];
-            let pointColor;
-            if (response.parameters[0].performance < lowerThreshold) {
-              pointColor = '#ff0000';
-              this.criticalBatteries++;
-            } else if (response.parameters[0].performance > upperThreshold) {
-              pointColor = '#b1c3e2';
-            } else {
-              pointColor = '#fc376e';
-              this.numberOfAlerts++;
-            }
-            dataset.push(response.parameters[0].performance);
-            this.lineChartData.push({
-              data: dataset,
-              label: vh.model,
-              pointBackgroundColor: pointColor
-            });
-
-            this.statistics = true;
-          });
-      } else {
-        // nothing happens
-      }
-    }*/
   }
   }
 
@@ -1035,7 +1009,12 @@ export class MainViewComponent implements OnInit {
       let label;
       if (i == date1.getFullYear()) {
         j = date1.getMonth() + 1;
-        label = i + '-' + j;
+        if( j < 7 ) {
+          label = i + '-' + j;
+        } else {
+          label = '';
+        }
+
       } else {
         j = 0;
         label = '' + i;
@@ -1056,36 +1035,71 @@ export class MainViewComponent implements OnInit {
       fill: false,
       pointRadius: 0
     });
-    const dataset = [];
-
+    const dataset1 = [];
+    const dataset2 = [];
     this.getVehicleService
       .retrieveParametersBetweenDates(vehicle[0]._id, date1, date2)
       .subscribe((response: any) => {
         this.vehicleParameter = response.parameters;
-        let i = 0;
-        const pointColor = [];
+        //let i = 0;
+        //const pointColor = [];
         let p;
         for (p of this.vehicleParameter) {
-          dataset.push(p.performance);
-          const lowerThreshold = this.BASELINE[i] * 0.8;
-          const upperThreshold = this.BASELINE[i];
-          if (p.performance < lowerThreshold) {
-            pointColor.push('#ff0000');
-          } else if (p.performance > upperThreshold) {
-            pointColor.push('#b1c3e2');
+          const paramDate = new Date(p.time);
+          if (paramDate <= new Date()) {
+          dataset1.push(p.performance);
+          //const lowerThreshold = this.BASELINE[i] * 0.8;
+          //const upperThreshold = this.BASELINE[i];
+          // if (p.performance < lowerThreshold) {
+          //     pointColor.push('#ff0000');
+          //   } else if (p.performance > upperThreshold) {
+          //     pointColor.push('#b1c3e2');
+          //   } else {
+          //     pointColor.push('#fc376e');
+          //   }
           } else {
-            pointColor.push('#fc376e');
+            break;
           }
           i++;
         }
         this.chosenVehicle.performance = p.performance;
         this.chosenVehicle.batteryValue = p.cost_value;
         this.lineChartData.push({
-          data: dataset,
+          data: dataset1,
           label: vehicle[0].model,
           fill: false,
-          pointBackgroundColor: pointColor,
-          pointBorderColor: false
+          borderDash: [0, 0],
+          pointRadius: 0,
+          // pointBackgroundColor: pointColor,
+          borderColor: '#fc376e',
+        });
+        let d;
+        for (d of this.vehicleParameter) { // For the projection
+          const paramDate = new Date(d.time);
+          if (paramDate > new Date()) {
+          dataset2.push(d.performance);
+          const lowerThreshold = this.BASELINE[i] * 0.8;
+          const upperThreshold = this.BASELINE[i];
+          // if (d.performance < lowerThreshold) {
+          //     pointColor.push('#ff0000');
+          //   } else if (d.performance > upperThreshold) {
+          //     pointColor.push('#b1c3e2');
+          //   } else {
+          //     pointColor.push('#fc376e');
+          //   }
+          } else {
+            dataset2.push(empty);
+          }
+          i++;
+        }
+        this.lineChartData.push({
+          data: dataset2,
+          label: vehicle[0].model,
+          fill: false,
+          borderDash: [5, 5],
+          pointRadius: 0,
+          // pointBackgroundColor: pointColor,
+          borderColor: '#b1c3e2',
         });
         this.genLineChartData = this.lineChartData;
         this.chosenVehicleChartData = this.lineChartData;
@@ -1196,6 +1210,7 @@ export class MainViewComponent implements OnInit {
           if (newDataset.length > 0) {
             newLineChartData.push({
               data: newDataset,
+              fill: false,
               label: dataset.label,
               pointBackgroundColor: pointColor,
               pointBorderColor: false
@@ -1203,9 +1218,10 @@ export class MainViewComponent implements OnInit {
           }
         }
       }
-      this.calculateTopParameters();
       this.lineChartData = newLineChartData;
     }
+    this.calculateTopParameters();
+
   }
 
   onFilterChanged(value) {
