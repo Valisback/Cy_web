@@ -130,6 +130,10 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
 .gmnoprint div {
     background:none !important;
 }
+
+.mat-dialog-container {
+  background-color: #283040;
+}
 /* ink bar style */
 .mat-tab-group.mat-primary .mat-ink-bar, .mat-tab-nav-bar.mat-primary .mat-ink-bar{
   background: #0795ff;
@@ -152,6 +156,10 @@ h4{
 }
 mat-card{
   border-radius: 1px!important;
+}
+
+.backdropBackground {
+  backdrop-filter: blur(8px);
 }
 
 .mat-menu-content:not(:empty){

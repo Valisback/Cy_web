@@ -58,6 +58,21 @@ mat-sidenav-content {
   color: #ffffff;
 }
 
+.label_coming_soon {
+  position: absolute;
+  font-size: 10px;
+  color: #0795ff;
+  top:40px;
+  left:130px;
+}
+
+.label_coming_soon2 {
+  position: absolute;
+  font-size: 10px;
+  color: #0795ff;
+  top:88px;
+  left:130px;
+}
 .toolbar-spacer {
   flex: 1 1 auto;
 }

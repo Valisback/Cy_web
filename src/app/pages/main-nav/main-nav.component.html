@@ -18,13 +18,21 @@
         <button type="button" aria-label="Toggle sidenav" mat-icon-button [matMenuTriggerFor]="beforeMenu">
         <mat-icon class = " material-icons md-dark" aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
-      <mat-menu #beforeMenu="matMenu">
-        <button mat-menu-item>Item 1</button>
-        <button mat-menu-item>Item 2</button>
+      <mat-menu style="margin: 0; padding: 0;" #beforeMenu="matMenu">
+      <div>
+        <button mat-menu-item [disabled]="true"><mat-icon color='primary'>offline_bolt</mat-icon> Upgrade to Cy Agent</button>
+        <div class = "label_coming_soon"> Coming soon </div>
+      </div>
+      <div>
+        <button mat-menu-item [disabled]="true"><mat-icon color='primary'>offline_bolt</mat-icon> Upgrade to Cy Grid</button>
+      </div>
+        <button mat-menu-item (click)="backToHomepage()"><mat-icon>exit_to_app</mat-icon> Log Out</button>
+        <div class = "label_coming_soon2"> Coming soon </div>
+
       </mat-menu>
     </mat-toolbar>
     <mat-nav-list class="mat-list-base">
-        <a href="/" type="button" mat-icon-button ><mat-icon matBadge="8"  matBadgeOverlap="true"  matBadgePosition="after" matBadgeColor="warn" class="material-icons md-dark">notifications_none</mat-icon></a>
+        <a type="button" mat-icon-button ><mat-icon matBadge="8"  matBadgeOverlap="true"  matBadgePosition="after" matBadgeColor="warn" class="material-icons md-dark">notifications_none</mat-icon></a>
         <button type="button" mat-icon-button ><mat-icon class="material-icons md-dark">person</mat-icon></button>
     </mat-nav-list>
 

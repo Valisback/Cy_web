@@ -4,6 +4,7 @@ html,body {
   display: inline-block;
 }
 
+
 .background {
   background: url('/assets/homepage/desktop/Desktop_background.png') no-repeat center center fixed ;
   -webkit-background-size: cover;
@@ -26,6 +27,7 @@ html,body {
   padding: 60px;
   display: flex;
   flex-direction: row;
+  overflow: auto;
 }
 
 .block1{
@@ -55,6 +57,12 @@ html,body {
   border-radius: 2px;
   text-decoration: none;
 
+}
+
+.login_button:hover{
+  color: #39a7fc;
+  border: 2px solid #39a7fc;
+  cursor: pointer;
 }
 
 img {

@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef, ɵConsole, Output } from '@an
 import { GetVehicleService } from 'src/app/services/get-vehicle.service';
 import { GetClustersService } from 'src/app/services/get-clusters.service';
 import { BaseChartDirective } from 'ng2-charts/ng2-charts';
+import { NavbarService } from 'src/app/services/navbar.service';
 
 import { Vehicle } from 'src/app/classes/vehicle';
 import * as moment from 'moment';
@@ -118,325 +119,302 @@ export class MainViewComponent implements OnInit {
   // Google map style
   public darkStyle: google.maps.MapTypeStyle[] = [
     {
-      featureType: 'all',
-      elementType: 'geometry',
-      stylers: [
-        {
-          color: '#63b5e5'
-        },
-        {
-          visibility: 'simplified'
-        }
-      ]
+        featureType: 'all',
+        elementType: 'geometry',
+        stylers: [
+            {
+                color: '#63b5e5'
+            },
+            {
+                visibility: 'simplified'
+            }
+        ]
     },
     {
-      featureType: 'all',
-      elementType: 'labels.text.fill',
-      stylers: [
-        {
-          gamma: 0.01
-        },
-        {
-          lightness: 20
-        }
-      ]
+        featureType: 'all',
+        elementType: 'labels.text.fill',
+        stylers: [
+            {
+                gamma: 0.01
+            },
+            {
+                lightness: 20
+            },
+            {
+                visibility: 'simplified'
+            }
+        ]
     },
     {
-      featureType: 'all',
-      elementType: 'labels.text.stroke',
-      stylers: [
-        {
-          saturation: -31
-        },
-        {
-          lightness: -33
-        },
-        {
-          weight: 2
-        },
-        {
-          gamma: 0.8
-        }
-      ]
+        featureType: 'all',
+        elementType: 'labels.text.stroke',
+        stylers: [
+            {
+                saturation: -31
+            },
+            {
+                lightness: -33
+            },
+            {
+                weight: 2
+            },
+            {
+                gamma: 0.8
+            },
+            {
+                visibility: 'simplified'
+            }
+        ]
     },
     {
-      featureType: 'all',
-      elementType: 'labels.icon',
-      stylers: [
-        {
-          visibility: 'off'
-        }
-      ]
+        featureType: 'all',
+        elementType: 'labels.icon',
+        stylers: [
+            {
+                visibility: 'off'
+            }
+        ]
     },
     {
-      featureType: 'administrative',
-      elementType: 'all',
-      stylers: [
-        {
-          color: '#b1c3e2'
-        },
-        {
-          visibility: 'simplified'
-        }
-      ]
+        featureType: 'administrative',
+        elementType: 'all',
+        stylers: [
+            {
+                color: '#b1c3e2'
+            },
+            {
+                visibility: 'simplified'
+            },
+            {
+                weight: 0.79
+            }
+        ]
     },
     {
-      featureType: 'administrative.country',
-      elementType: 'all',
-      stylers: [
-        {
-          color: '#32364f'
-        },
-        {
-          visibility: 'simplified'
-        }
-      ]
+        featureType: 'administrative',
+        elementType: 'geometry',
+        stylers: [
+            {
+                visibility: 'off'
+            }
+        ]
     },
     {
-      featureType: 'administrative.country',
-      elementType: 'geometry.fill',
-      stylers: [
-        {
-          color: '#b1c3e2'
-        },
-        {
-          visibility: 'simplified'
-        }
-      ]
+        featureType: 'administrative.country',
+        elementType: 'all',
+        stylers: [
+            {
+                color: '#32364f'
+            },
+            {
+                visibility: 'simplified'
+            }
+        ]
     },
     {
-      featureType: 'administrative.country',
-      elementType: 'geometry.stroke',
-      stylers: [
-        {
-          visibility: 'off'
-        }
-      ]
+        featureType: 'administrative.country',
+        elementType: 'geometry.fill',
+        stylers: [
+            {
+                color: '#b1c3e2'
+            },
+            {
+                visibility: 'simplified'
+            }
+        ]
     },
     {
-      featureType: 'landscape',
-      elementType: 'all',
-      stylers: [
-        {
-          color: '#242634'
-        },
-        {
-          visibility: 'simplified'
-        }
-      ]
+        featureType: 'administrative.country',
+        elementType: 'geometry.stroke',
+        stylers: [
+            {
+                visibility: 'off'
+            }
+        ]
     },
     {
-      featureType: 'landscape',
-      elementType: 'geometry',
-      stylers: [
-        {
-          lightness: 30
-        },
-        {
-          saturation: 30
-        },
-        {
-          color: '#242634'
-        },
-        {
-          visibility: 'simplified'
-        }
-      ]
+        featureType: 'landscape',
+        elementType: 'all',
+        stylers: [
+            {
+                color: '#242634'
+            },
+            {
+                visibility: 'simplified'
+            }
+        ]
     },
     {
-      featureType: 'landscape.natural',
-      elementType: 'geometry',
-      stylers: [
-        {
-          visibility: 'simplified'
-        }
-      ]
+        featureType: 'landscape',
+        elementType: 'geometry',
+        stylers: [
+            {
+                lightness: 30
+            },
+            {
+                saturation: 30
+            },
+            {
+                color: '#242634'
+            },
+            {
+                visibility: 'simplified'
+            }
+        ]
     },
     {
-      featureType: 'landscape.natural',
-      elementType: 'labels',
-      stylers: [
-        {
-          visibility: 'simplified'
-        }
-      ]
+        featureType: 'poi',
+        elementType: 'all',
+        stylers: [
+            {
+                color: '#b1c3e2'
+            },
+            {
+                visibility: 'off'
+            }
+        ]
     },
     {
-      featureType: 'poi',
-      elementType: 'all',
-      stylers: [
-        {
-          color: '#b1c3e2'
-        },
-        {
-          visibility: 'off'
-        }
-      ]
+        featureType: 'poi',
+        elementType: 'geometry',
+        stylers: [
+            {
+                saturation: 20
+            },
+            {
+                visibility: 'off'
+            }
+        ]
     },
     {
-      featureType: 'poi',
-      elementType: 'geometry',
-      stylers: [
-        {
-          saturation: 20
-        },
-        {
-          visibility: 'off'
-        }
-      ]
+        featureType: 'poi.park',
+        elementType: 'geometry',
+        stylers: [
+            {
+                lightness: 20
+            },
+            {
+                saturation: -20
+            },
+            {
+                color: '#32364f'
+            }
+        ]
     },
     {
-      featureType: 'poi.park',
-      elementType: 'geometry',
-      stylers: [
-        {
-          lightness: 20
-        },
-        {
-          saturation: -20
-        },
-        {
-          color: '#32364f'
-        },
-        {
-          visibility: 'off'
-        }
-      ]
+        featureType: 'road',
+        elementType: 'all',
+        stylers: [
+            {
+                color: '#90a4c2'
+            },
+            {
+                saturation: 12
+            },
+            {
+                lightness: -77
+            },
+            {
+                visibility: 'simplified'
+            }
+        ]
     },
     {
-      featureType: 'poi.park',
-      elementType: 'geometry.fill',
-      stylers: [
-        {
-          visibility: 'off'
-        }
-      ]
+        featureType: 'road',
+        elementType: 'geometry',
+        stylers: [
+           {
+                lightness: 10
+            },
+            {
+                saturation: -30
+            }
+        ]
     },
     {
-      featureType: 'poi.park',
-      elementType: 'labels',
-      stylers: [
-        {
-          visibility: 'off'
-        }
-      ]
+        featureType: 'road',
+        elementType: 'geometry.stroke',
+        stylers: [
+            {
+                saturation: 25
+            },
+            {
+                lightness: -40
+            },
+            {
+                color: '#32364f'
+            },
+            {
+                weight: 0.22
+            },
+            {
+                visibility: 'simplified'
+            }
+        ]
     },
     {
-      featureType: 'road',
-      elementType: 'all',
-      stylers: [
-        {
-          color: '#90a4c2'
-        },
-        {
-          saturation: 12
-        },
-        {
-          lightness: -77
-        },
-        {
-          visibility: 'simplified'
-        }
-      ]
+        featureType: 'road',
+        elementType: 'labels',
+        stylers: [
+            {
+                visibility: 'simplified'
+            },
+            {
+                color: '#b1c3e2'
+            }
+        ]
     },
     {
-      featureType: 'road',
-      elementType: 'geometry',
-      stylers: [
-        {
-          lightness: 10
-        },
-        {
-          saturation: -30
-        }
-      ]
+        featureType: 'road',
+        elementType: 'labels.text',
+        stylers: [
+            {
+                visibility: 'simplified'
+            }
+        ]
     },
     {
-      featureType: 'road',
-      elementType: 'geometry.stroke',
-      stylers: [
-        {
-          saturation: 25
-        },
-        {
-          lightness: -40
-        },
-        {
-          color: '#32364f'
-        },
-        {
-          weight: 0.22
-        },
-        {
-          visibility: 'simplified'
-        }
-      ]
+        featureType: 'road',
+        elementType: 'labels.icon',
+        stylers: [
+            {
+                visibility: 'off'
+            }
+        ]
     },
     {
-      featureType: 'road',
-      elementType: 'labels',
-      stylers: [
-        {
-          visibility: 'simplified'
-        },
-        {
-          color: '#b1c3e2'
-        }
-      ]
+        featureType: 'transit',
+        elementType: 'all',
+        stylers: [
+            {
+                visibility: 'off'
+            },
+            {
+                color: '#444f79'
+            }
+        ]
     },
     {
-      featureType: 'road',
-      elementType: 'labels.text',
-      stylers: [
-        {
-          visibility: 'off'
-        },
-        {
-          hue: '#ff0000'
-        }
-      ]
-    },
-    {
-      featureType: 'road',
-      elementType: 'labels.icon',
-      stylers: [
-        {
-          visibility: 'off'
-        }
-      ]
-    },
-    {
-      featureType: 'transit',
-      elementType: 'all',
-      stylers: [
-        {
-          visibility: 'off'
-        },
-        {
-          color: '#444f79'
-        }
-      ]
-    },
-    {
-      featureType: 'water',
-      elementType: 'all',
-      stylers: [
-        {
-          lightness: -20
-        },
-        {
-          color: '#2b3548'
-        },
-        {
-          saturation: 0
-        }
-      ]
+        featureType: 'water',
+        elementType: 'all',
+        stylers: [
+            {
+                lightness: -20
+            },
+            {
+                color: '#2b3548'
+            },
+            {
+                saturation: 0
+            }
+        ]
     }
-  ];
+];
 
   constructor(
     private getVehicleService: GetVehicleService,
-    private getClusterService: GetClustersService
+    private getClusterService: GetClustersService,
+    public nav: NavbarService,
   ) {}
 
   private refreshData() {
@@ -451,6 +429,7 @@ export class MainViewComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.nav.show();
     this.refreshData();
 
     // Generating each cluster portfolio:
@@ -458,9 +437,9 @@ export class MainViewComponent implements OnInit {
     this.texasPortfolio = new PortfolioVals('+10%', '14K (+10%)', '8 cents/mi (-20%)', '10K (+15%)', '+2%', '10K (+3%)', '11 cents/mi (0%)', '8K (+2%)', '-10%' , '8K (-7%)', '13 cents/mi (+25%)', '8K (-30%)');
     this.californiaPortfolio = new PortfolioVals('+10%', '14K (+10%)', '8 cents/mi (-20%)', '10K (+15%)', '+2%', '10K (+3%)', '11 cents/mi (0%)', '8K (+2%)', '-10%' , '8K (-7%)', '13 cents/mi (+25%)', '8K (-30%)');
     this.georgiaPortfolio = new PortfolioVals('+10%', '14K (+10%)', '8 cents/mi (-20%)', '10K (+15%)', '+2%', '10K (+3%)', '11 cents/mi (0%)', '8K (+2%)', '-10%' , '8K (-7%)', '13 cents/mi (+25%)', '8K (-30%)');
-    this.newyorkPorftolio = new PortfolioVals('+10%', '14K (+10%)', '8 cents/mi (-20%)', '10K (+15%)', '+2%', '10K (+3%)', '11 cents/mi (0%)', '8K (+2%)', '-10%' , '8K (-7%)', '13 cents/mi (+25%)', '8K (-30%)');
-    this.wyomingPortfolio = new PortfolioVals('+10%', '14K (+10%)', '8 cents/mi (-20%)', '10K (+15%)', '+2%', '10K (+3%)', '11 cents/mi (0%)', '8K (+2%)', '-10%' , '8K (-7%)', '13 cents/mi (+25%)', '8K (-30%)');
-    this.generalPortfolio = new PortfolioVals('+10%', '14K (+10%)', '8 cents/mi (-20%)', '10K (+15%)', '+2%', '10K (+3%)', '11 cents/mi (0%)', '8K (+2%)', '-10%' , '8K (-7%)', '13 cents/mi (+25%)', '8K (-30%)');
+    this.newyorkPorftolio = new PortfolioVals('+3%', '11K (+8%)', '8 cents/mi (-20%)', '10K (+15%)', '+2%', '10K (+3%)', '11 cents/mi (0%)', '8K (+2%)', '-10%' , '8K (-7%)', '13 cents/mi (+25%)', '8K (-30%)');
+    this.wyomingPortfolio = new PortfolioVals('+12%', '17K (+11%)', '8 cents/mi (-20%)', '10K (+15%)', '+2%', '10K (+3%)', '11 cents/mi (0%)', '8K (+2%)', '-10%' , '8K (-7%)', '13 cents/mi (+25%)', '8K (-30%)');
+    this.generalPortfolio = new PortfolioVals('+7%', '12K (+9%)', '8 cents/mi (-20%)', '10K (+15%)', '+2%', '10K (+3%)', '11 cents/mi (0%)', '8K (+2%)', '-10%' , '8K (-7%)', '13 cents/mi (+25%)', '8K (-30%)');
 
     this.allinterventions.push(new Intervention('Limit daily mileage: 47 miles', 'USD 1000 (+1%)', 1));
     this.allinterventions.push(new Intervention('Trim vehicles performance', 'USD 2000 (+2%)', 2));
@@ -1130,7 +1109,7 @@ export class MainViewComponent implements OnInit {
   onBackButton() {
     if (this.viewVehicle) {
       if (this.chosenCluster) {
-        console.log("back from CHOSEN CLUSTER", this.chosenCluster);
+        console.log('back from CHOSEN CLUSTER', this.chosenCluster);
         this.viewVehicle = false;
         this.viewCluster = true;
         this.viewGeneral = false;

@@ -23,13 +23,16 @@ import {MatSliderModule} from '@angular/material/slider';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatSelectModule} from '@angular/material/select';
 import { ChartsModule } from 'ng2-charts';
+import {MatInputModule} from '@angular/material';
 import { VirtualScrollerModule } from 'ngx-virtual-scroller';
 import {MatBadgeModule} from '@angular/material/badge';
 import { MainNavComponent } from './pages/main-nav/main-nav.component';
 import { MainPageComponent } from './pages/main-page/main-page.component';
 import {MatExpansionModule} from '@angular/material/expansion';
-import { HomepageComponent } from './pages/homepage/homepage.component';
+import { DialogLoginComponent, HomepageComponent } from './pages/homepage/homepage.component';
 import { NavbarService } from 'src/app/services/navbar.service';
+import {MatDialogModule} from '@angular/material/dialog';
+
 
 
 @NgModule({
@@ -38,16 +41,19 @@ import { NavbarService } from 'src/app/services/navbar.service';
     MainViewComponent,
     DashboardComponent,
     MainNavComponent,
+    DialogLoginComponent,
     MainPageComponent,
     HomepageComponent
   ],
   imports: [
+    MatInputModule,
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
     LayoutModule,
     MatToolbarModule,
+    MatDialogModule,
     MatButtonModule,
     MatBadgeModule,
     MatSidenavModule,
@@ -68,6 +74,7 @@ import { NavbarService } from 'src/app/services/navbar.service';
       apiKey: 'AIzaSyAuIQbKeVA2tp8bNMIlyDJomvXzm75XOrE'
     })
   ],
+  entryComponents: [DialogLoginComponent],
   providers: [NavbarService],
   bootstrap: [AppComponent]
 })
