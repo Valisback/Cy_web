@@ -28,6 +28,8 @@ import {MatBadgeModule} from '@angular/material/badge';
 import { MainNavComponent } from './pages/main-nav/main-nav.component';
 import { MainPageComponent } from './pages/main-page/main-page.component';
 import {MatExpansionModule} from '@angular/material/expansion';
+import { HomepageComponent } from './pages/homepage/homepage.component';
+import { NavbarService } from 'src/app/services/navbar.service';
 
 
 @NgModule({
@@ -36,7 +38,8 @@ import {MatExpansionModule} from '@angular/material/expansion';
     MainViewComponent,
     DashboardComponent,
     MainNavComponent,
-    MainPageComponent
+    MainPageComponent,
+    HomepageComponent
   ],
   imports: [
     BrowserModule,
@@ -65,7 +68,7 @@ import {MatExpansionModule} from '@angular/material/expansion';
       apiKey: 'AIzaSyAuIQbKeVA2tp8bNMIlyDJomvXzm75XOrE'
     })
   ],
-  providers: [],
+  providers: [NavbarService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

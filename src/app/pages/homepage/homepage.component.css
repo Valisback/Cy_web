@@ -1,0 +1,199 @@
+html,body {
+  width: 100%;
+  height: 100%;
+  display: inline-block;
+}
+
+.background {
+  background: url('/assets/homepage/desktop/Desktop_background.png') no-repeat center center fixed ;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  background-size: cover;
+  background-color: #2e4561;
+  background-repeat: no-repeat;
+  min-height: 100%;
+  min-width: 1024px;
+  height: auto;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+#home-container{
+  padding: 60px;
+  display: flex;
+  flex-direction: row;
+}
+
+.block1{
+  width: 50%;
+  height: 100%;
+  display: inline-block;
+  padding-bottom: 60px;
+  padding-right: 0%;
+
+}
+
+.block2{
+  height: 100%;
+  padding-bottom: 0;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  margin-right: 0;
+}
+
+.login_button{
+  color: #0795ff;
+  border: 2px solid #0795ff;
+  margin-top: .2em;
+  padding: .7em 1.7em .7em 1.7em ;
+  font-size: .7em;
+  border-radius: 2px;
+  text-decoration: none;
+
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+#panasonic_cy_logo{
+  width: 100%;
+  height: 10%;
+}
+#tablet_logo{
+  width: 100%;
+  height: 80%;
+  padding-top: 10px;
+  margin-left: -30px;
+}
+
+#content{
+  font-size: x-large;
+  padding-top: 80px;
+  height: 60%;
+  max-width: 500px;
+}
+
+#truck{
+  position: fixed;
+  right: 0%;
+  bottom: 0;
+  width: 20%;
+  padding-bottom: 20px;
+}
+
+#truck_logo{
+  float: right;
+}
+/* Tablets Landscape */
+@media only screen and (max-width: 1024px) {
+  .background  {
+    background-image: url('/assets/homepage/tablet/Tablet_Background.png');
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    background-size: cover;
+    background-color: #2e4561;
+    background-repeat: no-repeat;
+    min-height: 100%;
+    min-width: 1024px;
+    height: auto;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+  }
+
+
+
+  #panasonic_cy_logo{
+    width: 100%;
+    height: 20%;
+  }
+
+  #panasonic_logo{
+    content: url('/assets/homepage/tablet/Panasonic_CY_logo_tablet.png');
+  }
+  #tablet_logo{
+    width: 100%;
+    height: 80%;
+    padding-top: 50px;
+    margin-left: -30px;
+  }
+  #content{
+    font-size: large;
+    padding-top: 80px;
+    height: 60%;
+    max-width: 300px;
+  }
+
+  #truck{
+    position: fixed;
+    right: 0%;
+    bottom: 0;
+    width: 20%;
+    padding-bottom: 20px;
+  }
+}
+
+/* Phones Landscape */
+@media only screen and (max-width: 767px) {
+  .background  {
+    background-image: url('/assets/homepage/phone/background _iphone.png');
+  }
+}
+
+@media only screen and (min-width: 1025px) and (max-width: 1367px){
+  .background  {
+    background-image: url('/assets/homepage/tablet/Tablet_Background.png');
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    background-size: cover;
+    background-color: #2e4561;
+    background-repeat: no-repeat;
+    min-height: 100%;
+    min-width: 1024px;
+    height: auto;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+  }
+
+
+
+  #panasonic_cy_logo{
+    width: 100%;
+    height: 20%;
+  }
+
+  #tablet_logo{
+    width: 100%;
+    height: 80%;
+    padding-top: 100px;
+    margin-left: -30px;
+  }
+  #content{
+    font-size: x-large;
+    padding-top: 140px;
+    height: 60%;
+    max-width: 500px;
+  }
+
+  #truck{
+    position: fixed;
+    right: 0%;
+    bottom: 0;
+    width: 20%;
+    padding-bottom: 20px;
+  }
+}
