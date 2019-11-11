@@ -519,6 +519,8 @@ export class MainViewComponent implements OnInit {
       },
       legend: {
         position: 'bottom',
+        align: 'end',
+        textAlign: 'left',
         labels: {
           padding: -25,
           useLineStyle: true,
@@ -609,7 +611,7 @@ export class MainViewComponent implements OnInit {
       const today = Date.now();
       const age = this.battery_age(today, vehicle.date_of_creation);
       const distance = age * Math.random() * 1000 + 300;
-      tco_savings = age * Math.random() * 100 + 230;
+      tco_savings = ((age * Math.random() * 100 + 230) / 1000).toFixed(1);
       vehicle.age = age;
       vehicle.tco_savings = tco_savings;
       vehicle.distance = (distance.toFixed(1));
@@ -623,7 +625,7 @@ export class MainViewComponent implements OnInit {
     this.recenterMap(vehicle.position_lat, vehicle.position_lng);
     this.zoom = this.GEN_ZOOM + 2;
     this.numberOfVehicles = 1;
-    this.tcoSavings = (tco_savings/1000).toFixed(1) + 'k';
+    this.tcoSavings = tco_savings + 'k';
     console.log('CLUSTER: ', this.chosenCluster);
   }
 

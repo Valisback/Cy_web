@@ -32,23 +32,27 @@ html,body {
   color: #dce3eb;
 }
 .big_box_text {
-  margin: 5px;
-  font-size: 22px;
+  margin: 3px;
+  font-size: 2vw;
+  width: 100%;
+  height: fit-content;
   text-align: left;
   overflow: hidden;
   white-space: nowrap;
 }
 
 .label_text {
-  margin: 5px;
-  position: absolute;
-  bottom: 0;
+  width: 100%;
+  margin: 3px;
   text-align: left;
   overflow: hidden;
   white-space: nowrap;
 }
 
 .top_cards mat-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
   background-color: #2b3548;
   color: #ffffff;
   padding: 5px;
@@ -301,8 +305,8 @@ mat-expansion-panel-header
 }
 
 .data_table{
-  padding-top: 10px;
-  height: 50%;
+  padding-top: 15px;
+  height: calc(50% - 10px);
   display: flex;
   overflow: auto;
   justify-content: center;
@@ -346,8 +350,7 @@ mat-expansion-panel-header
 }
 
 .vehicle_details_tabs{
-  display: flex;
-  vertical-align: middle;
+  display: block;
   align-self: center;
   height:100%;
   max-height: 100%;
@@ -388,15 +391,6 @@ mat-expansion-panel-header
   margin: 5px;
   font-size: 16px;
   text-align: center;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-.label_text {
-  margin: 5px;
-  position: absolute;
-  bottom: 0;
-  text-align: left;
   overflow: hidden;
   white-space: nowrap;
 }
