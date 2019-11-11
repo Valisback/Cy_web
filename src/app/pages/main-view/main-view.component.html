@@ -3,7 +3,7 @@
   <div class="row" id="wrapper">
     <div class = "left_div">
       <div class="logo_div">
-          <a href="/home" matRipple><img src="assets/img/Panasonic_CY_logo.png" class="logo"></a>
+          <a href="/home"><img src="assets/img/Panasonic_CY_logo.png" class="logo"></a>
       </div>
         <div class="top_cards">
             <mat-card class="mat-elevation-z0">
@@ -82,7 +82,11 @@
       </div>
 
       <ng-template #nostat >
-        <table style="height: 50%;"></table>
+        <div style="display: flex; height: 50%; width: 100%; align-content: center; vertical-align: middle; ">
+        <table style="height: 50%; width: 100%; align-content: center; vertical-align: middle;">
+            <mat-spinner style="align-self: center; vertical-align: center;" color="accent"></mat-spinner>
+          </table>
+        </div>
       </ng-template>
 
           <div class="data_table" >

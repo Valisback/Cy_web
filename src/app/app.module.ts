@@ -13,6 +13,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatCardModule } from '@angular/material/card';
@@ -49,6 +50,7 @@ import {MatDialogModule} from '@angular/material/dialog';
     MatInputModule,
     BrowserModule,
     AppRoutingModule,
+    MatProgressSpinnerModule,
     HttpClientModule,
     FormsModule,
     LayoutModule,

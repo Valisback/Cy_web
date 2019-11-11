@@ -130,6 +130,8 @@ THE SOFTWARE.
 
 @angular/material/menu
 
+@angular/material/progress-spinner
+
 @angular/material/select
 
 @angular/material/sidenav

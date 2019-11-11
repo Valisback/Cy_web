@@ -111,7 +111,7 @@ img {
     background-color: #2e4561;
     background-repeat: no-repeat;
     min-height: 100%;
-    min-width: 1024px;
+    min-width: 100%;
     height: auto;
     width: 100%;
     position: fixed;
@@ -152,9 +152,102 @@ img {
 }
 
 /* Phones Landscape */
+
 @media only screen and (max-width: 767px) {
   .background  {
     background-image: url('/assets/homepage/phone/background _iphone.png');
+  }
+  .block1{
+    padding: 0;
+    width: 100%;
+    height: 50%;
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -moz-box-orient: vertical;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    /* optional */
+    -webkit-box-align: start;
+    -moz-box-align: start;
+    -ms-flex-align: start;
+    -webkit-align-items: flex-start;
+    align-items: flex-start;
+
+  }
+
+  .block2{
+    height: 50%;
+    padding-bottom: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-right: 0;
+  }
+
+  #home-container{
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+  }
+
+  .block1 #panasonic_cy_logo{
+    -webkit-box-ordinal-group: 2;
+    -moz-box-ordinal-group: 2;
+    -ms-flex-order: 2;
+    -webkit-order: 2;
+    order: 2;
+  }
+
+  .block1 #tablet_logo{
+    -webkit-box-ordinal-group: 1;
+    -moz-box-ordinal-group: 1;
+    -ms-flex-order: 1;
+    -webkit-order: 1;
+    order: 1;
+  }
+
+  .block2 h1{
+    margin-top: 0;
+  }
+
+  #panasonic_logo{
+    padding: 10%;
+    padding-bottom: 0;
+    width: auto;
+    height: 20%;
+    content: url('/assets/homepage/phone/Panasonic_CY_logo_iphone.png');
+  }
+  #tablet_logo{
+    align-self: center;
+    width:75%;
+    max-width: 330px;
+    height: 40%;
+    padding: 10%;
+    margin: 0;
+  }
+  #content{
+    padding: 10%;
+    padding-top: 0;
+    font-size: large;
+    vertical-align: top;
+    padding-top: 0;
+    padding-bottom: 80px;
+    height: 60%;
+    width: 100%;
+  }
+
+  #truck{
+    position: fixed;
+    right: 0%;
+    bottom: 0;
+    width: 20%;
+    padding-bottom: 10%;
   }
 }
 
