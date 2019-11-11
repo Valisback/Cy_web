@@ -152,10 +152,23 @@ img {
 }
 
 /* Phones Landscape */
-
 @media only screen and (max-width: 767px) {
   .background  {
-    background-image: url('/assets/homepage/phone/background _iphone.png');
+    background: url('/assets/homepage/phone/background _iphone.png') no-repeat center center fixed ;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    background-size: cover;
+    background-color: #2e4561;
+    background-repeat: no-repeat;
+    max-height: 100%;
+    height: auto;
+    width: 100%;
+    max-width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
   }
   .block1{
     padding: 0;

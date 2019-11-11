@@ -68,7 +68,7 @@
             </div>
       </ng-template>
 
-      <div class="line_chart" style="max-height: 50%;" *ngIf="statistics; else nostat">
+      <div class="line_chart" style="max-height: calc(50%-40px);" *ngIf="statistics; else nostat">
           <div class="time_slider" *ngIf="viewGeneral; else backButtonNslider">
               <h4>Portfolio Status</h4>
               <label class="slider_title"> Battery Age: </label>

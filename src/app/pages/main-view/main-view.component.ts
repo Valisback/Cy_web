@@ -548,7 +548,6 @@ export class MainViewComponent implements OnInit {
   }
 
   getColor(vehicle) {
-    //console.log('I am called');
     if (vehicle._battery_id.life_span >= 75) {
       return '#c1ff04';
     } else if (vehicle._battery_id.life_span >= 50) {
@@ -559,8 +558,6 @@ export class MainViewComponent implements OnInit {
   }
 
   calculateAge(vehicle) {
-    console.log('called', vehicle);
-    console.log(this.currentVehicles);
     const today = Date.now();
     const age = this.battery_age(today, vehicle.date_of_creation);
     this.ageChosenVehicle = Math.floor(age / 12);
@@ -594,14 +591,9 @@ export class MainViewComponent implements OnInit {
       this.lineChartData = this.chosenVehicleChartData;
       this.lineChartLabels = this.chosenVehicleChartLabels;
     }
-
-
   }
 
   onVehicleChosen(vehicle) {
-    // this.viewVehicle = true;
-    // this.viewGeneral = false;
-    // this.viewCluster = false;
     if (this.chosenVehicle === vehicle) {
       this.chosenCluster = vehicle.cluster;
       const refreshedView = 'vehicle';
@@ -610,7 +602,7 @@ export class MainViewComponent implements OnInit {
       // Shuffle array
       const shuffled = this.allinterventions.sort(() => 0.5 - Math.random());
 
-      // Get sub-array of first n elements after shuffled
+      // Get sub-array of first 3 elements after shuffled
       this.chosenVehicleInterventions = shuffled.slice(0, 3);
       this.chosenVehicle = vehicle;
       const today = Date.now();
@@ -622,8 +614,6 @@ export class MainViewComponent implements OnInit {
       this.chosenCluster = vehicle.cluster;
       const arrayVehicle = [];
       arrayVehicle.push(vehicle);
-      //this.currentVehicles = arrayVehicle;
-      // this.getVehicleParameterBetweenDates(vehicle, this.slider_date_value, this.slider_date_value + 1);
       const view = 'vehicleView';
       this.refreshGraphs(arrayVehicle, view);
     }
