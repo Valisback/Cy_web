@@ -693,7 +693,7 @@ export class MainViewComponent implements OnInit {
     this.viewGeneral = false;
     this.viewVehicle = false;
     this.ageOrder = null;
-    if (!this.regionOrder) {
+    if (this.regionOrder !== ('region' + circle.name)){
       this.regionOrder = 'region' + circle.name;
     }
     this.healthOrder = null;

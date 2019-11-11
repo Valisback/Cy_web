@@ -302,7 +302,7 @@ mat-expansion-panel-header
 
 .data_table{
   padding-top: 10px;
-  height:50%;
+  height:40%;
   display: flex;
   overflow: auto;
   justify-content: center;
