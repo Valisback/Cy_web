@@ -306,7 +306,7 @@ mat-expansion-panel-header
 
 .data_table{
   padding-top: 15px;
-  height: calc(50% - 10px);
+  height: calc(50% - 20px);
   display: flex;
   overflow: auto;
   justify-content: center;
@@ -349,7 +349,7 @@ mat-expansion-panel-header
   border-collapse:collapse;
 }
 
-.vehicle_details_tabs{
+.vehicle_details_tabs, .vehicle_details_tabs2{
   display: block;
   align-self: center;
   height:100%;
@@ -358,6 +358,10 @@ mat-expansion-panel-header
   overflow: auto;
 }
 
+.vehicle_details_tabs2{
+  display: flex;
+
+}
 
 
 .status_content table tr td:first-child {
