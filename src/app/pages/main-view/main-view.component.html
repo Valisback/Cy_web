@@ -20,7 +20,7 @@
 
             </mat-card>
             <mat-card class="mat-elevation-z0">
-                <p class = "big_box_text"> <strong> ${{tcoSavings}}M </strong> </p>
+                <p class = "big_box_text"> <strong> ${{tcoSavings}} </strong> </p>
 
               <p class = "label_text">
                 TCO Savings
@@ -68,21 +68,21 @@
             </div>
       </ng-template>
 
-      <div class="line_chart" style="max-height: calc(50%-40px);" *ngIf="statistics; else nostat">
+      <div class="line_chart" style="max-height: 50%; height: calc(50% - 20px);" *ngIf="statistics; else nostat">
           <div class="time_slider" *ngIf="viewGeneral; else backButtonNslider">
               <h4>Portfolio Status</h4>
               <label class="slider_title"> Battery Age: </label>
               <label class="legend_left">{{min_slider_date}} year</label><mat-slider  class="slider" [max]="max_slider_date" [min]="min_slider_date" [(ngModel)]="slider_date_value"
                 [thumbLabel]="thumbLabel" (change)="sliderEvent()"></mat-slider><label class="legend_right">{{max_slider_date}} years</label>
             </div>
-        <canvas style = "height: 100%; padding-top: 20px; padding-bottom: 20px;" #lineChart="base-chart" baseChart [datasets]="lineChartData" [labels]="lineChartLabels" [options]="lineChartOptions"
+        <canvas style = "min-height: 100%; height: 100%; padding-top: 20px; padding-bottom: 20px;" #lineChart="base-chart" baseChart [datasets]="lineChartData" [labels]="lineChartLabels" [options]="lineChartOptions"
           [legend]="lineChartLegend" (chartClick)="onChartClicked($event)"[chartType]="lineChartType">
 
         </canvas>
       </div>
 
       <ng-template #nostat >
-        <div style="display: flex; height: 50%; width: 100%; align-content: center; vertical-align: middle; ">
+        <div style="display: flex; max-height: 50%; height: calc(50% - 20px); width: 100%; align-content: center; vertical-align: middle; ">
             <mat-spinner style="align-self:center; left:50%; margin-left: -35px; vertical-align: center;" [diameter]="70" color="accent"></mat-spinner>
 
           <!--<table style="height: 50%; width: 100%; align-content: center; vertical-align: middle;">
@@ -118,7 +118,7 @@
                                 <td><strong>~ Depth of Discharge:</strong> 65 kW (+13%)</td>
                               </tr>
                               <tr>
-                                <td><strong>TCO Savings:</strong> USD -3,500 (-5%)</td>
+                                <td><strong>TCO Savings:</strong> USD {{ chosenVehicle.tco_savings }} (-5%)</td>
                                 <td></td>
 
                               </tr>
@@ -294,7 +294,7 @@
                 Battery Health: {{ vh._battery_id.life_span }}%
               </mat-panel-description>
             </mat-expansion-panel-header>
-            <div style = "display: flex; flex-direction: row; height: 100px;">
+            <div matRipple style = "display: flex; flex-direction: row; height: 100px;" (click)="onVehicleChosen(vh)">
               <div class = "around_image" style="width: 50%; display:table-cell; vertical-align:middle; text-align: center;">
                <img width="183px" height="100px"  src="assets/img/Truck_2.png" class="vehicle_image">
               </div>

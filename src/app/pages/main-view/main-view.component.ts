@@ -424,7 +424,7 @@ export class MainViewComponent implements OnInit {
       for ( const cl of this.clusters) {
         totalTCO += cl.tco_savings;
       }
-      this.tcoSavings = (totalTCO / 1000000).toPrecision(2);
+      this.tcoSavings = (totalTCO / 1000000).toPrecision(2) + 'M';
     });
   }
 
@@ -594,6 +594,7 @@ export class MainViewComponent implements OnInit {
   }
 
   onVehicleChosen(vehicle) {
+    let tco_savings;
     if (this.chosenVehicle === vehicle) {
       this.chosenCluster = vehicle.cluster;
       const refreshedView = 'vehicle';
@@ -608,7 +609,9 @@ export class MainViewComponent implements OnInit {
       const today = Date.now();
       const age = this.battery_age(today, vehicle.date_of_creation);
       const distance = age * Math.random() * 1000 + 300;
+      tco_savings = age * Math.random() * 100 + 230;
       vehicle.age = age;
+      vehicle.tco_savings = tco_savings;
       vehicle.distance = (distance.toFixed(1));
       console.log(vehicle.distance);
       this.chosenCluster = vehicle.cluster;
@@ -619,6 +622,8 @@ export class MainViewComponent implements OnInit {
     }
     this.recenterMap(vehicle.position_lat, vehicle.position_lng);
     this.zoom = this.GEN_ZOOM + 2;
+    this.numberOfVehicles = 1;
+    this.tcoSavings = (tco_savings/1000).toFixed(1) + 'k';
     console.log('CLUSTER: ', this.chosenCluster);
   }
 
@@ -707,10 +712,9 @@ export class MainViewComponent implements OnInit {
       for ( const cl of this.clusters) {
         totalTCO += cl.tco_savings;
       }
-      this.tcoSavings = (totalTCO / 1000000).toPrecision(2);
+      this.tcoSavings = (totalTCO / 1000000).toPrecision(2) + 'M';
     } else {
-      this.tcoSavings = (cluster.tco_savings / 1000000).toPrecision(2);
-      console.log('HEEEEEEEEEEEEEEEE, ', this.tcoSavings);
+      this.tcoSavings = (cluster.tco_savings / 1000000).toPrecision(2) + 'M';
     }
 
   }
