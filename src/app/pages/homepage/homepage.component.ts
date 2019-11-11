@@ -24,10 +24,10 @@ export class DialogLoginComponent {
   }
 
   onSignInClick(): void {
-    if ( this.data.login.includes('tablet') || this.data.login.includes('desktop')) {
+    if ( this.data.login.includes('tablet') || this.data.login.includes('Tablet') || this.data.login.includes('desktop')) {
       console.log('tablet');
       location.href = '/home';
-    } else if ( this.data.login.includes('mobile') || this.data.login.includes('phone') ) {
+    } else if ( this.data.login.includes('mobile') || this.data.login.includes('Mobile') || this.data.login.includes('phone') ) {
       console.log('user');
       location.href = '/dashboard';
     }
