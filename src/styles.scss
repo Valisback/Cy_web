@@ -133,7 +133,11 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
 
 .mat-dialog-container {
   background-color: #283040;
+  height: fit-content;
+  min-height: fit-content;
 }
+
+
 /* ink bar style */
 .mat-tab-group.mat-primary .mat-ink-bar, .mat-tab-nav-bar.mat-primary .mat-ink-bar{
   background: #0795ff;

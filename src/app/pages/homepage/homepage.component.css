@@ -22,6 +22,12 @@ html,body {
   left: 0;
 }
 
+.md-dialog-container {
+  height: 100% !important;
+  position: fixed !important;
+  top: 0px !important;
+}
+
 #home-container{
   padding: 60px;
   display: flex;
