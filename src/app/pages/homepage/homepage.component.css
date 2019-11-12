@@ -114,7 +114,6 @@ img {
     min-width: 100%;
     height: auto;
     width: 100%;
-    position: fixed;
     top: 0;
     left: 0;
   }
@@ -143,7 +142,7 @@ img {
   }
 
   #truck{
-    position: fixed;
+    position: relative;
     right: 0%;
     bottom: 0;
     width: 20%;
@@ -283,7 +282,6 @@ img {
     min-width: 1024px;
     height: auto;
     width: 100%;
-    position: fixed;
     top: 0;
     left: 0;
   }
