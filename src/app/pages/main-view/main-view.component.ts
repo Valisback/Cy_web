@@ -434,12 +434,12 @@ export class MainViewComponent implements OnInit {
 
     // Generating each cluster portfolio:
     // tslint:disable: max-line-length
-    this.texasPortfolio = new PortfolioVals('+10%', '14K (+10%)', '8 cents/mi (-20%)', '10K (+15%)', '+2%', '10K (+3%)', '11 cents/mi (0%)', '8K (+2%)', '-10%' , '8K (-7%)', '13 cents/mi (+25%)', '8K (-30%)');
-    this.californiaPortfolio = new PortfolioVals('+10%', '14K (+10%)', '8 cents/mi (-20%)', '10K (+15%)', '+2%', '10K (+3%)', '11 cents/mi (0%)', '8K (+2%)', '-10%' , '8K (-7%)', '13 cents/mi (+25%)', '8K (-30%)');
-    this.georgiaPortfolio = new PortfolioVals('+10%', '14K (+10%)', '8 cents/mi (-20%)', '10K (+15%)', '+2%', '10K (+3%)', '11 cents/mi (0%)', '8K (+2%)', '-10%' , '8K (-7%)', '13 cents/mi (+25%)', '8K (-30%)');
-    this.newyorkPorftolio = new PortfolioVals('+3%', '11K (+8%)', '8 cents/mi (-20%)', '10K (+15%)', '+2%', '10K (+3%)', '11 cents/mi (0%)', '8K (+2%)', '-10%' , '8K (-7%)', '13 cents/mi (+25%)', '8K (-30%)');
-    this.wyomingPortfolio = new PortfolioVals('+12%', '17K (+11%)', '8 cents/mi (-20%)', '10K (+15%)', '+2%', '10K (+3%)', '11 cents/mi (0%)', '8K (+2%)', '-10%' , '8K (-7%)', '13 cents/mi (+25%)', '8K (-30%)');
-    this.generalPortfolio = new PortfolioVals('+7%', '12K (+9%)', '8 cents/mi (-20%)', '10K (+15%)', '+2%', '10K (+3%)', '11 cents/mi (0%)', '8K (+2%)', '-10%' , '8K (-7%)', '13 cents/mi (+25%)', '8K (-30%)');
+    this.texasPortfolio = new PortfolioVals('+14.2%', '15K (+11%)', '7 cents/mi (-22%)', '9K (+14%)', '+2%', '10.2K (+3%)', '10 cents/mi (+2%)', '7K (+1%)', '-14%' , '6K (-10%)', '12ccents/mi (+25%)', '5K (-22%)');
+    this.californiaPortfolio = new PortfolioVals('+13.6%', '14K (+10%)', '9 cents/mi (-17%)', '12K (+16%)', '+1%', '9.4K (+2%)', '12 cents/mi (0%)', '9K (+3%)', '-16%' , '4K (-12%)', '14 cents/mi (+25%)', '2K (-30%)');
+    this.georgiaPortfolio = new PortfolioVals('+10%', '13K (+10%)', '8 cents/mi (-20%)', '7K (+11%)', '+5%', '11.9K (+5%)', '11 cents/mi (+1%)', '5K (-1%)', '-7%' , '9K (-6%)', '13 cents/mi (+25%)', '3.5K (-27%)');
+    this.newyorkPorftolio = new PortfolioVals('+3%', '11K (+8%)', '9 cents/mi (-17%)', '13K (+17%)', '+4%', '11.6K (+5%)', '12 cents/mi (0%)', '10K (+4%)', '-8%' , '9K (-6%)', '14 cents/mi (+25%)', '2K (-30%)');
+    this.wyomingPortfolio = new PortfolioVals('+12%', '17K (+12%)', '7 cents/mi (-22%)', '8K (+12%)', '+3%', '11K (+4%)', '10 cents/mi (+2%)', '6K (+0%)', '-11%' , '7K (-8%)', '12 cents/mi (+25%)', '5K (-22%)');
+    this.generalPortfolio = new PortfolioVals('+7%', '12K (+9%)', '8 cents/mi (-20%)', '10K (+15%)', '+2%', '10K (+3%)', '12 cents/mi (0%)', '8K (+2%)', '-10%' , '8K (-7%)', '14 cents/mi (+25%)', '2K (-30%)');
 
     this.allinterventions.push(new Intervention('Limit daily mileage: 47 miles', 'USD 1000 (+1%)', 1));
     this.allinterventions.push(new Intervention('Trim vehicles performance', 'USD 2000 (+2%)', 2));
@@ -584,11 +584,15 @@ export class MainViewComponent implements OnInit {
     if (refreshedView === 'general') {
       this.currentVehicles = this.allVehicles;
       this.lineChartData = this.allVehiclesChartData;
+      this.regionOrder = null;
       this.updateTCOSsavings(null);
+      this.updatePortfolioParameters(null);
       this.sliderEvent();
     } else if (refreshedView === 'cluster') {
       this.currentVehicles = this.clusterVehicles;
       this.lineChartData = this.clusterVehiclesChartData;
+      this.regionOrder = 'region' + this.chosenCluster.name;
+      this.updatePortfolioParameters( this.chosenCluster.name);
       this.sliderEvent();
     } else if (refreshedView === 'vehicle') {
       this.lineChartData = this.chosenVehicleChartData;
@@ -732,13 +736,12 @@ export class MainViewComponent implements OnInit {
 
   updatePortfolioParameters(cluster_name) {
     let selectedPortfolio;
-
     if (cluster_name === null) {
       selectedPortfolio = this.generalPortfolio;
     } else {
-      let clust_name;
+      console.log(cluster_name);
 
-      switch (clust_name) {
+      switch (cluster_name) {
         case 'Texas' : selectedPortfolio = this.texasPortfolio;
                        break;
         case 'New York' : selectedPortfolio = this.newyorkPorftolio;
@@ -766,6 +769,8 @@ export class MainViewComponent implements OnInit {
     this.energy_cost_bottom20 = selectedPortfolio.energy_cost_bottom20;
     this.grid_service_revnue_bottom20 = selectedPortfolio.grid_service_revnue_bottom20;
   }
+
+
   recenterMap(lat, lng) {
     this.latitude = Number(lat);
     this.longitude = Number(lng);
