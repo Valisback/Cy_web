@@ -1,9 +1,9 @@
 .background {
   background: url('/assets/homepage/phone/PAN_Phone_chat_Screen.png') no-repeat top center fixed ;
-  -webkit-background-size: contain;
-  -moz-background-size: contain;
-  -o-background-size: contain;
-  background-size: contain;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
   background-color: #283040;
   background-repeat: no-repeat;
   min-height: 100%;
