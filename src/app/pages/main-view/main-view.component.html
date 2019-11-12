@@ -82,7 +82,7 @@
       </div>
 
       <ng-template #nostat >
-        <div style="display: flex; max-height: 50%; height: calc(56% - 20px); width: 100%; align-content: center; vertical-align: middle; ">
+        <div style="display: flex; max-height: calc(56% - 20px); height: calc(56% - 20px); width: 100%; align-content: center; vertical-align: middle; ">
             <mat-spinner style="align-self:center; left:50%; margin-left: -35px; vertical-align: center;" [diameter]="70" color="accent"></mat-spinner>
 
           <!--<table style="height: 50%; width: 100%; align-content: center; vertical-align: middle;">
@@ -110,7 +110,7 @@
                               </tr>
                               <tr>
                                   <tr>
-                                      <td><strong>Battery Health:</strong>  {{chosenVehicle._battery_id.life_span}}%</td>
+                                      <td><strong>Battery Health:</strong>  {{chosenVehicle.parameters[0].performance.toFixed(1)}}%</td>
                                       <td><strong>Mileage:</strong> {{chosenVehicle.distance}} miles (+10%)</td>
                                     </tr>
                                     <tr>
@@ -266,12 +266,6 @@
               <mat-option  value= "health0">
                   All
               </mat-option>
-            <mat-option value = "health1">
-              < 20%
-            </mat-option>
-            <mat-option value = "health2">
-              20% - 50%
-            </mat-option>
             <mat-option value = "health3">
               50% - 80%
             </mat-option>
@@ -290,8 +284,8 @@
               <mat-panel-title style="min-width:50%; display:table-cell; text-align: center; vertical-align: middle;">
                 {{ vh.model }}
               </mat-panel-title>
-              <mat-panel-description #vhdescription [style.color]="getColor(vh)" style="width: 50%; display:table-cell; flex: 0 0 auto; text-align: center; vertical-align: middle;" >
-                Battery Health: {{ vh._battery_id.life_span }}%
+              <mat-panel-description #vhdescription  style="width: 50%; display:table-cell; flex: 0 0 auto; text-align: center; vertical-align: middle;" >
+                Battery Health: <span [style.color]="getColor(vh)">{{ vh.parameters[0].performance.toFixed(1) }}% </span>
               </mat-panel-description>
             </mat-expansion-panel-header>
             <div matRipple style = "display: flex; flex-direction: row; height: 100px;" (click)="onVehicleChosen(vh)">

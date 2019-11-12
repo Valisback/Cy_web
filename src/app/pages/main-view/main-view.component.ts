@@ -519,8 +519,6 @@ export class MainViewComponent implements OnInit {
       },
       legend: {
         position: 'bottom',
-        align: 'end',
-        textAlign: 'left',
         labels: {
           padding: -25,
           useLineStyle: true,
@@ -550,9 +548,12 @@ export class MainViewComponent implements OnInit {
   }
 
   getColor(vehicle) {
-    if (vehicle._battery_id.life_span >= 75) {
-      return '#c1ff04';
-    } else if (vehicle._battery_id.life_span >= 50) {
+    const today = Date.now();
+    const age = this.battery_age(today, vehicle.date_of_creation);
+    const vhPerf = vehicle.parameters[0].performance;
+    if (vhPerf >= this.BASELINE[age] * 0.98) {
+      return '#ffffff';
+    } else if (vhPerf >= this.BASELINE[age] * 0.85) {
       return '#ff8d04';
     } else {
       return '#fc376e';
@@ -601,6 +602,7 @@ export class MainViewComponent implements OnInit {
       this.chosenCluster = vehicle.cluster;
       const refreshedView = 'vehicle';
       this.refreshCurrentView(refreshedView);
+      this.tcoSavings = vehicle.tco_savings + 'k';
     } else {
       // Shuffle array
       const shuffled = this.allinterventions.sort(() => 0.5 - Math.random());
@@ -611,7 +613,15 @@ export class MainViewComponent implements OnInit {
       const today = Date.now();
       const age = this.battery_age(today, vehicle.date_of_creation);
       const distance = age * Math.random() * 1000 + 300;
-      tco_savings = ((age * Math.random() * 100 + 230) / 1000).toFixed(1);
+      const vhPerf = vehicle.parameters[0].performance;
+      if (vhPerf < this.BASELINE[age] ) {
+        tco_savings = - (((120 - vhPerf) * Math.random() * (1 + age)) / 1000).toFixed(1);
+
+      } else {
+        tco_savings = ((vhPerf * Math.random() * (1 + age)) / 1000).toFixed(1);
+
+      }
+      this.tcoSavings = tco_savings + 'k';
       vehicle.age = age;
       vehicle.tco_savings = tco_savings;
       vehicle.distance = (distance.toFixed(1));
@@ -625,8 +635,7 @@ export class MainViewComponent implements OnInit {
     this.recenterMap(vehicle.position_lat, vehicle.position_lng);
     this.zoom = this.GEN_ZOOM + 2;
     this.numberOfVehicles = 1;
-    this.tcoSavings = tco_savings + 'k';
-    console.log('CLUSTER: ', this.chosenCluster);
+
   }
 
   sliderEvent() {
@@ -777,7 +786,7 @@ export class MainViewComponent implements OnInit {
       this.numberOfVehicles = vehicles.length;
       this.loadVehicleParameterAtDate(vehicles, date);
     } else if (view === 'vehicleView') {
-      const projectionTime = new Date(date.setFullYear(date.getFullYear() + 2)); //Creating projection 2 years ahead of now
+      const projectionTime = new Date(date.setFullYear(date.getFullYear() + 2)); // Creating projection 2 years ahead from now
       this.viewVehicle = true;
       this.viewGeneral = false;
       this.viewCluster = false;
@@ -913,7 +922,7 @@ export class MainViewComponent implements OnInit {
                 pointColor = '#fc376e';
                 this.criticalBatteries++;
               } else if (pm.performance > upperThreshold) {
-                pointColor = '#b1c3e2';
+                pointColor = '#ffffff';
               } else {
                 pointColor = '#ff8d04';
                 this.numberOfAlerts++;
@@ -948,7 +957,7 @@ export class MainViewComponent implements OnInit {
             pointColor = '#fc376e';
             this.criticalBatteries++;
           } else if (pm.performance > upperThreshold) {
-            pointColor = '#b1c3e2';
+            pointColor = '#ffffff';
           } else {
             pointColor = '#ff8d04';
             this.numberOfAlerts++;
@@ -1016,22 +1025,12 @@ export class MainViewComponent implements OnInit {
       .retrieveParametersBetweenDates(vehicle[0]._id, date1, date2)
       .subscribe((response: any) => {
         this.vehicleParameter = response.parameters;
-        //let i = 0;
-        //const pointColor = [];
         let p;
         for (p of this.vehicleParameter) {
           const paramDate = new Date(p.time);
           if (paramDate <= new Date()) {
           dataset1.push(p.performance);
-          //const lowerThreshold = this.BASELINE[i] * 0.8;
-          //const upperThreshold = this.BASELINE[i];
-          // if (p.performance < lowerThreshold) {
-          //     pointColor.push('#ff0000');
-          //   } else if (p.performance > upperThreshold) {
-          //     pointColor.push('#b1c3e2');
-          //   } else {
-          //     pointColor.push('#fc376e');
-          //   }
+
           } else {
             break;
           }
@@ -1039,6 +1038,17 @@ export class MainViewComponent implements OnInit {
         }
         this.chosenVehicle.performance = p.performance;
         this.chosenVehicle.batteryValue = p.cost_value;
+        const today = new Date();
+        const age = this.battery_age(today, this.chosenVehicle.date_of_creation)
+        const vhPerf = this.chosenVehicle.parameters[0].performance;
+        let borderColor;
+        if (vhPerf >= this.BASELINE[age] * 0.98) {
+          borderColor = '#ffffff';
+        } else if (vhPerf >= this.BASELINE[age] * 0.85) {
+          borderColor = '#ff8d04';
+        } else {
+          borderColor = '#fc376e';
+        }
         this.lineChartData.push({
           data: dataset1,
           label: vehicle[0].model,
@@ -1046,7 +1056,7 @@ export class MainViewComponent implements OnInit {
           borderDash: [0, 0],
           pointRadius: 0,
           // pointBackgroundColor: pointColor,
-          borderColor: '#fc376e',
+          borderColor: borderColor,
         });
         let d;
         for (d of this.vehicleParameter) { // For the projection
@@ -1263,8 +1273,8 @@ export class MainViewComponent implements OnInit {
           max_health = 100;
           min_health = 0;
         }
-        const charge = vh._battery_id.life_span;
-        if (charge > min_health && charge <= max_health) {
+        const vhPerf = vh.parameters[0].performance;
+        if (vhPerf > min_health && vhPerf <= max_health) {
           newVehicles.push(vh);
         }
         if (this.ageOrder) {
@@ -1302,11 +1312,11 @@ export class MainViewComponent implements OnInit {
     }
     this.currentVehicles = newVehicles;
     this.filteredVehicles = this.currentVehicles;
-    this.currentVehicles.sort(this.propComparator('life_span'));
+    this.currentVehicles.sort(this.propComparator('performance'));
   }
 
   propComparator(prop) {
-    return (a, b) => a['_battery_id'][prop] - b['_battery_id'][prop];
+    return (a, b) => a['parameters'][0][prop] - b['parameters'][0][prop];
   }
 }
 

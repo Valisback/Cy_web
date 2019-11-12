@@ -33,7 +33,7 @@ html,body {
 }
 .big_box_text {
   margin: 3px;
-  font-size: 2vw;
+  font-size: 1.6vw;
   width: 100%;
   height: fit-content;
   text-align: left;
@@ -43,6 +43,7 @@ html,body {
 
 .label_text {
   width: 100%;
+  min-height: fit-content;
   margin: 3px;
   text-align: left;
   overflow: hidden;
@@ -206,7 +207,7 @@ mat-form-field{
   margin-top: 16px;
 }
 .legend_left, .legend_right, .slider_title{
-  margin-top: 22px;
+  margin-top: 17px;
   font-size: 11px;
   color: #8c99af;
 }
@@ -276,7 +277,7 @@ mat-expansion-panel-header
 }
 
 .mytable tr{
-  line-height: 45px;
+  line-height: 38px;
   border-top: 1.5px solid #283040;
   border-bottom: 1.5px solid #4b5468;
   background-color: #252a39;
@@ -306,7 +307,7 @@ mat-expansion-panel-header
 
 .data_table{
   padding-top: 15px;
-  height: calc(50% - 20px);
+  height: calc(50% - 25px);
   display: flex;
   overflow: auto;
   justify-content: center;
