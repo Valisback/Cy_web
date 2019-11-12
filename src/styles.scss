@@ -134,7 +134,7 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
 .mat-dialog-container {
   background-color: #283040;
   height: fit-content;
-  min-height: fit-content;
+  max-height: fit-content;
 }
 
 
