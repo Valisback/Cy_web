@@ -50,7 +50,7 @@ export class HomepageComponent implements OnInit {
 
   openDialog(): void {
     const dialogRef = this.dialog.open(DialogLoginComponent, {
-      width: '450px',
+      width: '400px',
       height: 'fit-content',
       maxHeight: '50vh',
       data: {login: this.login, password: this.password},
