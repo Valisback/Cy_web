@@ -7,7 +7,7 @@ This repository features the Angular web application, relying on the [Cy Server]
 - [Getting started](#getting_started)
 - [Running the app](#running)
 - [Configuration](#configuration)
-- [Contact](#contact)
+- [Author](#author)
 
 <a name="getting_started"></a>
 ## Getting started
@@ -80,7 +80,7 @@ export const environment = {
 }
 ```
 
-<a name="section"></a>
+<a name="author"></a>
 ## Author
 
 * **Valentin Pereira** - *See also: [Cy Server](https://github.com/Capgemini-AIE/Fleet-Electrification-server)*
